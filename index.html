@@ -1,0 +1,1560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sri Lakshmi Fireworks — Sivakasi Crackers Price List</title>
+<meta name="description" content="Order Diwali crackers online — choose quantities, pay by UPI, and get parcels delivered. Admin can edit everything from a password-protected settings panel.">
+<style id="app-style">
+  :root{
+    --bg:#fff6e8;
+    --surface:#ffffff;
+    --surface-2:#fff0d1;
+    --text:#2a1420;
+    --text-dim:#6b4a52;
+    --border:#f0dcae;
+    --accent:#d1440a;
+    --accent-ink:#ffffff;
+    --accent-2:#a3175c;
+    --accent-3:#0f766e;
+    --shadow:0 12px 32px -16px rgba(42,20,32,0.28);
+    --radius:14px;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1a0f1f;
+      --surface:#241629;
+      --surface-2:#2e1c35;
+      --text:#f7ecd9;
+      --text-dim:#c9adb8;
+      --border:#3d2740;
+      --accent:#f5a623;
+      --accent-ink:#2a1420;
+      --accent-2:#ef6a8c;
+      --accent-3:#3fd6c2;
+      --shadow:0 12px 36px -14px rgba(0,0,0,0.6);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1a0f1f;
+    --surface:#241629;
+    --surface-2:#2e1c35;
+    --text:#f7ecd9;
+    --text-dim:#c9adb8;
+    --border:#3d2740;
+    --accent:#f5a623;
+    --accent-ink:#2a1420;
+    --accent-2:#ef6a8c;
+    --accent-3:#3fd6c2;
+    --shadow:0 12px 36px -14px rgba(0,0,0,0.6);
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Mukta","Segoe UI",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:"Baloo 2","Segoe UI",system-ui,sans-serif;
+    text-wrap:balance;
+    margin:0;
+  }
+  a{color:inherit;}
+  button{font:inherit;}
+  .wrap{max-width:960px;margin-inline:auto;padding-inline:20px;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+  .tabular{font-variant-numeric:tabular-nums;}
+
+  /* topbar */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;gap:12px;
+    padding-block:10px;
+  }
+  .brand{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .brand-name{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:1.15rem;line-height:1.1;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .brand-tag{font-size:.72rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .icon-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:50%;
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    cursor:pointer;transition:transform .15s ease, background .15s ease;
+  }
+  .icon-btn:hover{background:var(--surface-2);}
+  .icon-btn:active{transform:scale(.94);}
+  .icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .call-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:8px 12px;border-radius:999px;
+    background:var(--accent);color:var(--accent-ink);
+    font-weight:700;font-size:.82rem;white-space:nowrap;text-decoration:none;
+  }
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+  .hero-canvas{position:absolute;inset:0;width:100%;height:100%;}
+  .hero-fade{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg, transparent 0%, var(--bg) 96%);
+  }
+  .hero-content{position:relative;padding-block:44px 34px;text-align:left;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--accent-2);margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-2);}
+  .hero h1{font-size:clamp(1.9rem,5.5vw,3rem);font-weight:800;line-height:1.05;max-width:16ch;}
+  .hero-offer-sub{margin-top:12px;color:var(--text-dim);font-size:1.02rem;max-width:44ch;}
+  .hero-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+  .cta{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 18px;border-radius:12px;font-weight:700;font-size:.95rem;
+    text-decoration:none;border:1px solid transparent;cursor:pointer;
+  }
+  .cta-primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow);}
+  .cta-ghost{background:transparent;color:var(--text);border-color:var(--border);}
+  .cta-whatsapp{background:#25d366;color:#04220f;}
+
+  /* quicknav */
+  .quicknav{
+    display:flex;gap:8px;overflow-x:auto;padding-block:14px;
+    scrollbar-width:none;
+  }
+  .quicknav::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto;padding:8px 14px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;
+    white-space:nowrap;
+  }
+  .chip:hover{border-color:var(--accent);}
+
+  /* price list */
+  .cat-section{padding-block:22px;scroll-margin-top:76px;}
+  .cat-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;}
+  .cat-head h2{font-size:1.3rem;font-weight:700;}
+  .cat-count{font-size:.78rem;color:var(--text-dim);}
+  .item-grid{display:grid;gap:10px;}
+  .item-card{
+    display:flex;flex-direction:column;gap:10px;
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:13px 16px;
+  }
+  .item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .item-photo{
+    width:52px;height:52px;flex-shrink:0;border-radius:10px;object-fit:cover;
+    background:var(--surface-2);border:1px solid var(--border);
+  }
+  .item-photo-empty{
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+    border-style:dashed;opacity:.6;
+  }
+  .item-photo-wrap{position:relative;display:inline-block;flex-shrink:0;cursor:pointer;}
+  .item-photo-edit-badge{
+    display:none;position:absolute;bottom:-4px;right:-4px;width:18px;height:18px;
+    border-radius:50%;background:var(--accent);color:var(--accent-ink);
+    font-size:.65rem;line-height:1;align-items:center;justify-content:center;
+    border:2px solid var(--bg);z-index:31;
+  }
+  body.admin-active .item-photo-wrap{cursor:pointer;}
+  body.admin-active .item-photo-edit-badge{display:flex;}
+  .item-info{flex:1;min-width:0;}
+  .item-name{font-weight:700;font-size:.97rem;}
+  .item-unit{font-size:.78rem;color:var(--text-dim);margin-top:2px;}
+  .item-price{text-align:right;flex-shrink:0;}
+  .price-mrp{font-size:.78rem;color:var(--text-dim);text-decoration:line-through;}
+  .price-net{font-size:1.15rem;font-weight:800;color:var(--accent-2);}
+  .price-off{
+    display:inline-block;margin-top:2px;font-size:.68rem;font-weight:700;
+    padding:2px 7px;border-radius:999px;background:var(--surface-2);color:var(--accent-3);
+  }
+  .qty-row{display:flex;align-items:center;gap:8px;border-top:1px dashed var(--border);padding-top:10px;}
+  .qty-btn{
+    width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+    background:var(--surface-2);color:var(--text);font-size:1.05rem;font-weight:700;
+    cursor:pointer;line-height:1;flex-shrink:0;
+  }
+  .qty-btn:hover{border-color:var(--accent);}
+  .qty-input{
+    width:46px;text-align:center;padding:6px 4px;border-radius:8px;
+    border:1px solid var(--border);background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
+  }
+  .line-total{margin-left:auto;font-weight:800;color:var(--accent-2);font-size:.92rem;}
+
+  /* legal strip */
+  .legal{
+    background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 18px;margin-block:26px;display:flex;flex-direction:column;gap:6px;
+  }
+  .legal-title{font-weight:700;font-size:.85rem;}
+  .legal p{margin:0;font-size:.82rem;color:var(--text-dim);line-height:1.5;}
+
+  /* footer */
+  footer{border-top:1px solid var(--border);padding-block:28px 140px;margin-top:10px;}
+  .foot-grid{display:grid;gap:18px;grid-template-columns:1.3fr 1fr;}
+  .foot-title{font-weight:700;font-size:.95rem;margin-bottom:6px;}
+  .foot-line{font-size:.85rem;color:var(--text-dim);line-height:1.6;}
+  @media (max-width:520px){ .foot-grid{grid-template-columns:1fr;} }
+  .foot-admin{margin-top:22px;}
+  .admin-link{
+    background:none;border:none;padding:0;color:var(--text-dim);font-size:.72rem;
+    text-decoration:underline;cursor:pointer;
+  }
+
+  /* floating whatsapp */
+  .fab{
+    position:fixed;right:18px;bottom:18px;z-index:50;
+    display:inline-flex;align-items:center;gap:8px;
+    background:#25d366;color:#04220f;border-radius:999px;
+    padding:12px 16px;font-weight:700;font-size:.85rem;text-decoration:none;
+    box-shadow:0 10px 26px -8px rgba(0,0,0,0.4);
+    transition:bottom .2s ease;
+  }
+  body.has-cartbar .fab{ bottom:82px; }
+
+  /* cart bar */
+  .cartbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:45;
+    background:var(--surface);border-top:1px solid var(--border);
+    box-shadow:0 -10px 26px -14px rgba(0,0,0,.3);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  .cartbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;}
+  .cartbar-info{font-size:.9rem;}
+  .cartbar-info strong{font-size:1rem;}
+
+  /* settings / checkout drawer */
+  .backdrop{
+    position:fixed;inset:0;background:rgba(15,8,12,.45);z-index:60;
+  }
+  .drawer{
+    position:fixed;top:0;right:0;height:100%;width:min(420px,100%);
+    background:var(--surface);z-index:61;
+    box-shadow:-16px 0 40px -18px rgba(0,0,0,.4);
+    display:flex;flex-direction:column;
+  }
+  .drawer-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0;
+  }
+  .drawer-head h2{font-size:1.05rem;}
+  .drawer-body{overflow-y:auto;padding:16px 18px 24px;flex:1;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:.76rem;font-weight:700;color:var(--text-dim);
+    text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+  .field input,.field textarea{
+    width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
+  }
+  .field textarea{resize:vertical;min-height:52px;}
+  .field input:focus-visible,.field textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .section-label{
+    font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent-2);margin:20px 0 10px;
+  }
+  .cat-editor{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;background:var(--surface-2);}
+  .cat-editor-head{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .cat-editor-head input{flex:1;}
+  .item-edit{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;}
+  .item-photo-upload{
+    width:44px;height:44px;flex-shrink:0;border-radius:8px;border:1px dashed var(--border);
+    background:var(--surface);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;overflow:hidden;font-size:1rem;color:var(--text-dim);
+  }
+  .item-photo-upload:hover{border-color:var(--accent);}
+  .item-photo-upload img{width:100%;height:100%;object-fit:cover;}
+  .item-fields{flex:1;min-width:0;}
+  .remove-item-photo{
+    background:none;border:none;padding:0;color:var(--accent-2);font-size:.72rem;
+    text-decoration:underline;cursor:pointer;margin-top:-2px;margin-bottom:6px;
+  }
+  .item-row{display:grid;grid-template-columns:1.6fr 1fr .8fr .8fr auto;gap:6px;margin-bottom:0;align-items:center;}
+  .item-row input{padding:7px 8px;font-size:.82rem;}
+  .row-btn,.mini-btn{
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    border-radius:8px;cursor:pointer;padding:7px 9px;font-size:.85rem;line-height:1;
+  }
+  .row-btn:hover,.mini-btn:hover{border-color:var(--accent);}
+  .add-btn{
+    width:100%;padding:9px;border-radius:9px;border:1px dashed var(--border);
+    background:transparent;color:var(--accent-2);font-weight:700;font-size:.84rem;cursor:pointer;
+  }
+  .drawer-foot{
+    padding:14px 18px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px;flex-shrink:0;
+  }
+  .drawer-foot-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn-save{
+    flex:1;background:var(--accent);color:var(--accent-ink);border:none;
+    padding:12px;border-radius:10px;font-weight:800;cursor:pointer;font-size:.9rem;
+  }
+  .btn-save:disabled{opacity:.6;cursor:default;}
+  .btn-cancel{
+    background:transparent;border:1px solid var(--border);color:var(--text);
+    padding:12px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:.88rem;
+  }
+  .btn-download{
+    background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+    padding:11px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.82rem;
+  }
+  .save-hint{font-size:.72rem;color:var(--text-dim);line-height:1.45;}
+  .remove-cat{color:var(--accent-2);}
+
+  /* checkout specifics */
+  .checkout-summary{border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface-2);margin-bottom:16px;}
+  .checkout-line{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;padding-block:4px;}
+  .checkout-total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:800;font-size:.98rem;}
+  .upi-block{border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--surface-2);margin-top:6px;}
+  .upi-qr-preview{max-width:160px;border-radius:10px;border:1px solid var(--border);display:block;margin-bottom:10px;}
+  .upi-id-row{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700;}
+  .confirm{text-align:center;padding-block:30px;}
+  .confirm-icon{font-size:2.4rem;margin-bottom:10px;}
+  .confirm h3{font-size:1.2rem;margin-bottom:8px;}
+  .confirm p{color:var(--text-dim);font-size:.92rem;line-height:1.5;}
+
+  /* admin modal */
+  .modal{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:62;
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:20px;width:min(360px,90vw);box-shadow:var(--shadow);
+  }
+  .modal h2{font-size:1.05rem;margin-bottom:8px;}
+  .modal-actions{display:flex;gap:10px;margin-top:14px;}
+  .modal-actions .btn-save{flex:1;}
+  .photo-lightbox{width:auto;max-width:min(92vw,480px);text-align:center;}
+  .photo-lightbox img{max-width:100%;max-height:70vh;border-radius:12px;display:block;margin:0 auto;background:var(--surface-2);}
+  .photo-lightbox-close{position:absolute;top:8px;right:8px;}
+  .photo-lightbox-caption{margin-top:10px;font-weight:700;font-size:.9rem;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Mukta:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+<div id="root"></div>
+
+<script id="data-script">
+window.__DATA__ = {
+  shopName: "Sri Lakshmi Fireworks",
+  tagline: "Direct from Sivakasi · Since 1998",
+  phone: "+91-9876543210",
+  whatsapp: "919876543210",
+  address: "142, Crackers Bazaar Road, Sivakasi, Tamil Nadu 626123",
+  hours: "Open daily, 9:00 AM – 9:00 PM (extended hours during Diwali week)",
+  license: "PESO License No. TN/SVK/2024/00789",
+  offerText: "Diwali Mega Sale",
+  offerSubtext: "Flat 50% off on printed MRP, plus an extra 5% on prepaid orders above ₹5,000.",
+  legalNote: "Sale subject to Explosives Rules, 2008 and local municipal timing restrictions. Fireworks are dispatched as a parcel to the address you provide, where permitted — please check local rules before ordering. Handle and burst crackers only in open spaces, away from children, under adult supervision.",
+  ownerEmail: "owner@example.com",
+  upi: { id: "shopname@okhdfcbank", payeeName: "Sri Lakshmi Fireworks", qrImage: "" },
+  email: { serviceId: "", templateId: "", publicKey: "" },
+  adminPassword: "admin123",
+  categories: [
+    { name: "Gift Boxes", items: [
+      { name: "15 items Giftbox", unit: "1Box", mrp: 0, price: 0 },
+      { name: "27 items Giftbox", unit: "1Box", mrp: 0, price: 0 },
+      { name: "30 items Giftbox", unit: "1Box", mrp: 0, price: 0 },
+      { name: "40 items Giftbox", unit: "1Box", mrp: 0, price: 0 },
+      { name: "50 items Giftbox", unit: "1Box", mrp: 0, price: 0 },
+      { name: "60 items Giftbox", unit: "1Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Family Combo Packs", items: [
+      { name: "The Celebration", unit: "40Items", mrp: 20000, price: 16000 },
+      { name: "The Grand Edit", unit: "52Items", mrp: 30000, price: 24000 },
+      { name: "The Signature Edition", unit: "60Items", mrp: 40000, price: 32000 },
+      { name: "The Prestige Edit", unit: "72Items", mrp: 60000, price: 48000 },
+      { name: "The Novelty Edit", unit: "45Items", mrp: 55000, price: 44000 }
+    ]},
+    { name: "Flash Light Crackers", items: [
+      { name: "2 3/4' Kuruvi", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "3 1/2' Lakshmi", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "4' Lakshmi", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "4' Deluxe Lakshmi", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "4' Gold Lakshmi", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "5' Deluxe Jallikattu (Lakshmi)", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "6' Lion King", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "Two sound crackers", unit: "5Pcs-Pkt", mrp: 0, price: 0 },
+      { name: "Paper Bomb 250g", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Paper Bomb 500g", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Paper Bomb 1kg", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Colour Paper Bomb", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Colour Magic Whip (Digital 1k wala)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Magic Sound (Digital 1k wala)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "90 Watts (Digital 200 wala)", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Old is Gold (Ola Vedi)", unit: "25Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Sparklers", items: [
+      { name: "Rotating Sparklers (5 Rotating sticks)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "7 Cm Electric sparklers (5 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "7 Cm Crackling sparklers (5 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "10 Cm Electric sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "10 Cm Crackling sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "10 Cm Green sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "10 Cm Red sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "12 Cm Electric sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "12 Cm Crackling sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "12 Cm Green sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "12 Cm Red sparklers (2 Boxes)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "15 Cm Electric sparklers", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "15 Cm Crackling sparklers", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "15 Cm Green sparklers", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "15 Cm Red sparklers", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "30 Cm Electric sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "30 Cm Crackling sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "30 Cm Green sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "30 Cm Red sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "50 cm Electric sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "50 cm Crackling sparklers", unit: "5Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Matches", items: [
+      { name: "Deluxe matches (Sachin)", unit: "10Boxes", mrp: 0, price: 0 },
+      { name: "Laptop colour Matches Mini (Lion/Prince)", unit: "10Boxes", mrp: 0, price: 0 },
+      { name: "Laptop colour matches (Royal)", unit: "10Boxes", mrp: 0, price: 0 }
+    ]},
+    { name: "Ground Chakkars", items: [
+      { name: "Ground chakkar Big 10 Pcs", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Ground chakkar Big 25 Pcs", unit: "25Pcs-Box", mrp: 0, price: 0 },
+      { name: "Ground chakkar Asoka", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Ground chakkar Special", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Ground chakkar Deluxe", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Wire chakkar", unit: "10Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Ground Chakkar Wheel Series", items: [
+      { name: "Win Wheel Mini", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Win Wheel Max", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Spinner Special", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Spinner Deluxe", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Whistling Wheel", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Whizz Chakkar", unit: "3Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Flower Pot", items: [
+      { name: "Flower pot Big", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Flower pot Special", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Flower pot Deluxe (5 Pcs)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Flower Pot Giant", unit: "10Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Fancy Flower Pot", items: [
+      { name: "Colour Koti (Pot Girl)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Colour Koti (Arjun)", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Colour Koti Deluxe", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Colour Koti Pink", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Colour Koti Red", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Tri Colour Fountain (Wowstar)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Scooby mini Tri colour", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Popoye Tri colour", unit: "5Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Magic Flowers", items: [
+      { name: "Chotta fancy Red/Gold/Silver/Green", unit: "Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Torches", items: [
+      { name: "10' pencil", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "12' pencil", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "15' pencil", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Navarang pencil", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Pop Corn - Starvell", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Water falls Pencil - Starvell", unit: "5Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Twinkling Star", items: [
+      { name: "18' Twinkling star", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "48' Twinkling star", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Jil Jil", unit: "100Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Spinklings", items: [
+      { name: "Electric stone", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Emarald", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Tim Tam", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Kit Kat", unit: "10Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Musical Rocket", items: [
+      { name: "Musical rocket", unit: "5Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Rockets", items: [
+      { name: "Colour rocket", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Rocket bomb", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Lunik express rocket", unit: "10Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Atom Bomb", items: [
+      { name: "Bullet/Atom bomb", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Hydro Bomb", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "King of king", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Dinosaur bomb 7ply", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Digital Bomb", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Cylinder Bomb", unit: "1Pc", mrp: 0, price: 0 }
+    ]},
+    { name: "Bijili Crackers", items: [
+      { name: "Red bijili 50 pcs", unit: "1Bag", mrp: 0, price: 0 },
+      { name: "Red bijili 100 pcs", unit: "1Bag", mrp: 0, price: 0 },
+      { name: "Stripped Bijili 100 pcs", unit: "1Bag", mrp: 0, price: 0 }
+    ]},
+    { name: "Fancy Novelties", items: [
+      { name: "7 Shots 5 pcs", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "7 Shots 10 pcs", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Lolli Pop", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "4 * 4 Wheel", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Top Gun", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Black Money", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Shinchan (Digital Wala)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Motlu Batlu", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "4' Water Queen", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "6' Water queen", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Pistol 5G", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "Money in the bank (3pcs box)", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Sound Marriage (3pcs Box)", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Emu egg", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "Kuala Lambur", unit: "6Pcs-Box", mrp: 0, price: 0 },
+      { name: "Bambaram", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Dancing Butterfly", unit: "10Pcs-Box", mrp: 0, price: 0 },
+      { name: "Photo Flash", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Helicopter", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Siren", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Selfie Stick", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Peacock Feather", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Tin Cracker", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Corona Extra (Wowstar - Tin)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Dora singer (5 Pcs)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Magic smoke (3Pcs)", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "Moon Light Shower", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "White House", unit: "6Pcs-Box", mrp: 0, price: 0 },
+      { name: "Wonder Mix", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "6' Pop corn Fountain", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "6' Water game Fountain", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Lolli Pop Fountain", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "8' Triple Monkey 3 in 1", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "8' Koli soda", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Gems Colour Mix (Kitkat - All Colour Mix)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Kurkur", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Colour Fountain Mini", unit: "6Pcs-Box", mrp: 0, price: 0 },
+      { name: "Bonsai(Mini Fountain)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Layz (Shower)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "UP (Sky Shot)", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Mr. Bean", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "1' Shell Skyshot", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "Mumbai Beauty", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Peacock Golden/Multi Colour (Amman)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Bada Peacock (Wowstar)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Bada Peacock 2 in 1 (Wowstar)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Bada Peacock (Suryakala)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Bada Peacock (Amman)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Sound Marriage (1Pc)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Water Melon", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Money in the bank (1 Pc)", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Car Race", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "Sound Marriage (3Pcs)", unit: "3 Pcs-Box", mrp: 0, price: 0 },
+      { name: "Penta Collections", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Sun Light Shower", unit: "5Pcs-Box", mrp: 0, price: 0 },
+      { name: "Bat & ball (Crackling bat & Smoke ball) Crackers", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Vel Crackers", unit: "2 Pcs-Box", mrp: 0, price: 0 },
+      { name: "i-Cone (Shower)", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "Kulfi (Hand Shower)", unit: "3Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Aerial Fancy", items: [
+      { name: "2' Fancy Out Single (LCU Series)", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "2' Fancy 3 step pipe", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3' Fancy 3 step pipe", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "2' Fancy Out 3 pcs", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "2' Fancy Out 3 pcs (Premium-Vinayak)", unit: "3Pcs-Box", mrp: 0, price: 0 },
+      { name: "2.5' Fancy Out", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3' Fancy Out", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3.5' Fancy out", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3.5' Nayagara falls", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3.5' Nayagara falls (Double pieces)", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "4' Nayagara falls", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "3.5' Seven Step Wedding Celebration", unit: "1Pc-Box", mrp: 0, price: 0 },
+      { name: "4' Fancy Out", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "4' Fancy Out - Double (Maruti)", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "4' Fancy Out - Double (Suryakala)", unit: "2Pcs-Box", mrp: 0, price: 0 },
+      { name: "6' Fancy Out (Sri Vijay)", unit: "2Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Aerial Fancy - Premium", items: [
+      { name: "WOW PINK", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "WOW PURPLE", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "WOW BLUE", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "WOW ORANGE", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "WOW COLOUR", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "TEXAS DELIGHT", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "GOLDEN EYE", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "TOWER SERIES - Double", unit: "2Pcs-Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Multi Colour Shots (Premium Quality)", items: [
+      { name: "12 Shots Multi colour/12 Shots R & G", unit: "1Box", mrp: 0, price: 0 },
+      { name: "12 Shots Glittering", unit: "1Box", mrp: 0, price: 0 },
+      { name: "15 Shots Multi Colour (Suryakala)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "30 shots Multi Colour (Suryakala)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "60 Shots Multi colour (Suryakala)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "25 Shots Multi Colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "30 Shots Multi colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "50 Shots Multi Colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "60 Shots Multi colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "100 Shots Multi Colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "120 Shots Multi colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "240 Shots Multi Colour (Maruti)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "30 Shots Multi colour (Vinayak)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "60 Shots Multi Colour (Vinayak)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "30 Shots Multi colour (Wowstar)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Peacock Dance 30 Shots", unit: "1Box", mrp: 0, price: 0 },
+      { name: "60 Shots Multi colour (Wowstar)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "120 Shots Multi colour (Wowstar)", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Gujarat Festival 150 Shots Rider (Multi Colour)", unit: "1 PC", mrp: 0, price: 0 }
+    ]},
+    { name: "Multi Colour Shots (Economical)", items: [
+      { name: "30 Shots Multi colour (Kathirvelan)", unit: "1Box", mrp: 0, price: 0 }
+    ]},
+    { name: "Kids Gun", items: [
+      { name: "Roll Gun - 40", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Roll Gun - 60", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Roll Cap", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Ring Gun", unit: "1Pc", mrp: 0, price: 0 },
+      { name: "Ring Cap", unit: "10Boxes", mrp: 0, price: 0 },
+      { name: "Anaconda - Black Serpent", unit: "1Box", mrp: 0, price: 0 },
+      { name: "Snake Tablet", unit: "1Box", mrp: 0, price: 0 }
+    ]}
+  ]
+};
+</script>
+<script id="app-script">
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "crackersShopData";
+  var cart = {}; // key: "ci_ii" -> qty
+  var adminMode = false;
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function slug(s,i){ return "cat-" + i + "-" + String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+  function money(n){
+    n = Number(n)||0;
+    return "₹" + n.toLocaleString("en-IN");
+  }
+  function pctOff(mrp, price){
+    mrp = Number(mrp)||0; price = Number(price)||0;
+    if(mrp<=0 || price>=mrp) return 0;
+    return Math.round((1 - price/mrp)*100);
+  }
+  function waLink(data, text){
+    var msg = text || ("Hi " + data.shopName + ", I would like to enquire about your crackers price list.");
+    return "https://wa.me/" + (data.whatsapp||"").replace(/[^0-9]/g,"") + "?text=" + encodeURIComponent(msg);
+  }
+  function telLink(data){
+    return "tel:" + (data.phone||"").replace(/[^0-9+\-()]/g,"");
+  }
+  var PHONE_PATTERN = /^(\+91-\d{10}|0\d{2,4}-\d{6,8})$/;
+  function isValidIndianPhone(v){
+    return PHONE_PATTERN.test(String(v||"").trim());
+  }
+  var PHONE_HINT = "Please enter a valid contact number — mobile as +91-9841632734, or landline as 044-26147874.";
+
+  function loadStoredData(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){ /* localStorage unavailable — fall back to defaults */ }
+    return null;
+  }
+  function persistData(data){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); return true; }
+    catch(e){ return false; }
+  }
+
+  /* ================= public page render ================= */
+
+  function renderQuickNav(data){
+    return data.categories.map(function(c,i){
+      return '<a class="chip" href="#'+slug(c.name,i)+'">'+esc(c.name)+'</a>';
+    }).join("");
+  }
+
+  function renderCategory(c,i){
+    var items = (c.items||[]).map(function(it,ii){
+      var off = pctOff(it.mrp, it.price);
+      return '' +
+        '<div class="item-card" data-cat="'+i+'" data-item="'+ii+'">' +
+          '<div class="item-top">' +
+            '<label class="item-photo-wrap">' +
+              '<input type="file" accept="image/*" class="item-photo-input" hidden data-cat="'+i+'" data-item="'+ii+'">' +
+              (it.image ?
+                '<img class="item-photo" src="'+it.image+'" alt="'+esc(it.name)+'">' :
+                '<div class="item-photo item-photo-empty" aria-hidden="true">🎇</div>') +
+              '<span class="item-photo-edit-badge" aria-hidden="true">✎</span>' +
+            '</label>' +
+            '<div class="item-info"><div class="item-name">'+esc(it.name)+'</div><div class="item-unit">'+esc(it.unit||"")+'</div></div>' +
+            '<div class="item-price">' +
+              (off>0 ? '<div class="price-mrp tabular">'+money(it.mrp)+'</div>' : '') +
+              '<div class="price-net tabular">'+money(it.price)+'</div>' +
+              (off>0 ? '<span class="price-off">'+off+'% OFF</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="qty-row">' +
+            '<button type="button" class="qty-btn qty-minus" aria-label="Decrease quantity">−</button>' +
+            '<input type="number" min="0" inputmode="numeric" class="qty-input" value="0" aria-label="Quantity for '+esc(it.name)+'">' +
+            '<button type="button" class="qty-btn qty-plus" aria-label="Increase quantity">+</button>' +
+            '<span class="line-total tabular" hidden></span>' +
+          '</div>' +
+        '</div>';
+    }).join("");
+    return '' +
+      '<section class="cat-section" id="'+slug(c.name,i)+'">' +
+        '<div class="cat-head"><h2>'+esc(c.name)+'</h2><span class="cat-count">'+(c.items||[]).length+' items</span></div>' +
+        '<div class="item-grid">'+items+'</div>' +
+      '</section>';
+  }
+
+  function render(data){
+    var root = document.getElementById("root");
+    var html = '' +
+    '<div class="topbar"><div class="wrap topbar-inner">' +
+      '<div class="brand">' +
+        '<span class="brand-name">'+esc(data.shopName)+'</span>' +
+        '<span class="brand-tag">'+esc(data.tagline)+'</span>' +
+      '</div>' +
+      '<div class="top-actions">' +
+        '<a class="call-chip" href="'+telLink(data)+'" aria-label="Call the shop">☎️ Call</a>' +
+      '</div>' +
+    '</div></div>' +
+
+    '<div class="hero">' +
+      '<canvas class="hero-canvas" id="fxCanvas" aria-hidden="true"></canvas>' +
+      '<div class="hero-fade" aria-hidden="true"></div>' +
+      '<div class="wrap hero-content">' +
+        '<div class="eyebrow">'+esc(data.offerText||"Special Offer")+'</div>' +
+        '<h1>Diwali crackers, straight from the Sivakasi factories.</h1>' +
+        '<p class="hero-offer-sub">'+esc(data.offerSubtext||"")+'</p>' +
+        '<div class="hero-ctas">' +
+          '<a class="cta cta-whatsapp" href="'+waLink(data)+'" target="_blank" rel="noopener">Ask on WhatsApp</a>' +
+          '<a class="cta cta-primary" href="'+telLink(data)+'">Call to Order</a>' +
+          '<a class="cta cta-ghost" href="#pricelist">Choose items below</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div class="wrap">' +
+      '<nav class="quicknav" aria-label="Jump to category">'+renderQuickNav(data)+'</nav>' +
+      '<div id="pricelist">' + data.categories.map(renderCategory).join("") + '</div>' +
+      '<div class="legal">' +
+        '<div class="legal-title">'+esc(data.license||"")+'</div>' +
+        '<p>'+esc(data.legalNote||"")+'</p>' +
+      '</div>' +
+    '</div>' +
+
+    '<footer><div class="wrap">' +
+      '<div class="foot-grid">' +
+        '<div>' +
+          '<div class="foot-title">Visit or write to us</div>' +
+          '<div class="foot-line">'+esc(data.address)+'</div>' +
+          '<div class="foot-line">'+esc(data.hours)+'</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="foot-title">Contact</div>' +
+          '<div class="foot-line"><a href="'+telLink(data)+'">'+esc(data.phone)+'</a></div>' +
+          '<div class="foot-line"><a href="'+waLink(data)+'" target="_blank" rel="noopener">WhatsApp us</a></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="foot-admin"><button type="button" class="admin-link" id="adminLoginBtn">Shop admin</button></div>' +
+    '</div></footer>' +
+
+    '<a class="fab" href="'+waLink(data)+'" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬 WhatsApp</a>' +
+
+    '<div class="cartbar" id="cartBar" hidden>' +
+      '<div class="wrap cartbar-inner">' +
+        '<div class="cartbar-info"><strong id="cartCount">0</strong> items · <span id="cartTotal" class="tabular">₹0</span></div>' +
+        '<button type="button" class="cta cta-primary" id="checkoutBtn">Checkout</button>' +
+      '</div>' +
+    '</div>';
+
+    root.innerHTML = html;
+    cart = {};
+    updateCartBar();
+    startFireworks(document.getElementById("fxCanvas"));
+    wirePriceListEvents();
+  }
+
+  /* ---------- ambient fireworks canvas ---------- */
+  function startFireworks(canvas){
+    if(!canvas) return;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ctx = canvas.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio||1, 2);
+    var w,h, particles = [];
+    var colors = ["#f5a623","#e0435a","#3fd6c2","#ffd54a","#ff8fab"];
+
+    function resize(){
+      var rect = canvas.parentElement.getBoundingClientRect();
+      w = rect.width; h = rect.height;
+      canvas.width = w*dpr; canvas.height = h*dpr;
+      canvas.style.width = w+"px"; canvas.style.height = h+"px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    function burst(){
+      var cx = w*(0.15+Math.random()*0.7), cy = h*(0.1+Math.random()*0.55);
+      var color = colors[Math.floor(Math.random()*colors.length)];
+      var n = 26;
+      for(var i=0;i<n;i++){
+        var a = (Math.PI*2*i)/n + Math.random()*0.2;
+        var speed = 0.6+Math.random()*1.6;
+        particles.push({x:cx,y:cy,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,life:1,color:color});
+      }
+    }
+    var lastBurst = 0;
+    function tick(t){
+      if(!w) resize();
+      ctx.clearRect(0,0,w,h);
+      if(t-lastBurst > 1500){ burst(); lastBurst = t; }
+      particles.forEach(function(p){
+        p.x+=p.vx; p.y+=p.vy; p.vy+=0.012; p.life-=0.012;
+        if(p.life>0){
+          ctx.globalAlpha = Math.max(p.life,0);
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(p.x,p.y,1.8,0,Math.PI*2); ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+      particles = particles.filter(function(p){ return p.life>0; });
+      if(!reduced) requestAnimationFrame(tick);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+    if(reduced){
+      burst();
+      ctx.clearRect(0,0,w,h);
+      particles.forEach(function(p){
+        ctx.fillStyle = p.color; ctx.globalAlpha=0.6;
+        ctx.beginPath(); ctx.arc(p.x,p.y,1.8,0,Math.PI*2); ctx.fill();
+      });
+      ctx.globalAlpha=1;
+    } else {
+      requestAnimationFrame(tick);
+    }
+  }
+
+  /* ================= cart / ordering ================= */
+
+  function wirePriceListEvents(){
+    var list = document.getElementById("pricelist");
+    list.addEventListener("click", function(e){
+      var photoWrap = e.target.closest(".item-photo-wrap");
+      if(photoWrap){
+        if(adminMode) return; // let the label open the file picker
+        e.preventDefault();
+        var card0 = photoWrap.closest(".item-card");
+        var ci0 = card0.getAttribute("data-cat"), ii0 = card0.getAttribute("data-item");
+        var item0 = window.__DATA__.categories[ci0] && window.__DATA__.categories[ci0].items[ii0];
+        if(item0 && item0.image){ openPhotoLightbox(item0.image, item0.name); }
+        return;
+      }
+      var minus = e.target.closest(".qty-minus");
+      var plus = e.target.closest(".qty-plus");
+      if(!minus && !plus) return;
+      var card = e.target.closest(".item-card");
+      var input = card.querySelector(".qty-input");
+      var val = parseInt(input.value,10)||0;
+      val = plus ? val+1 : Math.max(0, val-1);
+      input.value = val;
+      applyQty(card, val);
+    });
+    list.addEventListener("change", function(e){
+      if(e.target.classList.contains("item-photo-input")){
+        if(!adminMode) return;
+        var file = e.target.files[0];
+        if(!file) return;
+        var ci = e.target.getAttribute("data-cat"), ii = e.target.getAttribute("data-item");
+        var reader = new FileReader();
+        reader.onload = function(ev){
+          window.__DATA__.categories[ci].items[ii].image = ev.target.result;
+          var wrap = e.target.closest(".item-photo-wrap");
+          var existingImg = wrap.querySelector("img.item-photo");
+          var placeholder = wrap.querySelector(".item-photo-empty");
+          if(existingImg){
+            existingImg.src = ev.target.result;
+          } else if(placeholder){
+            var img = document.createElement("img");
+            img.className = "item-photo";
+            img.alt = "";
+            img.src = ev.target.result;
+            wrap.replaceChild(img, placeholder);
+          }
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+      if(!e.target.classList.contains("qty-input")) return;
+      var card = e.target.closest(".item-card");
+      var val = Math.max(0, parseInt(e.target.value,10)||0);
+      e.target.value = val;
+      applyQty(card, val);
+    });
+  }
+
+  function applyQty(card, val){
+    var ci = card.getAttribute("data-cat"), ii = card.getAttribute("data-item");
+    var key = ci+"_"+ii;
+    if(val>0) cart[key]=val; else delete cart[key];
+    var item = window.__DATA__.categories[ci].items[ii];
+    var lineEl = card.querySelector(".line-total");
+    if(val>0){ lineEl.hidden=false; lineEl.textContent = money(val*item.price); }
+    else { lineEl.hidden=true; }
+    updateCartBar();
+  }
+
+  function getCartItems(){
+    var items = [];
+    Object.keys(cart).forEach(function(k){
+      var parts = k.split("_"); var ci=parts[0], ii=parts[1];
+      var cat = window.__DATA__.categories[ci];
+      if(!cat) return;
+      var it = cat.items[ii];
+      if(!it) return;
+      var qty = cart[k];
+      items.push({name:it.name, unit:it.unit, price:it.price, qty:qty, lineTotal:qty*it.price});
+    });
+    return items;
+  }
+  function getCartCount(){
+    return Object.keys(cart).reduce(function(s,k){ return s+cart[k]; },0);
+  }
+  function getCartTotal(){
+    return getCartItems().reduce(function(s,it){ return s+it.lineTotal; },0);
+  }
+
+  function updateCartBar(){
+    var count = getCartCount();
+    var bar = document.getElementById("cartBar");
+    if(!bar) return;
+    if(count>0){
+      bar.hidden = false;
+      document.getElementById("cartCount").textContent = count;
+      document.getElementById("cartTotal").textContent = money(getCartTotal());
+      document.body.classList.add("has-cartbar");
+    } else {
+      bar.hidden = true;
+      document.body.classList.remove("has-cartbar");
+    }
+  }
+
+  function resetCart(){
+    cart = {};
+    document.querySelectorAll("#pricelist .qty-input").forEach(function(inp){ inp.value = 0; });
+    document.querySelectorAll("#pricelist .line-total").forEach(function(el){ el.hidden = true; });
+    updateCartBar();
+  }
+
+  function buildOrderSummaryText(order){
+    var lines = order.items.map(function(it){
+      return it.name + " (" + (it.unit||"") + ") x" + it.qty + " = " + money(it.lineTotal);
+    }).join("\n");
+    return "Order from: " + order.name + "\nPhone: " + order.phone + "\nDelivery address: " + order.address +
+      "\n\nItems:\n" + lines + "\n\nTotal: " + money(order.total) +
+      "\nUPI reference: " + (order.upiRef || "(not provided)");
+  }
+
+  function ensureEmailJsLoaded(){
+    return new Promise(function(resolve,reject){
+      if(window.emailjs){ resolve(); return; }
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+      s.onload = function(){ resolve(); };
+      s.onerror = function(){ reject(new Error("failed to load email service")); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function sendOrder(order){
+    var data = window.__DATA__;
+    var cfg = data.email || {};
+    if(cfg.serviceId && cfg.templateId && cfg.publicKey){
+      return ensureEmailJsLoaded().then(function(){
+        window.emailjs.init(cfg.publicKey);
+        return window.emailjs.send(cfg.serviceId, cfg.templateId, {
+          to_email: data.ownerEmail || "",
+          shop_name: data.shopName || "",
+          customer_name: order.name,
+          customer_phone: order.phone,
+          customer_address: order.address,
+          order_summary: buildOrderSummaryText(order),
+          order_total: order.total,
+          upi_ref: order.upiRef || ""
+        });
+      }).then(function(){
+        return {ok:true, method:"email"};
+      }).catch(function(){
+        openMailtoFallback(order, data);
+        return {ok:true, method:"mailto"};
+      });
+    }
+    openMailtoFallback(order, data);
+    return Promise.resolve({ok:true, method:"mailto"});
+  }
+
+  function openMailtoFallback(order, data){
+    var subject = encodeURIComponent("New order from " + order.name);
+    var body = encodeURIComponent(buildOrderSummaryText(order));
+    window.open("mailto:" + (data.ownerEmail||"") + "?subject=" + subject + "&body=" + body, "_blank");
+  }
+
+  /* ---------- checkout drawer ---------- */
+
+  function openCheckout(){
+    if(getCartCount()===0){ alert("Please choose at least one item first."); return; }
+    renderCheckoutBody();
+    document.getElementById("checkoutBackdrop").hidden = false;
+    document.getElementById("checkoutDrawer").hidden = false;
+  }
+  function closeCheckout(){
+    document.getElementById("checkoutBackdrop").hidden = true;
+    document.getElementById("checkoutDrawer").hidden = true;
+  }
+
+  function renderCheckoutBody(){
+    var data = window.__DATA__;
+    var items = getCartItems();
+    var total = items.reduce(function(s,it){ return s+it.lineTotal; },0);
+    var itemsHtml = items.map(function(it){
+      return '<div class="checkout-line"><span>'+esc(it.name)+' × '+it.qty+'</span><span class="tabular">'+money(it.lineTotal)+'</span></div>';
+    }).join("");
+    var upi = data.upi || {};
+    var upiHtml = "";
+    if(upi.id){
+      upiHtml = '' +
+        '<div class="upi-block">' +
+          '<div class="section-label" style="margin-top:0;">Pay via UPI</div>' +
+          (upi.qrImage ? '<img class="upi-qr-preview" src="'+upi.qrImage+'" alt="UPI QR code">' : "") +
+          '<div class="upi-id-row"><span class="tabular">'+esc(upi.id)+'</span><button type="button" class="mini-btn" id="copyUpiBtn">Copy</button></div>' +
+          (upi.payeeName ? '<div class="foot-line" style="margin-top:6px;">Payee: '+esc(upi.payeeName)+'</div>' : "") +
+          '<p class="save-hint" style="margin-top:8px;">Pay '+money(total)+' to the UPI ID above, then add your transaction reference below so we can confirm it faster.</p>' +
+          '<div class="field" style="margin-top:10px;margin-bottom:0;"><label for="ord-upiref">UPI transaction / reference ID</label><input id="ord-upiref" type="text" placeholder="e.g. 402913567890"></div>' +
+        '</div>';
+    }
+    document.getElementById("checkoutBody").innerHTML =
+      '<div class="section-label" style="margin-top:0;">Your order</div>' +
+      '<div class="checkout-summary">'+itemsHtml+'<div class="checkout-line checkout-total"><span>Total</span><span class="tabular">'+money(total)+'</span></div></div>' +
+      '<div class="section-label">Your details</div>' +
+      '<div class="field"><label for="ord-name">Full name</label><input id="ord-name" type="text" autocomplete="name"></div>' +
+      '<div class="field"><label for="ord-phone">Contact number</label><input id="ord-phone" type="tel" autocomplete="tel" placeholder="+91-9841632734 or 044-26147874" pattern="^(\\+91-\\d{10}|0\\d{2,4}-\\d{6,8})$"><p class="save-hint" style="margin-top:4px;">Mobile: +91-9841632734 &middot; Landline: 044-26147874</p></div>' +
+      '<div class="field"><label for="ord-address">Address to send the parcel</label><textarea id="ord-address" autocomplete="street-address"></textarea></div>' +
+      upiHtml;
+    document.getElementById("checkoutFoot").hidden = false;
+
+    var copyBtn = document.getElementById("copyUpiBtn");
+    if(copyBtn){
+      copyBtn.addEventListener("click", function(){
+        try{
+          navigator.clipboard.writeText(upi.id);
+          copyBtn.textContent = "Copied";
+          setTimeout(function(){ copyBtn.textContent = "Copy"; }, 1500);
+        }catch(e){ /* clipboard unavailable — ignore */ }
+      });
+    }
+  }
+
+  function showOrderConfirmation(order){
+    document.getElementById("checkoutBody").innerHTML =
+      '<div class="confirm">' +
+        '<div class="confirm-icon">🎆</div>' +
+        '<h3>Order sent!</h3>' +
+        '<p>Thanks '+esc(order.name)+', we’ve received your order for '+money(order.total)+'. We’ll confirm availability and delivery on '+esc(order.phone)+'.</p>' +
+      '</div>';
+    document.getElementById("checkoutFoot").hidden = true;
+  }
+
+  function submitOrder(via){
+    var name = document.getElementById("ord-name").value.trim();
+    var phone = document.getElementById("ord-phone").value.trim();
+    var address = document.getElementById("ord-address").value.trim();
+    var upiRefEl = document.getElementById("ord-upiref");
+    var upiRef = upiRefEl ? upiRefEl.value.trim() : "";
+    if(!name || !phone || !address){
+      alert("Please fill your name, contact number and delivery address.");
+      return;
+    }
+    if(!isValidIndianPhone(phone)){
+      alert(PHONE_HINT);
+      return;
+    }
+    var items = getCartItems();
+    if(items.length===0){ alert("Your cart is empty."); return; }
+    var total = items.reduce(function(s,it){ return s+it.lineTotal; },0);
+    var order = {name:name, phone:phone, address:address, upiRef:upiRef, items:items, total:total};
+
+    if(via === "whatsapp"){
+      window.open(waLink(window.__DATA__, buildOrderSummaryText(order)), "_blank");
+      showOrderConfirmation(order);
+      resetCart();
+      return;
+    }
+
+    var btn = document.getElementById("submitOrderBtn");
+    if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
+    sendOrder(order).then(function(){
+      showOrderConfirmation(order);
+      resetCart();
+    }).finally(function(){
+      if(btn){ btn.disabled = false; btn.textContent = "Submit order"; }
+    });
+  }
+
+  /* ================= settings (admin) ================= */
+  var draft = null;
+
+  function cloneData(d){ return JSON.parse(JSON.stringify(d)); }
+
+  function itemRow(catIndex, itemIndex, item){
+    return '' +
+      '<div class="item-edit" data-cat="'+catIndex+'" data-item="'+itemIndex+'">' +
+        '<label class="item-photo-upload" title="'+(item.image ? "Change photo" : "Add photo")+'">' +
+          '<input type="file" accept="image/*" class="f-item-photo" hidden>' +
+          (item.image ? '<img src="'+item.image+'" alt="">' : '+') +
+        '</label>' +
+        '<div class="item-fields">' +
+          '<div class="item-row">' +
+            '<input type="text" class="f-item-name" value="'+esc(item.name)+'" placeholder="Item name">' +
+            '<input type="text" class="f-item-unit" value="'+esc(item.unit||"")+'" placeholder="Unit">' +
+            '<input type="number" min="0" class="f-item-mrp" value="'+(item.mrp||0)+'" placeholder="MRP">' +
+            '<input type="number" min="0" class="f-item-price" value="'+(item.price||0)+'" placeholder="Price">' +
+            '<button type="button" class="row-btn remove-item" title="Remove item">✕</button>' +
+          '</div>' +
+          (item.image ? '<button type="button" class="remove-item-photo" title="Remove photo">Remove photo</button>' : '') +
+        '</div>' +
+      '</div>';
+  }
+  function catEditor(cat, catIndex){
+    var rows = (cat.items||[]).map(function(it,ii){ return itemRow(catIndex, ii, it); }).join("");
+    return '' +
+      '<div class="cat-editor" data-cat="'+catIndex+'">' +
+        '<div class="cat-editor-head">' +
+          '<input type="text" class="f-cat-name" value="'+esc(cat.name)+'" placeholder="Category name">' +
+          '<button type="button" class="mini-btn remove-cat" title="Remove category">Remove</button>' +
+        '</div>' +
+        '<div class="items-holder">'+rows+'</div>' +
+        '<button type="button" class="add-btn add-item" data-cat="'+catIndex+'">+ Add item</button>' +
+      '</div>';
+  }
+  function renderCatEditors(){
+    document.getElementById("catEditorHost").innerHTML = draft.categories.map(catEditor).join("");
+  }
+
+  function updateUpiPreview(){
+    var img = document.getElementById("upiQrPreview");
+    if(draft.upi && draft.upi.qrImage){ img.src = draft.upi.qrImage; img.hidden = false; }
+    else { img.hidden = true; img.removeAttribute("src"); }
+  }
+
+  function fillForm(){
+    document.getElementById("f-shopName").value = draft.shopName||"";
+    document.getElementById("f-tagline").value = draft.tagline||"";
+    document.getElementById("f-phone").value = draft.phone||"";
+    document.getElementById("f-whatsapp").value = draft.whatsapp||"";
+    document.getElementById("f-address").value = draft.address||"";
+    document.getElementById("f-hours").value = draft.hours||"";
+    document.getElementById("f-license").value = draft.license||"";
+    document.getElementById("f-offerText").value = draft.offerText||"";
+    document.getElementById("f-offerSubtext").value = draft.offerSubtext||"";
+    document.getElementById("f-legalNote").value = draft.legalNote||"";
+    document.getElementById("f-ownerEmail").value = draft.ownerEmail||"";
+    document.getElementById("f-upiId").value = (draft.upi&&draft.upi.id)||"";
+    document.getElementById("f-upiPayee").value = (draft.upi&&draft.upi.payeeName)||"";
+    document.getElementById("f-emailService").value = (draft.email&&draft.email.serviceId)||"";
+    document.getElementById("f-emailTemplate").value = (draft.email&&draft.email.templateId)||"";
+    document.getElementById("f-emailPublicKey").value = (draft.email&&draft.email.publicKey)||"";
+    document.getElementById("f-adminPassword").value = draft.adminPassword||"";
+    updateUpiPreview();
+    renderCatEditors();
+  }
+
+  function readFormBasics(){
+    draft.shopName = document.getElementById("f-shopName").value.trim() || "Your Fireworks Shop";
+    draft.tagline = document.getElementById("f-tagline").value.trim();
+    draft.phone = document.getElementById("f-phone").value.trim();
+    draft.whatsapp = document.getElementById("f-whatsapp").value.trim();
+    draft.address = document.getElementById("f-address").value.trim();
+    draft.hours = document.getElementById("f-hours").value.trim();
+    draft.license = document.getElementById("f-license").value.trim();
+    draft.offerText = document.getElementById("f-offerText").value.trim();
+    draft.offerSubtext = document.getElementById("f-offerSubtext").value.trim();
+    draft.legalNote = document.getElementById("f-legalNote").value.trim();
+    draft.ownerEmail = document.getElementById("f-ownerEmail").value.trim();
+    draft.upi = draft.upi || {};
+    draft.upi.id = document.getElementById("f-upiId").value.trim();
+    draft.upi.payeeName = document.getElementById("f-upiPayee").value.trim();
+    draft.email = {
+      serviceId: document.getElementById("f-emailService").value.trim(),
+      templateId: document.getElementById("f-emailTemplate").value.trim(),
+      publicKey: document.getElementById("f-emailPublicKey").value.trim()
+    };
+    draft.adminPassword = document.getElementById("f-adminPassword").value.trim() || draft.adminPassword || "admin123";
+  }
+
+  function readCategoriesFromDOM(){
+    var editors = document.querySelectorAll("#catEditorHost .cat-editor");
+    var cats = [];
+    editors.forEach(function(ed){
+      var name = ed.querySelector(".f-cat-name").value.trim() || "Category";
+      var items = [];
+      ed.querySelectorAll(".item-edit").forEach(function(wrap){
+        var row = wrap.querySelector(".item-row");
+        var imgEl = wrap.querySelector(".item-photo-upload img");
+        items.push({
+          name: row.querySelector(".f-item-name").value.trim() || "Item",
+          unit: row.querySelector(".f-item-unit").value.trim(),
+          mrp: Number(row.querySelector(".f-item-mrp").value)||0,
+          price: Number(row.querySelector(".f-item-price").value)||0,
+          image: imgEl ? (imgEl.getAttribute("src")||"") : ""
+        });
+      });
+      cats.push({name:name, items:items});
+    });
+    draft.categories = cats;
+  }
+
+  function openSettingsDrawer(){
+    draft = cloneData(window.__DATA__);
+    fillForm();
+    document.getElementById("settingsBackdrop").hidden = false;
+    document.getElementById("settingsDrawer").hidden = false;
+  }
+  function closeSettingsDrawer(){
+    document.getElementById("settingsBackdrop").hidden = true;
+    document.getElementById("settingsDrawer").hidden = true;
+  }
+
+  function escapeForScript(s){
+    return s.replace(/<\/script/gi, "<\\/script");
+  }
+
+  function buildFullHtml(data){
+    var styleEl = document.getElementById("app-style");
+    var appScriptEl = document.getElementById("app-script");
+    var dataJson = escapeForScript(JSON.stringify(data));
+    return "<!doctype html>\n" +
+      "<html lang=\"en\">\n<head>\n" +
+      "<meta charset=\"UTF-8\">\n" +
+      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, viewport-fit=cover\">\n" +
+      "<title>" + esc(data.shopName) + " — Sivakasi Crackers Price List</title>\n" +
+      "<meta name=\"description\" content=\"Order Diwali crackers online with UPI payment.\">\n" +
+      styleEl.outerHTML + "\n" +
+      "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
+      "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
+      "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Mukta:wght@400;500;600;700&display=swap\">\n" +
+      "</head>\n<body>\n" +
+      "<div id=\"root\"></div>\n" +
+      "<script id=\"data-script\">window.__DATA__ = " + dataJson + ";<\/script>\n" +
+      appScriptEl.outerHTML + "\n" +
+      "</body>\n</html>";
+  }
+
+  function downloadHtml(data, filename){
+    try{
+      var blob = new Blob([buildFullHtml(data)], {type:"text/html"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename || "index.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function saveChanges(){
+    readFormBasics();
+    readCategoriesFromDOM();
+    window.__DATA__ = draft;
+    render(draft);
+    closeSettingsDrawer();
+
+    var savedLocally = persistData(draft);
+    var downloaded = downloadHtml(draft, "index.html");
+
+    if(downloaded){
+      window.setTimeout(function(){
+        alert("Saved. A file named index.html just downloaded — upload it to your GitHub repo (replacing the old one) so the change goes live for everyone. " +
+          (savedLocally ? "This browser will also keep showing your latest edits until you do." : ""));
+      }, 300);
+    } else if(savedLocally){
+      alert("Saved in this browser, but the automatic download did not start.");
+    } else {
+      alert("Could not save automatically. Your browser may be blocking local storage or downloads.");
+    }
+  }
+  function downloadOnly(){
+    readFormBasics();
+    readCategoriesFromDOM();
+    downloadHtml(draft, "index.html");
+  }
+
+  function wireSettingsEvents(){
+    document.getElementById("closeSettings").addEventListener("click", closeSettingsDrawer);
+    document.getElementById("cancelSettingsBtn").addEventListener("click", closeSettingsDrawer);
+    document.getElementById("settingsBackdrop").addEventListener("click", closeSettingsDrawer);
+    document.getElementById("saveBtn").addEventListener("click", saveChanges);
+    document.getElementById("downloadBtn").addEventListener("click", downloadOnly);
+    document.getElementById("addCategoryBtn").addEventListener("click", function(){
+      readFormBasics(); readCategoriesFromDOM();
+      draft.categories.push({name:"New Category", items:[{name:"New Item", unit:"Piece", mrp:0, price:0}]});
+      renderCatEditors();
+    });
+    document.getElementById("catEditorHost").addEventListener("click", function(e){
+      var addItem = e.target.closest(".add-item");
+      var removeItem = e.target.closest(".remove-item");
+      var removeCat = e.target.closest(".remove-cat");
+      var removePhoto = e.target.closest(".remove-item-photo");
+      if(addItem){
+        readFormBasics(); readCategoriesFromDOM();
+        var ci = Number(addItem.getAttribute("data-cat"));
+        draft.categories[ci].items.push({name:"New Item", unit:"Piece", mrp:0, price:0, image:""});
+        renderCatEditors();
+      } else if(removeItem){
+        var editRow = e.target.closest(".item-edit");
+        readFormBasics(); readCategoriesFromDOM();
+        var ci2 = Number(editRow.getAttribute("data-cat")), ii2 = Number(editRow.getAttribute("data-item"));
+        draft.categories[ci2].items.splice(ii2,1);
+        renderCatEditors();
+      } else if(removeCat){
+        var ed = e.target.closest(".cat-editor");
+        readFormBasics(); readCategoriesFromDOM();
+        var ci3 = Number(ed.getAttribute("data-cat"));
+        draft.categories.splice(ci3,1);
+        renderCatEditors();
+      } else if(removePhoto){
+        var editRow2 = e.target.closest(".item-edit");
+        readFormBasics(); readCategoriesFromDOM();
+        var ci4 = Number(editRow2.getAttribute("data-cat")), ii4 = Number(editRow2.getAttribute("data-item"));
+        draft.categories[ci4].items[ii4].image = "";
+        renderCatEditors();
+      }
+    });
+    document.getElementById("catEditorHost").addEventListener("change", function(e){
+      if(!e.target.classList.contains("f-item-photo")) return;
+      var file = e.target.files[0];
+      if(!file) return;
+      var editRow3 = e.target.closest(".item-edit");
+      var ci5 = Number(editRow3.getAttribute("data-cat")), ii5 = Number(editRow3.getAttribute("data-item"));
+      readFormBasics(); readCategoriesFromDOM();
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        draft.categories[ci5].items[ii5].image = ev.target.result;
+        renderCatEditors();
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById("f-upiQr").addEventListener("change", function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        draft.upi = draft.upi || {};
+        draft.upi.qrImage = ev.target.result;
+        updateUpiPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+    document.getElementById("removeUpiQrBtn").addEventListener("click", function(){
+      draft.upi = draft.upi || {};
+      draft.upi.qrImage = "";
+      document.getElementById("f-upiQr").value = "";
+      updateUpiPreview();
+    });
+  }
+
+  /* ---------- photo lightbox ---------- */
+  function openPhotoLightbox(src, name){
+    document.getElementById("photoLightboxImg").src = src;
+    document.getElementById("photoLightboxImg").alt = name || "";
+    document.getElementById("photoLightboxCaption").textContent = name || "";
+    document.getElementById("photoLightboxBackdrop").hidden = false;
+    document.getElementById("photoLightbox").hidden = false;
+  }
+  function closePhotoLightbox(){
+    document.getElementById("photoLightboxBackdrop").hidden = true;
+    document.getElementById("photoLightbox").hidden = true;
+    document.getElementById("photoLightboxImg").src = "";
+  }
+
+  /* ---------- admin login ---------- */
+  function openAdminModal(){
+    document.getElementById("adminPasswordInput").value = "";
+    document.getElementById("adminBackdrop").hidden = false;
+    document.getElementById("adminModal").hidden = false;
+    document.getElementById("adminPasswordInput").focus();
+  }
+  function closeAdminModal(){
+    document.getElementById("adminBackdrop").hidden = true;
+    document.getElementById("adminModal").hidden = true;
+  }
+  function tryAdminUnlock(){
+    var pw = document.getElementById("adminPasswordInput").value;
+    if(pw === (window.__DATA__.adminPassword || "admin123")){
+      closeAdminModal();
+      enterAdminMode();
+      openSettingsDrawer();
+    } else {
+      alert("Incorrect password.");
+    }
+  }
+  function enterAdminMode(){
+    adminMode = true;
+    document.body.classList.add("admin-active");
+  }
+
+  /* ================= build overlay markup (once) ================= */
+  function buildOverlays(){
+    var host = document.createElement("div");
+    host.innerHTML = '' +
+      /* checkout */
+      '<div class="backdrop" id="checkoutBackdrop" hidden></div>' +
+      '<aside class="drawer" id="checkoutDrawer" hidden role="dialog" aria-label="Complete your order">' +
+        '<div class="drawer-head"><h2>Complete your order</h2><button class="icon-btn" id="closeCheckout" aria-label="Close">✕</button></div>' +
+        '<div class="drawer-body" id="checkoutBody"></div>' +
+        '<div class="drawer-foot" id="checkoutFoot">' +
+          '<p class="save-hint">Submitting sends your order to the shop by email. You can also send it via WhatsApp instead.</p>' +
+          '<div class="drawer-foot-row">' +
+            '<button class="btn-cancel" id="cancelCheckoutBtn" type="button">Cancel</button>' +
+            '<button class="btn-download" id="whatsappOrderBtn" type="button">Send via WhatsApp</button>' +
+            '<button class="btn-save" id="submitOrderBtn" type="button">Submit order</button>' +
+          '</div>' +
+        '</div>' +
+      '</aside>' +
+      /* settings */
+      '<div class="backdrop" id="settingsBackdrop" hidden></div>' +
+      '<aside class="drawer" id="settingsDrawer" hidden role="dialog" aria-label="Shop settings">' +
+        '<div class="drawer-head"><h2>Shop settings</h2><button class="icon-btn" id="closeSettings" aria-label="Close settings">✕</button></div>' +
+        '<div class="drawer-body">' +
+          '<div class="section-label" style="margin-top:0;">Shop details</div>' +
+          '<div class="field"><label for="f-shopName">Shop name</label><input id="f-shopName" type="text"></div>' +
+          '<div class="field"><label for="f-tagline">Tagline</label><input id="f-tagline" type="text"></div>' +
+          '<div class="field"><label for="f-phone">Phone (for Call button)</label><input id="f-phone" type="text" placeholder="+91-9841632734 or 044-26147874"></div>' +
+          '<div class="field"><label for="f-whatsapp">WhatsApp number (digits, country code)</label><input id="f-whatsapp" type="text" placeholder="919876543210"></div>' +
+          '<div class="field"><label for="f-address">Address</label><textarea id="f-address"></textarea></div>' +
+          '<div class="field"><label for="f-hours">Hours</label><input id="f-hours" type="text"></div>' +
+          '<div class="field"><label for="f-license">License / compliance line</label><input id="f-license" type="text"></div>' +
+
+          '<div class="section-label">Offer banner</div>' +
+          '<div class="field"><label for="f-offerText">Offer badge text</label><input id="f-offerText" type="text"></div>' +
+          '<div class="field"><label for="f-offerSubtext">Offer description</label><textarea id="f-offerSubtext"></textarea></div>' +
+          '<div class="field"><label for="f-legalNote">Safety / legal note</label><textarea id="f-legalNote"></textarea></div>' +
+
+          '<div class="section-label">Orders &amp; payment</div>' +
+          '<div class="field"><label for="f-ownerEmail">Order email address</label><input id="f-ownerEmail" type="email" placeholder="you@example.com"></div>' +
+          '<div class="field"><label for="f-upiId">UPI ID</label><input id="f-upiId" type="text" placeholder="shopname@okhdfcbank"></div>' +
+          '<div class="field"><label for="f-upiPayee">UPI payee name (shown to customers)</label><input id="f-upiPayee" type="text"></div>' +
+          '<div class="field">' +
+            '<label for="f-upiQr">UPI QR code image</label>' +
+            '<input id="f-upiQr" type="file" accept="image/*">' +
+            '<img id="upiQrPreview" class="upi-qr-preview" hidden alt="UPI QR preview" style="margin-top:8px;">' +
+            '<button type="button" class="mini-btn" id="removeUpiQrBtn" style="margin-top:6px;">Remove QR image</button>' +
+          '</div>' +
+          '<p class="save-hint">Optional — for orders to arrive automatically in your inbox instead of opening an email app, create a free account at emailjs.com, add an email service and a template, then paste the three IDs it gives you below.</p>' +
+          '<div class="field"><label for="f-emailService">EmailJS Service ID</label><input id="f-emailService" type="text"></div>' +
+          '<div class="field"><label for="f-emailTemplate">EmailJS Template ID</label><input id="f-emailTemplate" type="text"></div>' +
+          '<div class="field"><label for="f-emailPublicKey">EmailJS Public Key</label><input id="f-emailPublicKey" type="text"></div>' +
+
+          '<div class="section-label">Security</div>' +
+          '<div class="field"><label for="f-adminPassword">Admin password</label><input id="f-adminPassword" type="text"></div>' +
+          '<p class="save-hint">This hides settings from regular visitors, but this page has no real server — anyone who inspects the page’s code could still find this password. Don’t reuse an important password here.</p>' +
+
+          '<div class="section-label">Categories &amp; price list</div>' +
+          '<div id="catEditorHost"></div>' +
+          '<button type="button" class="add-btn" id="addCategoryBtn">+ Add category</button>' +
+        '</div>' +
+        '<div class="drawer-foot">' +
+          '<p class="save-hint">This page is a static file, so "Save" updates what you see here and downloads an updated index.html — upload that file to your GitHub repo to make the change live for visitors.</p>' +
+          '<div class="drawer-foot-row">' +
+            '<button class="btn-cancel" id="cancelSettingsBtn" type="button">Cancel</button>' +
+            '<button class="btn-download" id="downloadBtn" type="button">Download only</button>' +
+            '<button class="btn-save" id="saveBtn" type="button">Save &amp; download</button>' +
+          '</div>' +
+        '</div>' +
+      '</aside>' +
+      /* admin login */
+      '<div class="backdrop" id="adminBackdrop" hidden></div>' +
+      '<div class="modal" id="adminModal" hidden role="dialog" aria-label="Admin login">' +
+        '<h2>Shop admin</h2>' +
+        '<p class="save-hint">Enter the admin password to edit shop details, products and prices.</p>' +
+        '<div class="field" style="margin-top:10px;margin-bottom:0;"><label for="adminPasswordInput">Password</label><input id="adminPasswordInput" type="password"></div>' +
+        '<div class="modal-actions">' +
+          '<button class="btn-cancel" id="adminCancelBtn" type="button">Cancel</button>' +
+          '<button class="btn-save" id="adminUnlockBtn" type="button">Unlock</button>' +
+        '</div>' +
+      '</div>' +
+      /* photo lightbox */
+      '<div class="backdrop" id="photoLightboxBackdrop" hidden></div>' +
+      '<div class="modal photo-lightbox" id="photoLightbox" hidden role="dialog" aria-label="Product photo">' +
+        '<button type="button" class="icon-btn photo-lightbox-close" id="closePhotoLightbox" aria-label="Close">✕</button>' +
+        '<img id="photoLightboxImg" src="" alt="">' +
+        '<div class="photo-lightbox-caption" id="photoLightboxCaption"></div>' +
+      '</div>';
+    while(host.firstChild) document.body.appendChild(host.firstChild);
+  }
+
+  function wireOverlayEvents(){
+    document.getElementById("adminLoginBtn").addEventListener("click", function(){
+      if(adminMode){ openSettingsDrawer(); } else { openAdminModal(); }
+    });
+    document.getElementById("adminCancelBtn").addEventListener("click", closeAdminModal);
+    document.getElementById("adminBackdrop").addEventListener("click", closeAdminModal);
+    document.getElementById("adminUnlockBtn").addEventListener("click", tryAdminUnlock);
+    document.getElementById("adminPasswordInput").addEventListener("keydown", function(e){
+      if(e.key === "Enter") tryAdminUnlock();
+    });
+    document.getElementById("closePhotoLightbox").addEventListener("click", closePhotoLightbox);
+    document.getElementById("photoLightboxBackdrop").addEventListener("click", closePhotoLightbox);
+
+    document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
+    document.getElementById("cancelCheckoutBtn").addEventListener("click", closeCheckout);
+    document.getElementById("checkoutBackdrop").addEventListener("click", closeCheckout);
+    document.getElementById("submitOrderBtn").addEventListener("click", function(){ submitOrder("email"); });
+    document.getElementById("whatsappOrderBtn").addEventListener("click", function(){ submitOrder("whatsapp"); });
+
+    wireSettingsEvents();
+
+    document.addEventListener("keydown", function(e){
+      if(e.key !== "Escape") return;
+      if(!document.getElementById("settingsDrawer").hidden) closeSettingsDrawer();
+      else if(!document.getElementById("checkoutDrawer").hidden) closeCheckout();
+      else if(!document.getElementById("adminModal").hidden) closeAdminModal();
+      else if(!document.getElementById("photoLightbox").hidden) closePhotoLightbox();
+    });
+  }
+
+  /* Re-wire checkoutBtn/cartBar events after each full render(), since #root is rebuilt */
+  var _origRender = render;
+  render = function(data){
+    _origRender(data);
+    var btn = document.getElementById("checkoutBtn");
+    if(btn) btn.addEventListener("click", openCheckout);
+  };
+
+  function boot(){
+    var stored = loadStoredData();
+    if(stored) window.__DATA__ = stored;
+    render(window.__DATA__);
+    buildOverlays();
+    wireOverlayEvents();
+  }
+
+  boot();
+})();
+</script>
+</body>
+</html>
