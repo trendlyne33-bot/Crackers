@@ -29,7 +29,7 @@
 <section class="wrap section" id="products"><div class="section-head"><h2>Featured Products</h2><span class="viewall" onclick="document.getElementById('products').scrollIntoView()">All Crackers ↓</span></div><div class="catalog" id="catalog"></div></section>
 <section class="wrap features" id="about"><div class="feature"><div class="ico">🚚</div><b>Direct from<br>Sivakasi Factories</b></div><div class="feature"><div class="ico">◇</div><b>Best Prices<br>Guaranteed</b></div><div class="feature"><div class="ico">□</div><b>Wide Range<br>of Products</b></div><div class="feature"><div class="ico">♡</div><b>Safe & Secure<br>Ordering</b></div></section>
 </main>
-<footer id="contact"><div class="wrap footin"><span id="footerText"></span><span>Home &nbsp;|&nbsp; Products &nbsp;|&nbsp; Categories &nbsp;|&nbsp; About &nbsp;|&nbsp; Contact</span></div></footer>
+<footer id="contact"><div class="wrap footin"><span id="footerText"></span><span><a href="#top">Home</a> &nbsp;|&nbsp; <a href="#products">Products</a> &nbsp;|&nbsp; <a href="#categories">Categories</a> &nbsp;|&nbsp; <a href="#about">About</a> &nbsp;|&nbsp; <a href="#contact">Contact</a></span></div></footer>
 
 <div class="modal" id="adminModal"><div class="adminbox"><div class="adminhead"><h2>Shop Admin — V2</h2><button class="close" id="closeAdmin">×</button></div><div id="adminContent"></div></div></div>
 <script>
@@ -41,7 +41,7 @@ let data=load(); let cart={}; let pending={logo:null,hero:null,products:{}};
 function load(){try{const x=localStorage.getItem('crackleCartV2Data');return x?{...DEFAULT_DATA,...JSON.parse(x)}:structuredClone(DEFAULT_DATA)}catch(e){return structuredClone(DEFAULT_DATA)}}
 function saveLocal(){localStorage.setItem('crackleCartV2Data',JSON.stringify(data))}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function imgFor(name){return data.imageOverrides?.[name] || IMAGE_MAP[name] || ''}
+function imgFor(name){return data.imageOverrides?.[name] || IMAGE_MAP[name] || ('../images/'+encodeURIComponent(String(name||'')+'.webp'))}
 function money(n){return '₹'+Number(n||0).toLocaleString('en-IN')}
 function off(m,p){m=Number(m)||0;p=Number(p)||0;return m>p?Math.round((1-p/m)*100):0}
 function logoHTML(cls){return data.brandLogo?`<img class="${cls}" src="${esc(data.brandLogo)}" alt="${esc(data.shopName)}">`:`<div class="${cls==='brand-logo'?'brand-fallback':'hero-logo-fallback'}">CRACKLE<br>CART</div>`}
@@ -64,8 +64,7 @@ function changeQty(k,d){cart[k]=Math.max(0,(cart[k]||0)+d);const el=document.get
 function addItem(k){if(!(cart[k]>0))cart[k]=1;alert('Added to your order. Use WhatsApp to send your selected items.');}
 function orderText(){let lines=[];for(const k in cart)if(cart[k]>0){const [cat,name]=k.split('|');const c=data.categories.find(x=>x.name===cat);const it=c?.items.find(x=>x.name===name);if(it)lines.push(`${name} × ${cart[k]} — ${money(it.price*cart[k])}`)}return lines.length?`Hi ${data.shopName}, I would like to order:
 
-${lines.join('
-')}`:`Hi ${data.shopName}, I would like to enquire about your crackers price list.`}
+${lines.join('\n')}`:`Hi ${data.shopName}, I would like to enquire about your crackers price list.`}
 
 document.getElementById('adminBtn').onclick=()=>openAdmin();document.getElementById('closeAdmin').onclick=()=>document.getElementById('adminModal').classList.remove('open');
 function openAdmin(){document.getElementById('adminModal').classList.add('open');document.getElementById('adminContent').innerHTML=`<div class="login"><div class="field"><label>Shop Admin Password</label><input id="adminPw" type="password" autocomplete="off"></div><button class="admin-action" onclick="loginAdmin()">Open Settings</button><div class="small">This simple frontend login is a convenience lock. Authentication can be moved to a backend later.</div></div>`}
