@@ -1554,5 +1554,39 @@ window.__DATA__ = {
   boot();
 })();
 </script>
+
+<script>
+
+/* Crackle Cart GitHub image patch
+   Product images live in /images/<product name>.webp in the repository.
+   Existing explicit image URLs/data URLs are preserved.
+*/
+(function(){
+  function ccImagePath(name){
+    if(!name) return "";
+    return "images/" + encodeURIComponent(name + ".webp").replace(/%2F/g, "%252F");
+  }
+  function ccApplyGitHubImages(data){
+    if(!data || !Array.isArray(data.categories)) return data;
+    data.categories.forEach(function(cat){
+      (cat.items || []).forEach(function(item){
+        if(!item.image || /^data:image\//i.test(item.image)) {
+          item.image = ccImagePath(item.name);
+        }
+      });
+    });
+    return data;
+  }
+  var ccOldRender = window.render;
+  if (typeof ccOldRender === "function") {
+    window.render = function(data){
+      ccApplyGitHubImages(data);
+      return ccOldRender(data);
+    };
+  }
+  if (window.__DATA__) ccApplyGitHubImages(window.__DATA__);
+})();
+
+</script>
 </body>
 </html>
