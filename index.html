@@ -878,6 +878,7 @@ window.__DATA__ = {
         if(!file) return;
         var ci = e.target.getAttribute("data-cat"), ii = e.target.getAttribute("data-item");
         var reader = new FileReader();
+        pendingImageFiles[ci+"_"+ii] = {file:file, catIndex:Number(ci), itemIndex:Number(ii), productName:window.__DATA__.categories[ci].items[ii].name};
         reader.onload = function(ev){
           window.__DATA__.categories[ci].items[ii].image = ev.target.result;
           var wrap = e.target.closest(".item-photo-wrap");
@@ -1113,6 +1114,11 @@ window.__DATA__ = {
 
   /* ================= settings (admin) ================= */
   var draft = null;
+  var pendingImageFiles = {};
+  var githubToken = "";
+  var GITHUB_OWNER = "trendlyne33-bot";
+  var GITHUB_REPO = "Crackers";
+  var GITHUB_BRANCH = "main";
 
   function cloneData(d){ return JSON.parse(JSON.stringify(d)); }
 
@@ -1222,6 +1228,12 @@ window.__DATA__ = {
       cats.push({name:name, items:items});
     });
     draft.categories = cats;
+    Object.keys(pendingImageFiles).forEach(function(key){
+      var rec = pendingImageFiles[key];
+      if(rec && draft.categories[rec.catIndex] && draft.categories[rec.catIndex].items[rec.itemIndex]){
+        rec.productName = draft.categories[rec.catIndex].items[rec.itemIndex].name;
+      }
+    });
   }
 
   function openSettingsDrawer(){
@@ -1274,25 +1286,130 @@ window.__DATA__ = {
     }catch(e){ return false; }
   }
 
-  function saveChanges(){
+  function githubHeaders(token){
+    return {
+      "Accept":"application/vnd.github+json",
+      "Authorization":"Bearer " + token,
+      "X-GitHub-Api-Version":"2026-03-10",
+      "Content-Type":"application/json"
+    };
+  }
+
+  function bytesToBase64(bytes){
+    var binary = "";
+    var chunk = 0x8000;
+    for(var i=0;i<bytes.length;i+=chunk){
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i+chunk, bytes.length)));
+    }
+    return btoa(binary);
+  }
+
+  function textToBase64(text){
+    return bytesToBase64(new TextEncoder().encode(text));
+  }
+
+  function fileToBase64(file){
+    return new Promise(function(resolve,reject){
+      var reader = new FileReader();
+      reader.onload = function(){
+        var result = String(reader.result||"");
+        var comma = result.indexOf(",");
+        resolve(comma >= 0 ? result.slice(comma+1) : result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function githubApiUrl(path){
+    return "https://api.github.com/repos/" + encodeURIComponent(GITHUB_OWNER) + "/" + encodeURIComponent(GITHUB_REPO) + "/contents/" + path.split("/").map(encodeURIComponent).join("/") + "?ref=" + encodeURIComponent(GITHUB_BRANCH);
+  }
+
+  async function githubGetSha(path, token){
+    var res = await fetch(githubApiUrl(path), {headers:githubHeaders(token)});
+    if(res.status === 404) return null;
+    if(!res.ok){ throw new Error("GitHub could not read " + path + " (HTTP " + res.status + ")"); }
+    var json = await res.json();
+    return json.sha || null;
+  }
+
+  async function githubPutFile(path, base64Content, message, token){
+    var sha = await githubGetSha(path, token);
+    var body = {message:message, content:base64Content, branch:GITHUB_BRANCH};
+    if(sha) body.sha = sha;
+    var res = await fetch("https://api.github.com/repos/" + encodeURIComponent(GITHUB_OWNER) + "/" + encodeURIComponent(GITHUB_REPO) + "/contents/" + path.split("/").map(encodeURIComponent).join("/"), {
+      method:"PUT",
+      headers:githubHeaders(token),
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){
+      var txt = await res.text();
+      throw new Error("GitHub could not save " + path + " (HTTP " + res.status + "). " + txt.slice(0,240));
+    }
+    return await res.json();
+  }
+
+  function normalizeGithubImageName(name){
+    return String(name||"").trim() + ".webp";
+  }
+
+  async function uploadPendingImages(data, token){
+    var uploads = [];
+    Object.keys(pendingImageFiles).forEach(function(key){
+      var rec = pendingImageFiles[key];
+      if(rec && rec.file) uploads.push(rec);
+    });
+    for(var i=0;i<uploads.length;i++){
+      var rec = uploads[i];
+      var fileName = normalizeGithubImageName(rec.productName);
+      var path = "images/" + fileName;
+      var b64 = await fileToBase64(rec.file);
+      await githubPutFile(path, b64, "Update product image: " + rec.productName, token);
+      // Store the repository path in the product data, never the local data URL.
+      if(data.categories[rec.catIndex] && data.categories[rec.catIndex].items[rec.itemIndex]){
+        data.categories[rec.catIndex].items[rec.itemIndex].image = "images/" + encodeURIComponent(fileName);
+      }
+    }
+  }
+
+  async function saveToGitHub(data, token){
+    await uploadPendingImages(data, token);
+    var html = buildFullHtml(data);
+    await githubPutFile("index.html", textToBase64(html), "Update Crackle Cart website", token);
+  }
+
+  async function saveChanges(){
     readFormBasics();
     readCategoriesFromDOM();
-    window.__DATA__ = draft;
-    render(draft);
-    closeSettingsDrawer();
 
-    var savedLocally = persistData(draft);
-    var downloaded = downloadHtml(draft, "index.html");
+    var tokenInput = document.getElementById("f-githubToken");
+    var token = tokenInput ? tokenInput.value.trim() : "";
+    if(!token){
+      alert("Please enter your GitHub token in the GitHub upload section. It is used only for this save and is not written into index.html.");
+      return;
+    }
 
-    if(downloaded){
-      window.setTimeout(function(){
-        alert("Saved. A file named index.html just downloaded — upload it to your GitHub repo (replacing the old one) so the change goes live for everyone. " +
-          (savedLocally ? "This browser will also keep showing your latest edits until you do." : ""));
+    var saveBtn = document.getElementById("saveBtn");
+    if(saveBtn){ saveBtn.disabled = true; saveBtn.textContent = "Uploading…"; }
+
+    try{
+      // Update local/browser data first so the current admin session reflects the edit.
+      window.__DATA__ = draft;
+      persistData(draft);
+      await saveToGitHub(draft, token);
+      pendingImageFiles = {};
+      githubToken = "";
+      if(tokenInput) tokenInput.value = "";
+      render(draft);
+      closeSettingsDrawer();
+      setTimeout(function(){
+        alert("Saved to GitHub successfully. The image and updated website are now in your repository. GitHub Pages may take a minute or two to publish the change.");
       }, 300);
-    } else if(savedLocally){
-      alert("Saved in this browser, but the automatic download did not start.");
-    } else {
-      alert("Could not save automatically. Your browser may be blocking local storage or downloads.");
+    }catch(err){
+      console.error(err);
+      alert("GitHub save failed. Nothing was changed after the failed step.\n\n" + (err && err.message ? err.message : err));
+    }finally{
+      if(saveBtn){ saveBtn.disabled = false; saveBtn.textContent = "Save to GitHub"; }
     }
   }
   function downloadOnly(){
@@ -1349,6 +1466,7 @@ window.__DATA__ = {
       var editRow3 = e.target.closest(".item-edit");
       var ci5 = Number(editRow3.getAttribute("data-cat")), ii5 = Number(editRow3.getAttribute("data-item"));
       readFormBasics(); readCategoriesFromDOM();
+      pendingImageFiles[ci5+"_"+ii5] = {file:file, catIndex:ci5, itemIndex:ii5, productName:draft.categories[ci5].items[ii5].name};
       var reader = new FileReader();
       reader.onload = function(ev){
         draft.categories[ci5].items[ii5].image = ev.target.result;
@@ -1467,6 +1585,10 @@ window.__DATA__ = {
           '<div class="field"><label for="f-emailTemplate">EmailJS Template ID</label><input id="f-emailTemplate" type="text"></div>' +
           '<div class="field"><label for="f-emailPublicKey">EmailJS Public Key</label><input id="f-emailPublicKey" type="text"></div>' +
 
+          '<div class="section-label">GitHub upload</div>' +
+          '<div class="field"><label for="f-githubToken">GitHub token</label><input id="f-githubToken" type="password" autocomplete="off" placeholder="Paste a fine-grained token with Contents: Read and write"></div>' +
+          '<p class="save-hint">This token is not saved in your product data and is not written into index.html. Paste it when you press Save to GitHub. The repository is fixed to trendlyne33-bot/Crackers on the main branch.</p>' +
+
           '<div class="section-label">Security</div>' +
           '<div class="field"><label for="f-adminPassword">Admin password</label><input id="f-adminPassword" type="text"></div>' +
           '<p class="save-hint">This hides settings from regular visitors, but this page has no real server — anyone who inspects the page’s code could still find this password. Don’t reuse an important password here.</p>' +
@@ -1476,11 +1598,11 @@ window.__DATA__ = {
           '<button type="button" class="add-btn" id="addCategoryBtn">+ Add category</button>' +
         '</div>' +
         '<div class="drawer-foot">' +
-          '<p class="save-hint">This page is a static file, so "Save" updates what you see here and downloads an updated index.html — upload that file to your GitHub repo to make the change live for visitors.</p>' +
+          '<p class="save-hint">Save uploads the selected product images and the updated index.html directly to the Crackle Cart GitHub repository. Your GitHub token is used only during this save and is never included in the website file.</p>' +
           '<div class="drawer-foot-row">' +
             '<button class="btn-cancel" id="cancelSettingsBtn" type="button">Cancel</button>' +
             '<button class="btn-download" id="downloadBtn" type="button">Download only</button>' +
-            '<button class="btn-save" id="saveBtn" type="button">Save &amp; download</button>' +
+            '<button class="btn-save" id="saveBtn" type="button">Save to GitHub</button>' +
           '</div>' +
         '</div>' +
       '</aside>' +
