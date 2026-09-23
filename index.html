@@ -1543,9 +1543,22 @@ window.__DATA__ = {
     if(btn) btn.addEventListener("click", openCheckout);
   };
 
+  function applyGitHubImagePaths(data){
+    if(!data || !Array.isArray(data.categories)) return data;
+    data.categories.forEach(function(cat){
+      (cat.items || []).forEach(function(item){
+        if(!item.image || /^data:image\//i.test(item.image)) {
+          item.image = "images/" + encodeURIComponent((item.name || "") + ".webp");
+        }
+      });
+    });
+    return data;
+  }
+
   function boot(){
     var stored = loadStoredData();
     if(stored) window.__DATA__ = stored;
+    applyGitHubImagePaths(window.__DATA__);
     render(window.__DATA__);
     buildOverlays();
     wireOverlayEvents();
