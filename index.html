@@ -1024,15 +1024,13 @@
       try{ lastCounted = localStorage.getItem(VISIT_TRACK_KEY); }catch(e){}
       if(lastCounted === today) return; // already counted this browser today
       var ref = db.collection(FIRESTORE_ANALYTICS_COLLECTION).doc(today);
-      db.runTransaction(function(tx){
-        return tx.get(ref).then(function(doc){
-          if(doc.exists){
-            tx.update(ref, {count: firebase.firestore.FieldValue.increment(1), updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
-          } else {
-            tx.set(ref, {count: 1, updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
-          }
-        });
-      }).then(function(){
+      // Increment directly (no read-first) — visitors aren't allowed to read this
+      // collection, and Firestore resolves FieldValue.increment() server-side, so
+      // a merge-set works for both "first visit today" (0+1) and later visits.
+      ref.set({
+        count: firebase.firestore.FieldValue.increment(1),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, {merge:true}).then(function(){
         try{ localStorage.setItem(VISIT_TRACK_KEY, today); }catch(e){}
       }).catch(function(err){
         console.warn("Visit tracking failed (non-critical):", err);
