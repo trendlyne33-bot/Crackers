@@ -23,8 +23,8 @@ jobs:
 
       - name: Fetch Firestore data and write backup file
         env:
-          FIREBASE_API_KEY: AIzaSyD1pI_5HP1E8xIQxVidbxbVCC0VTU87CYE
-          FIREBASE_PROJECT_ID: crackle-cart
+          FIREBASE_API_KEY: AIzaSyB8RapRUzImlwqVMkG_tCW2GmDCs6LBxvQ
+          FIREBASE_PROJECT_ID: crackle-cart-a0ee1
         run: node scripts/firestore-backup.mjs
 
       - name: Commit and push backup
