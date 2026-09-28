@@ -443,7 +443,12 @@
   };
   try{
     firebase.initializeApp(config);
-    firebase.firestore().enablePersistence({synchronizeTabs:true}).catch(function(err){
+    var fsInstance = firebase.firestore();
+    // Some networks (corporate firewalls, certain ISPs/antivirus) block Firestore's
+    // real-time streaming connection. Auto-detecting and falling back to long-polling
+    // prevents the app from getting stuck showing "Offline" while still connected.
+    fsInstance.settings({ experimentalAutoDetectLongPolling: true });
+    fsInstance.enablePersistence({synchronizeTabs:true}).catch(function(err){
       console.warn("Offline persistence not enabled:", err && err.code);
     });
   }catch(e){ console.warn("Firebase init failed", e); }
