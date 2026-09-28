@@ -1946,12 +1946,16 @@
     });
   }
 
-  /* Re-wire checkoutBtn/cartBar events after each full render(), since #root is rebuilt */
+  /* Re-wire checkoutBtn/adminLoginBtn events after each full render(), since #root is rebuilt */
   var _origRender = render;
   render = function(data){
     _origRender(data);
     var btn = document.getElementById("checkoutBtn");
     if(btn) btn.addEventListener("click", openCheckout);
+    var adminBtn = document.getElementById("adminLoginBtn");
+    if(adminBtn) adminBtn.addEventListener("click", function(){
+      if(adminMode){ openSettingsDrawer(); } else { openAdminModal(); }
+    });
   };
 
   function applyGitHubImagePaths(data){
