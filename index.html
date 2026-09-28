@@ -304,7 +304,15 @@
     text-decoration:underline;cursor:pointer;margin-top:-2px;margin-bottom:6px;
   }
   .item-row{display:grid;grid-template-columns:1.6fr 1fr .8fr .8fr auto;gap:6px;margin-bottom:0;align-items:center;}
-  .item-row input{padding:7px 8px;font-size:.82rem;}
+  .item-row input{width:100%;min-width:0;padding:7px 8px;font-size:.82rem;box-sizing:border-box;}
+  @media (max-width:560px){
+    .item-row{grid-template-columns:1fr 1fr;grid-template-areas:"name name" "unit unit" "mrp price" "remove remove";row-gap:6px;}
+    .item-row .f-item-name{grid-area:name;}
+    .item-row .f-item-unit{grid-area:unit;}
+    .item-row .f-item-mrp{grid-area:mrp;}
+    .item-row .f-item-price{grid-area:price;}
+    .item-row .remove-item{grid-area:remove;width:auto;min-width:44px;justify-self:end;}
+  }
   .row-btn,.mini-btn{
     border:1px solid var(--border);background:var(--surface);color:var(--text);
     border-radius:8px;cursor:pointer;padding:7px 9px;font-size:.85rem;line-height:1;
