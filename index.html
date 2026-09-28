@@ -371,25 +371,25 @@
     font:inherit;font-size:.76rem;font-weight:700;padding:6px 11px;border-radius:999px;cursor:pointer;
   }
   .filter-pill.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
-  .ord-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
-  .ord-stat-tile{border:1px solid var(--border);border-radius:12px;background:var(--surface-2);padding:10px 12px;}
-  .ord-stat-label{font-size:.7rem;font-weight:700;color:var(--text-dim);}
-  .ord-stat-value{font-size:1.2rem;font-weight:800;margin-top:3px;}
-  .ord-chart-shell{position:relative;margin-bottom:16px;}
-  .ord-chart-shell svg{display:block;width:100%;height:auto;overflow:visible;}
-  .ord-grid-line{stroke:var(--border);stroke-width:1;}
-  .ord-axis-label{fill:var(--text-dim);font-size:9px;font-family:"Mukta",sans-serif;}
-  .ord-area-fill{fill:var(--accent);fill-opacity:0.12;}
-  .ord-trend-line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-  .ord-end-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2;}
-  .ord-hover-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2;opacity:0;}
-  .ord-crosshair{stroke:var(--text-dim);stroke-width:1;stroke-dasharray:3 3;opacity:0;}
-  .ord-tooltip{
+  .adm-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+  .adm-stat-tile{border:1px solid var(--border);border-radius:12px;background:var(--surface-2);padding:10px 12px;}
+  .adm-stat-label{font-size:.7rem;font-weight:700;color:var(--text-dim);}
+  .adm-stat-value{font-size:1.2rem;font-weight:800;margin-top:3px;}
+  .adm-chart-shell{position:relative;margin-bottom:16px;}
+  .adm-chart-shell svg{display:block;width:100%;height:auto;overflow:visible;}
+  .adm-grid-line{stroke:var(--border);stroke-width:1;}
+  .adm-axis-label{fill:var(--text-dim);font-size:9px;font-family:"Mukta",sans-serif;}
+  .adm-area-fill{fill:var(--accent);fill-opacity:0.12;}
+  .adm-trend-line{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .adm-end-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2;}
+  .adm-hover-dot{fill:var(--accent);stroke:var(--surface);stroke-width:2;opacity:0;}
+  .adm-crosshair{stroke:var(--text-dim);stroke-width:1;stroke-dasharray:3 3;opacity:0;}
+  .adm-tooltip{
     position:absolute;pointer-events:none;background:var(--text);color:var(--bg);
     font-size:.72rem;line-height:1.4;border-radius:8px;padding:6px 9px;
     opacity:0;transform:translate(-50%,-115%);white-space:nowrap;transition:opacity .1s;z-index:5;
   }
-  .ord-hit-layer{fill:transparent;cursor:crosshair;}
+  .adm-hit-layer{fill:transparent;cursor:crosshair;}
   .ord-table-wrap{overflow-x:auto;}
   .ord-table{width:100%;border-collapse:collapse;font-size:.82rem;}
   .ord-table thead th{
@@ -940,7 +940,14 @@
   var FIRESTORE_COLLECTION = "siteData";
   var FIRESTORE_DOC = "catalog";
   var FIRESTORE_ORDERS_COLLECTION = "orders";
+  var FIRESTORE_ANALYTICS_COLLECTION = "analytics";
   var ADMIN_EMAIL = "trendlyne33@gmail.com";
+  var VISIT_TRACK_KEY = "crackleCartLastCountedDay";
+
+  function isoDayLocal(d){
+    var m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
 
   function initFirebase(){
     try{
@@ -1008,6 +1015,105 @@
     });
   }
 
+  /* ---------- daily unique visitor tracking (storefront) ---------- */
+  function trackVisit(){
+    if(!db || !window.firebase) return;
+    try{
+      var today = isoDayLocal(new Date());
+      var lastCounted = null;
+      try{ lastCounted = localStorage.getItem(VISIT_TRACK_KEY); }catch(e){}
+      if(lastCounted === today) return; // already counted this browser today
+      var ref = db.collection(FIRESTORE_ANALYTICS_COLLECTION).doc(today);
+      db.runTransaction(function(tx){
+        return tx.get(ref).then(function(doc){
+          if(doc.exists){
+            tx.update(ref, {count: firebase.firestore.FieldValue.increment(1), updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
+          } else {
+            tx.set(ref, {count: 1, updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
+          }
+        });
+      }).then(function(){
+        try{ localStorage.setItem(VISIT_TRACK_KEY, today); }catch(e){}
+      }).catch(function(err){
+        console.warn("Visit tracking failed (non-critical):", err);
+      });
+    }catch(e){ /* never let tracking break the page */ }
+  }
+
+  /* ---------- shared trend chart (orders / visitors) ---------- */
+  function renderTrendChart(shellId, days, tooltipFn){
+    var shell = document.getElementById(shellId);
+    if(!shell) return;
+    var W=880,H=220,padL=32,padR=12,padT=14,padB=26;
+    var plotW=W-padL-padR, plotH=H-padT-padB;
+    var maxCount = Math.max.apply(null, days.map(function(d){ return d.count; }));
+    var yMax = maxCount<=1 ? 2 : (maxCount%2===0 ? maxCount : maxCount+1);
+    function x(i){ return padL + (days.length===1 ? plotW/2 : (i/(days.length-1))*plotW); }
+    function y(v){ return padT+plotH-(v/yMax)*plotH; }
+    var linePts = days.map(function(d,i){ return x(i)+","+y(d.count); }).join(" ");
+    var areaPts = "M"+x(0)+","+y(0)+" L"+days.map(function(d,i){ return x(i)+","+y(d.count); }).join(" L")+" L"+x(days.length-1)+","+y(0)+" Z";
+    var yTicks=[0,yMax/2,yMax];
+    var gridSvg = yTicks.map(function(t){
+      var gy=y(t);
+      return '<line class="adm-grid-line" x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'"></line>'+
+             '<text class="adm-axis-label" x="'+(padL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+Math.round(t)+'</text>';
+    }).join("");
+    var labelCount = Math.min(6, days.length);
+    var labelIdxs = {};
+    for(var li=0; li<labelCount; li++){
+      labelIdxs[Math.round(li*(days.length-1)/Math.max(labelCount-1,1))] = true;
+    }
+    var xLabels = days.map(function(d,i){
+      if(!labelIdxs[i]) return "";
+      var anchor = i===0 ? "start" : (i===days.length-1 ? "end" : "middle");
+      return '<text class="adm-axis-label" x="'+x(i)+'" y="'+(H-6)+'" text-anchor="'+anchor+'">'+esc(d.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+'</text>';
+    }).join("");
+    var lastIdx = days.length-1;
+
+    shell.innerHTML =
+      '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="Trend chart">' +
+        gridSvg +
+        '<path class="adm-area-fill" d="'+areaPts+'"></path>' +
+        '<polyline class="adm-trend-line" points="'+linePts+'"></polyline>' +
+        '<circle class="adm-end-dot" cx="'+x(lastIdx)+'" cy="'+y(days[lastIdx].count)+'" r="4"></circle>' +
+        '<circle class="adm-hover-dot" r="4"></circle>' +
+        '<line class="adm-crosshair" y1="'+padT+'" y2="'+(H-padB)+'"></line>' +
+        xLabels +
+        '<rect class="adm-hit-layer" x="'+padL+'" y="'+padT+'" width="'+plotW+'" height="'+plotH+'"></rect>' +
+      '</svg>' +
+      '<div class="adm-tooltip"></div>';
+
+    var svg = shell.querySelector("svg");
+    var hit = shell.querySelector(".adm-hit-layer");
+    var tooltip = shell.querySelector(".adm-tooltip");
+    var hoverDot = shell.querySelector(".adm-hover-dot");
+    var crosshair = shell.querySelector(".adm-crosshair");
+
+    function idxFromEvent(evt){
+      var rect = svg.getBoundingClientRect();
+      var px = ((evt.clientX-rect.left)/rect.width)*W;
+      var idx = Math.round(((px-padL)/plotW)*(days.length-1));
+      return Math.max(0, Math.min(days.length-1, idx));
+    }
+    function showAt(idx){
+      var d = days[idx];
+      var cx=x(idx), cy=y(d.count);
+      hoverDot.setAttribute("cx",cx); hoverDot.setAttribute("cy",cy); hoverDot.style.opacity=1;
+      crosshair.setAttribute("x1",cx); crosshair.setAttribute("x2",cx); crosshair.style.opacity=1;
+      var rect = svg.getBoundingClientRect();
+      tooltip.style.left = ((cx/W)*rect.width)+"px";
+      tooltip.style.top = ((cy/H)*rect.height)+"px";
+      tooltip.innerHTML = tooltipFn(d);
+      tooltip.style.opacity=1;
+    }
+    function hide(){ hoverDot.style.opacity=0; crosshair.style.opacity=0; tooltip.style.opacity=0; }
+    hit.addEventListener("mousemove", function(e){ showAt(idxFromEvent(e)); });
+    hit.addEventListener("mouseleave", hide);
+    hit.addEventListener("touchstart", function(e){ showAt(idxFromEvent({clientX:e.touches[0].clientX})); }, {passive:true});
+    hit.addEventListener("touchmove", function(e){ showAt(idxFromEvent({clientX:e.touches[0].clientX})); e.preventDefault(); }, {passive:false});
+    hit.addEventListener("touchend", hide);
+  }
+
   /* ---------- orders dashboard (admin) ---------- */
   var ordersCache = [];
   var ordersUnsub = null;
@@ -1015,7 +1121,7 @@
   var ordersStatusFilterVal = "all";
 
   function ordStatTile(label, value){
-    return '<div class="ord-stat-tile"><div class="ord-stat-label">'+esc(label)+'</div><div class="ord-stat-value tabular">'+esc(String(value))+'</div></div>';
+    return '<div class="adm-stat-tile"><div class="adm-stat-label">'+esc(label)+'</div><div class="adm-stat-value tabular">'+esc(String(value))+'</div></div>';
   }
 
   function ordersWithinRange(o){
@@ -1084,97 +1190,29 @@
       ordStatTile("Pending", pending);
   }
 
-  function renderOrdersChart(){
-    var shell = document.getElementById("ordersChartShell");
-    if(!shell) return;
+  function buildOrdersDailySeries(){
     var rangeDays = ordersRange || 60; // "All" is charted over the last 60 days
     var today = new Date(); today.setHours(0,0,0,0);
-    function isoDay(d){
-      var m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
-      return d.getFullYear() + "-" + m + "-" + day;
-    }
     var counts = {}, revenue = {};
     for(var i=rangeDays-1; i>=0; i--){
       var d0 = new Date(today); d0.setDate(d0.getDate()-i);
-      counts[isoDay(d0)] = 0; revenue[isoDay(d0)] = 0;
+      counts[isoDayLocal(d0)] = 0; revenue[isoDayLocal(d0)] = 0;
     }
     ordersCache.forEach(function(o){
       if(o.status === "cancelled") return;
-      var key = isoDay(o.date);
+      var key = isoDayLocal(o.date);
       if(counts.hasOwnProperty(key)){ counts[key]++; revenue[key] += o.total; }
     });
-    var days = Object.keys(counts).map(function(key){
+    return Object.keys(counts).map(function(key){
       return {date:new Date(key+"T00:00:00"), count:counts[key], revenue:revenue[key]};
     });
+  }
 
-    var W=880,H=220,padL=32,padR=12,padT=14,padB=26;
-    var plotW=W-padL-padR, plotH=H-padT-padB;
-    var maxCount = Math.max.apply(null, days.map(function(d){ return d.count; }));
-    var yMax = maxCount<=1 ? 2 : (maxCount%2===0 ? maxCount : maxCount+1);
-    function x(i){ return padL + (days.length===1 ? plotW/2 : (i/(days.length-1))*plotW); }
-    function y(v){ return padT+plotH-(v/yMax)*plotH; }
-    var linePts = days.map(function(d,i){ return x(i)+","+y(d.count); }).join(" ");
-    var areaPts = "M"+x(0)+","+y(0)+" L"+days.map(function(d,i){ return x(i)+","+y(d.count); }).join(" L")+" L"+x(days.length-1)+","+y(0)+" Z";
-    var yTicks=[0,yMax/2,yMax];
-    var gridSvg = yTicks.map(function(t){
-      var gy=y(t);
-      return '<line class="ord-grid-line" x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'"></line>'+
-             '<text class="ord-axis-label" x="'+(padL-6)+'" y="'+(gy+3)+'" text-anchor="end">'+Math.round(t)+'</text>';
-    }).join("");
-    var labelCount = Math.min(6, days.length);
-    var labelIdxs = {};
-    for(var li=0; li<labelCount; li++){
-      labelIdxs[Math.round(li*(days.length-1)/Math.max(labelCount-1,1))] = true;
-    }
-    var xLabels = days.map(function(d,i){
-      if(!labelIdxs[i]) return "";
-      var anchor = i===0 ? "start" : (i===days.length-1 ? "end" : "middle");
-      return '<text class="ord-axis-label" x="'+x(i)+'" y="'+(H-6)+'" text-anchor="'+anchor+'">'+esc(d.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+'</text>';
-    }).join("");
-    var lastIdx = days.length-1;
-
-    shell.innerHTML =
-      '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="Orders per day">' +
-        gridSvg +
-        '<path class="ord-area-fill" d="'+areaPts+'"></path>' +
-        '<polyline class="ord-trend-line" points="'+linePts+'"></polyline>' +
-        '<circle class="ord-end-dot" cx="'+x(lastIdx)+'" cy="'+y(days[lastIdx].count)+'" r="4"></circle>' +
-        '<circle class="ord-hover-dot" id="ordHoverDot" r="4"></circle>' +
-        '<line class="ord-crosshair" id="ordCrosshair" y1="'+padT+'" y2="'+(H-padB)+'"></line>' +
-        xLabels +
-        '<rect class="ord-hit-layer" x="'+padL+'" y="'+padT+'" width="'+plotW+'" height="'+plotH+'"></rect>' +
-      '</svg>' +
-      '<div class="ord-tooltip" id="ordTooltip"></div>';
-
-    var svg = shell.querySelector("svg");
-    var hit = shell.querySelector(".ord-hit-layer");
-    var tooltip = document.getElementById("ordTooltip");
-    var hoverDot = document.getElementById("ordHoverDot");
-    var crosshair = document.getElementById("ordCrosshair");
-
-    function idxFromEvent(evt){
-      var rect = svg.getBoundingClientRect();
-      var px = ((evt.clientX-rect.left)/rect.width)*W;
-      var idx = Math.round(((px-padL)/plotW)*(days.length-1));
-      return Math.max(0, Math.min(days.length-1, idx));
-    }
-    function showAt(idx){
-      var d = days[idx];
-      var cx=x(idx), cy=y(d.count);
-      hoverDot.setAttribute("cx",cx); hoverDot.setAttribute("cy",cy); hoverDot.style.opacity=1;
-      crosshair.setAttribute("x1",cx); crosshair.setAttribute("x2",cx); crosshair.style.opacity=1;
-      var rect = svg.getBoundingClientRect();
-      tooltip.style.left = ((cx/W)*rect.width)+"px";
-      tooltip.style.top = ((cy/H)*rect.height)+"px";
-      tooltip.innerHTML = '<strong>'+d.count+' order'+(d.count===1?"":"s")+'</strong><br>'+esc(d.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+' · '+money(d.revenue);
-      tooltip.style.opacity=1;
-    }
-    function hide(){ hoverDot.style.opacity=0; crosshair.style.opacity=0; tooltip.style.opacity=0; }
-    hit.addEventListener("mousemove", function(e){ showAt(idxFromEvent(e)); });
-    hit.addEventListener("mouseleave", hide);
-    hit.addEventListener("touchstart", function(e){ showAt(idxFromEvent({clientX:e.touches[0].clientX})); }, {passive:true});
-    hit.addEventListener("touchmove", function(e){ showAt(idxFromEvent({clientX:e.touches[0].clientX})); e.preventDefault(); }, {passive:false});
-    hit.addEventListener("touchend", hide);
+  function renderOrdersChart(){
+    var days = buildOrdersDailySeries();
+    renderTrendChart("ordersChartShell", days, function(d){
+      return '<strong>'+d.count+' order'+(d.count===1?"":"s")+'</strong><br>'+esc(d.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+' · '+money(d.revenue);
+    });
   }
 
   function statusSelectHtml(o){
@@ -1223,6 +1261,82 @@
       alert("Couldn't update order status.\n\n" + (err && err.message ? err.message : err));
     }).finally(function(){
       if(selectEl) selectEl.disabled = false;
+    });
+  }
+
+  /* ---------- visitors dashboard (admin) ---------- */
+  var visitorsCache = []; // [{date, count}] one entry per day doc
+  var visitorsUnsub = null;
+  var visitorsRange = 14; // days; 0 = all
+
+  function openVisitorsTab(){
+    var loading = document.getElementById("visitorsLoadingState");
+    if(!db){
+      if(loading){ loading.textContent = "Database not available right now — check your internet connection."; loading.hidden = false; }
+      return;
+    }
+    if(visitorsUnsub) return;
+    if(loading){ loading.textContent = "Loading visitor data…"; loading.hidden = false; }
+    visitorsUnsub = db.collection(FIRESTORE_ANALYTICS_COLLECTION)
+      .orderBy(firebase.firestore.FieldPath.documentId(), "desc").limit(400)
+      .onSnapshot(function(snap){
+        visitorsCache = snap.docs.map(function(doc){
+          return {date: new Date(doc.id+"T00:00:00"), count: Number(doc.data().count)||0};
+        });
+        if(loading) loading.hidden = true;
+        renderVisitorsDashboard();
+      }, function(err){
+        console.error("Visitors sync error", err);
+        if(loading){ loading.textContent = "Couldn't load visitor data. Check your connection."; loading.hidden = false; }
+      });
+  }
+
+  function closeVisitorsTab(){
+    if(visitorsUnsub){ visitorsUnsub(); visitorsUnsub = null; }
+  }
+
+  function visitorsCountForDay(dayKey){
+    var found = visitorsCache.filter(function(v){ return isoDayLocal(v.date) === dayKey; })[0];
+    return found ? found.count : 0;
+  }
+
+  function buildVisitorsDailySeries(){
+    var rangeDays = visitorsRange || 60; // "All" is charted over the last 60 days
+    var today = new Date(); today.setHours(0,0,0,0);
+    var days = [];
+    for(var i=rangeDays-1; i>=0; i--){
+      var d0 = new Date(today); d0.setDate(d0.getDate()-i);
+      days.push({date:d0, count:visitorsCountForDay(isoDayLocal(d0))});
+    }
+    return days;
+  }
+
+  function renderVisitorsDashboard(){
+    renderVisitorsStats();
+    renderVisitorsChart();
+  }
+
+  function renderVisitorsStats(){
+    var grid = document.getElementById("visitorsStatGrid");
+    if(!grid) return;
+    var today = new Date(); today.setHours(0,0,0,0);
+    var yesterday = new Date(today); yesterday.setDate(yesterday.getDate()-1);
+    var todayCount = visitorsCountForDay(isoDayLocal(today));
+    var yestCount = visitorsCountForDay(isoDayLocal(yesterday));
+    var series = buildVisitorsDailySeries();
+    var total = series.reduce(function(s,d){ return s+d.count; }, 0);
+    var avg = series.length ? Math.round(total/series.length) : 0;
+    grid.innerHTML =
+      ordStatTile("Today", todayCount) +
+      ordStatTile("Yesterday", yestCount) +
+      ordStatTile("Total" + (visitorsRange ? " (" + visitorsRange + "d)" : ""), total) +
+      ordStatTile("Avg per day", avg);
+  }
+
+  function renderVisitorsChart(){
+    var days = buildVisitorsDailySeries();
+    renderTrendChart("visitorsChartShell", days, function(d){
+      return '<strong>'+d.count+' visitor'+(d.count===1?"":"s")+'</strong><br>'+esc(d.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}));
     });
   }
 
@@ -1341,16 +1455,18 @@
   }
 
   function switchAdminTab(tab){
-    var isOrders = tab === "orders";
-    document.getElementById("settingsPanel").hidden = isOrders;
-    document.getElementById("ordersPanel").hidden = !isOrders;
-    document.getElementById("downloadBtn").hidden = isOrders;
-    document.getElementById("saveBtn").hidden = isOrders;
-    document.getElementById("settingsSaveHint").hidden = isOrders;
+    var isSettings = tab === "settings";
+    document.getElementById("settingsPanel").hidden = !isSettings;
+    document.getElementById("ordersPanel").hidden = tab !== "orders";
+    document.getElementById("visitorsPanel").hidden = tab !== "visitors";
+    document.getElementById("downloadBtn").hidden = !isSettings;
+    document.getElementById("saveBtn").hidden = !isSettings;
+    document.getElementById("settingsSaveHint").hidden = !isSettings;
     document.querySelectorAll("#adminTabs .admin-tab").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === tab);
     });
-    if(isOrders) openOrdersTab();
+    if(tab === "orders"){ openOrdersTab(); } else { closeOrdersTab(); }
+    if(tab === "visitors"){ openVisitorsTab(); } else { closeVisitorsTab(); }
   }
 
   function openSettingsDrawer(){
@@ -1364,6 +1480,7 @@
     document.getElementById("settingsBackdrop").hidden = true;
     document.getElementById("settingsDrawer").hidden = true;
     closeOrdersTab();
+    closeVisitorsTab();
   }
 
   function escapeForScript(s){
@@ -1585,6 +1702,14 @@
       var orderId = e.target.getAttribute("data-order-id");
       updateOrderStatus(orderId, e.target.value, e.target);
     });
+    document.getElementById("visitorsRangeFilter").addEventListener("click", function(e){
+      var btn = e.target.closest(".filter-pill");
+      if(!btn) return;
+      visitorsRange = Number(btn.getAttribute("data-range"));
+      this.querySelectorAll(".filter-pill").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      renderVisitorsDashboard();
+    });
     document.getElementById("addCategoryBtn").addEventListener("click", function(){
       readFormBasics(); readCategoriesFromDOM();
       draft.categories.push({name:"New Category", items:[{name:"New Item", unit:"Piece", mrp:0, price:0}]});
@@ -1737,6 +1862,7 @@
         '<div class="admin-tabs" id="adminTabs">' +
           '<button type="button" class="admin-tab active" data-tab="settings">Shop settings</button>' +
           '<button type="button" class="admin-tab" data-tab="orders">Orders</button>' +
+          '<button type="button" class="admin-tab" data-tab="visitors">Visitors</button>' +
         '</div>' +
         '<div class="drawer-body" id="settingsPanel">' +
           '<div class="section-label" style="margin-top:0;">Shop details</div>' +
@@ -1778,14 +1904,14 @@
         '</div>' +
         '<div class="drawer-body" id="ordersPanel" hidden>' +
           '<div class="section-label" style="margin-top:0;">Orders</div>' +
-          '<div class="ord-stat-grid" id="ordersStatGrid"></div>' +
+          '<div class="adm-stat-grid" id="ordersStatGrid"></div>' +
           '<div class="filter-row" style="margin-bottom:12px;" id="ordersRangeFilter">' +
             '<button type="button" class="filter-pill" data-range="7">7 days</button>' +
             '<button type="button" class="filter-pill active" data-range="14">14 days</button>' +
             '<button type="button" class="filter-pill" data-range="30">30 days</button>' +
             '<button type="button" class="filter-pill" data-range="0">All</button>' +
           '</div>' +
-          '<div class="ord-chart-shell" id="ordersChartShell"></div>' +
+          '<div class="adm-chart-shell" id="ordersChartShell"></div>' +
           '<div class="filter-row" style="margin-bottom:12px;" id="ordersStatusFilter">' +
             '<button type="button" class="filter-pill active" data-status="all">All</button>' +
             '<button type="button" class="filter-pill" data-status="pending">Pending</button>' +
@@ -1800,6 +1926,19 @@
             '</table>' +
             '<p class="save-hint" id="ordersEmptyState" hidden>No orders match this filter yet.</p>' +
           '</div>' +
+        '</div>' +
+        '<div class="drawer-body" id="visitorsPanel" hidden>' +
+          '<div class="section-label" style="margin-top:0;">Visitors</div>' +
+          '<p class="save-hint" style="margin-top:0;">Counts unique visitors per day — a visitor who opens the page more than once on the same day is only counted once.</p>' +
+          '<div class="adm-stat-grid" id="visitorsStatGrid"></div>' +
+          '<div class="filter-row" style="margin-bottom:12px;" id="visitorsRangeFilter">' +
+            '<button type="button" class="filter-pill" data-range="7">7 days</button>' +
+            '<button type="button" class="filter-pill active" data-range="14">14 days</button>' +
+            '<button type="button" class="filter-pill" data-range="30">30 days</button>' +
+            '<button type="button" class="filter-pill" data-range="0">All</button>' +
+          '</div>' +
+          '<div class="adm-chart-shell" id="visitorsChartShell"></div>' +
+          '<p class="save-hint" id="visitorsLoadingState">Loading visitor data…</p>' +
         '</div>' +
         '<div class="drawer-foot">' +
           '<p class="save-hint" id="settingsSaveHint">Save stores your changes in the shop\'s database. If you\'re offline, it\'s saved on this device and syncs automatically the moment you\'re back online — nothing is lost.</p>' +
@@ -1899,6 +2038,7 @@
       });
     }
     subscribeToCatalog();
+    trackVisit();
   }
 
   boot();
