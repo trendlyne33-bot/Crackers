@@ -444,10 +444,11 @@
   try{
     firebase.initializeApp(config);
     var fsInstance = firebase.firestore();
-    // Some networks (corporate firewalls, certain ISPs/antivirus) block Firestore's
-    // real-time streaming connection. Auto-detecting and falling back to long-polling
-    // prevents the app from getting stuck showing "Offline" while still connected.
-    fsInstance.settings({ experimentalAutoDetectLongPolling: true });
+    // Some networks (corporate firewalls, certain ISPs/antivirus, some VPNs) allow
+    // Firestore's streaming connection to open but then silently stall or throttle it,
+    // which auto-detection can miss (it looks fine at first, then hangs). Forcing plain
+    // HTTP long-polling sidesteps that class of problem entirely instead of guessing.
+    fsInstance.settings({ experimentalForceLongPolling: true, useFetchStreams: false });
     fsInstance.enablePersistence({synchronizeTabs:true}).catch(function(err){
       console.warn("Offline persistence not enabled:", err && err.code);
     });
@@ -955,6 +956,8 @@
     }
   }
 
+  var _lastSyncFromCache = null;
+
   function subscribeToCatalog(){
     if(!db) return;
     db.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).onSnapshot(function(snap){
@@ -967,11 +970,33 @@
           render(data);
         }
       }
+      _lastSyncFromCache = !!(snap.metadata && snap.metadata.fromCache);
       updateSyncBadge(snap.metadata);
     }, function(err){
       console.error("Firestore sync error", err);
       updateSyncBadge(null, err);
     });
+    // Safety net: the real-time listener can get stuck showing cached data forever on
+    // some networks without ever throwing an error. Periodically confirm directly with
+    // the server; if that succeeds, clear the badge even if the listener never catches up.
+    setInterval(function(){
+      if(!_lastSyncFromCache || !db) return;
+      db.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).get({source:"server"}).then(function(snap){
+        _lastSyncFromCache = false;
+        if(snap.exists){
+          var data = snap.data();
+          if(data && Array.isArray(data.categories)){
+            applyGitHubImagePaths(data);
+            window.__DATA__ = data;
+            persistData(data);
+            render(data);
+          }
+        }
+        updateSyncBadge({hasPendingWrites:false, fromCache:false});
+      }).catch(function(err){
+        console.warn("Sync recovery check failed:", err && err.code);
+      });
+    }, 15000);
   }
 
   function generateOrderNo(){
