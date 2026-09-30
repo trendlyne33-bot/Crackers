@@ -1470,23 +1470,20 @@
       alert("Minimum order value is " + money(MIN_ORDER_VALUE) + ". Your cart is at " + money(total) + " — please add " + money(MIN_ORDER_VALUE - total) + " more to place your order.");
       return;
     }
-    // Order No is simply the customer's own mobile number (no +91) — easy for both
-    // the customer and the shop to reference on a call. Note: if the same number
-    // orders more than once, those orders share the same Order No; they're still
-    // separate, independently editable/deletable records underneath (the admin
-    // panel's order search finds all of them together by phone number, and the
-    // date/items columns tell them apart).
-    var order = {orderNo: phoneDigits, name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
-    saveOrderToFirestore(order, "site");
-
     // Stays on this page the whole time — no WhatsApp tab or mail app opens for the
     // customer. The order is saved to the shop's database immediately, and a copy is
     // emailed to the shop in the background (silently) if EmailJS is configured.
     var btn = document.getElementById("submitOrderBtn");
     if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
-    sendOrderEmail(order, {fallbackToMailto:false}).then(function(){
-      showOrderConfirmation(order);
-      resetCart();
+    // Order No is a running count (1, 2, 3…) claimed from the shared counter —
+    // see getNextOrderNumber() for how it stays unique across simultaneous orders.
+    getNextOrderNumber().then(function(orderNo){
+      var order = {orderNo: orderNo, name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
+      saveOrderToFirestore(order, "site");
+      return sendOrderEmail(order, {fallbackToMailto:false}).then(function(){
+        showOrderConfirmation(order);
+        resetCart();
+      });
     }).finally(function(){
       if(btn){ btn.disabled = false; btn.textContent = "Submit order"; }
     });
@@ -1506,6 +1503,8 @@
   var FIRESTORE_DOC = "catalog";
   var FIRESTORE_ORDERS_COLLECTION = "orders";
   var FIRESTORE_ANALYTICS_COLLECTION = "analytics";
+  var FIRESTORE_COUNTERS_COLLECTION = "counters";
+  var ORDER_COUNTER_DOC = "orderNo";
   var ADMIN_EMAIL = "trendlyne33@gmail.com";
   var VISIT_TRACK_KEY = "crackleCartLastCountedDay";
 
@@ -1593,6 +1592,31 @@
         console.warn("Sync recovery check failed:", err && err.code);
       });
     }, 15000);
+  }
+
+  // Order No is a simple running count — 1, 2, 3… — shared across every order the
+  // shop ever gets, so customers and the shop can both reference it easily on a call.
+  // A Firestore transaction reads the last-used number and claims the next one
+  // atomically, so two customers checking out at the same moment can never be
+  // handed the same number. Falls back to a timestamp-based number only if the
+  // counter can't be reached (e.g. the customer is offline) — orders always go
+  // through; a fallback number is just a rare, clearly-out-of-sequence exception
+  // rather than a failed order.
+  function getNextOrderNumber(){
+    if(!db || !window.firebase){
+      return Promise.resolve("T" + Date.now());
+    }
+    var ref = db.collection(FIRESTORE_COUNTERS_COLLECTION).doc(ORDER_COUNTER_DOC);
+    return db.runTransaction(function(tx){
+      return tx.get(ref).then(function(snap){
+        var current = (snap.exists && typeof snap.data().next === "number") ? snap.data().next : 1;
+        tx.set(ref, {next: current + 1}, {merge:true});
+        return current;
+      });
+    }).catch(function(err){
+      console.error("Couldn't get the next order number, using a fallback:", err);
+      return "T" + Date.now();
+    });
   }
 
   function saveOrderToFirestore(order, via){
@@ -1829,7 +1853,7 @@
       return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
     }).filter(function(o){
       if(!q) return true;
-      return (o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
+      return String(o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
              (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
              (o.name||"").toLowerCase().indexOf(q) !== -1;
     });
@@ -2425,7 +2449,7 @@
         return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
       }).filter(function(o){
         if(!q) return true;
-        return (o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
+        return String(o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
                (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
                (o.name||"").toLowerCase().indexOf(q) !== -1;
       });
