@@ -150,8 +150,10 @@
 
   /* quicknav */
   .quicknav{
-    display:flex;gap:8px;overflow-x:auto;padding-block:14px;
+    display:flex;gap:8px;overflow-x:auto;padding-block:14px;padding-inline-end:28px;
     scrollbar-width:none;
+    mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    -webkit-mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
   }
   .quicknav::-webkit-scrollbar{display:none;}
   .chip{
@@ -525,6 +527,11 @@
   function isValidPhoneDigits(v){
     return /^\d{7,12}$/.test(String(v||"").trim());
   }
+  function isMobileDevice(){
+    var uaMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent||"");
+    var narrowTouch = ("ontouchstart" in window || (navigator.maxTouchPoints||0) > 0) && window.matchMedia("(max-width: 820px)").matches;
+    return uaMobile || narrowTouch;
+  }
 
   function loadStoredData(){
     try{
@@ -604,7 +611,6 @@
         '<div class="hero-ctas">' +
           '<a class="cta cta-whatsapp" href="'+waLink(data)+'" target="_blank" rel="noopener">Ask on WhatsApp</a>' +
           '<a class="cta cta-primary" href="'+telLink(data)+'">Call to Order</a>' +
-          '<a class="cta cta-ghost" href="#pricelist">Choose items below</a>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -876,6 +882,12 @@
   function openCheckout(){
     if(getCartCount()===0){ alert("Please choose at least one item first."); return; }
     renderCheckoutBody();
+    var hintEl = document.getElementById("checkoutSendHint");
+    if(hintEl){
+      hintEl.textContent = isMobileDevice()
+        ? "Placing your order opens WhatsApp with your order details ready to send to the shop."
+        : "Placing your order sends it to the shop by email.";
+    }
     document.getElementById("checkoutBackdrop").hidden = false;
     document.getElementById("checkoutDrawer").hidden = false;
   }
@@ -2001,11 +2013,10 @@
         '<div class="drawer-head"><h2>Complete your order</h2><button class="icon-btn" id="closeCheckout" aria-label="Close">✕</button></div>' +
         '<div class="drawer-body" id="checkoutBody"></div>' +
         '<div class="drawer-foot" id="checkoutFoot">' +
-          '<p class="save-hint">Submitting sends your order to the shop by email. You can also send it via WhatsApp instead.</p>' +
+          '<p class="save-hint" id="checkoutSendHint"></p>' +
           '<div class="drawer-foot-row">' +
             '<button class="btn-cancel" id="cancelCheckoutBtn" type="button">Cancel</button>' +
-            '<button class="btn-download" id="whatsappOrderBtn" type="button">Send via WhatsApp</button>' +
-            '<button class="btn-save" id="submitOrderBtn" type="button">Submit order</button>' +
+            '<button class="btn-save" id="submitOrderBtn" type="button">Place order</button>' +
           '</div>' +
         '</div>' +
       '</aside>' +
@@ -2144,8 +2155,7 @@
     document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
     document.getElementById("cancelCheckoutBtn").addEventListener("click", closeCheckout);
     document.getElementById("checkoutBackdrop").addEventListener("click", closeCheckout);
-    document.getElementById("submitOrderBtn").addEventListener("click", function(){ submitOrder("email"); });
-    document.getElementById("whatsappOrderBtn").addEventListener("click", function(){ submitOrder("whatsapp"); });
+    document.getElementById("submitOrderBtn").addEventListener("click", function(){ submitOrder(isMobileDevice() ? "whatsapp" : "email"); });
 
     wireSettingsEvents();
 
