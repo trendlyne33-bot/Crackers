@@ -205,13 +205,35 @@
     -webkit-mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
   }
   .quicknav::-webkit-scrollbar{display:none;}
+  /* Collapsing to one row only helps once chips wrap onto several rows, which only
+     happens at the ≥561px breakpoint below — on narrow screens the row already
+     scrolls horizontally, so keep the toggle out of the way there. */
+  .quicknav-toggle{
+    display:none;align-items:center;gap:6px;
+    margin:10px auto 0;padding:7px 16px;border-radius:999px;
+    background:rgba(255,255,255,0.06);border:1px solid var(--border);
+    color:var(--text-dim);font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transition:background .15s ease,color .15s ease,border-color .15s ease;
+  }
+  .quicknav-toggle:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:rgba(243,177,58,0.4);}
+  .quicknav-toggle .chevron{display:inline-block;font-size:.68rem;transition:transform .25s ease;}
+  .quicknav-toggle[aria-expanded="true"] .chevron{transform:rotate(180deg);}
   /* On wider screens, nobody expects to horizontally scroll a chip row — wrap instead
      so every category is simply visible, never cropped or requiring a scroll gesture. */
   @media (min-width:561px){
     .quicknav{
       flex-wrap:wrap;overflow-x:visible;padding-inline-end:16px;justify-content:center;
       mask-image:none;-webkit-mask-image:none;
+      transition:max-height .32s ease;
     }
+    .quicknav.is-collapsed{
+      max-height:78px;overflow:hidden;
+      mask-image:linear-gradient(to bottom, black 52%, transparent 100%);
+      -webkit-mask-image:linear-gradient(to bottom, black 52%, transparent 100%);
+    }
+    .quicknav-bar{display:flex;flex-direction:column;align-items:center;}
+    .quicknav-toggle{display:inline-flex;}
   }
   .chip{
     flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
@@ -753,7 +775,10 @@
     '</div>' +
 
     '<div class="quicknav-bar">' +
-      '<nav class="wrap quicknav" id="quicknav" aria-label="Jump to category">'+renderQuickNav(data)+'</nav>' +
+      '<nav class="wrap quicknav is-collapsed" id="quicknav" aria-label="Jump to category">'+renderQuickNav(data)+'</nav>' +
+      '<button type="button" class="quicknav-toggle" id="quicknavToggle" aria-expanded="false" aria-controls="quicknav">' +
+        '<span class="toggle-label">Show all categories</span><span class="chevron" aria-hidden="true">⌄</span>' +
+      '</button>' +
     '</div>' +
 
     '<div class="wrap">' +
@@ -2433,6 +2458,14 @@
     var adminBtn = document.getElementById("adminLoginBtn");
     if(adminBtn) adminBtn.addEventListener("click", function(){
       if(adminMode){ openSettingsDrawer(); } else { openAdminModal(); }
+    });
+    var navToggle = document.getElementById("quicknavToggle");
+    var nav = document.getElementById("quicknav");
+    if(navToggle && nav) navToggle.addEventListener("click", function(){
+      var collapsed = nav.classList.toggle("is-collapsed");
+      navToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      navToggle.querySelector(".toggle-label").textContent = collapsed ? "Show all categories" : "Show fewer categories";
+      if(collapsed) nav.scrollIntoView({behavior:"smooth", block:"nearest"});
     });
     wireQuickNavScrollSpy();
   };
