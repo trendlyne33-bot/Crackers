@@ -633,6 +633,7 @@
   .ord-cust-phone{font-size:.72rem;color:var(--text-dim);}
   .ord-items{color:var(--text-dim);font-size:.78rem;max-width:180px;}
   .ord-amount{font-weight:800;}
+  .ord-order-no{font-weight:700;color:var(--accent);white-space:nowrap;}
   .status-select{
     font:inherit;font-size:.74rem;font-weight:700;border-radius:999px;padding:4px 8px;
     border:1px solid var(--border);cursor:pointer;
@@ -640,6 +641,15 @@
   .status-select.status-pending{background:var(--warning-wash);color:var(--warning);}
   .status-select.status-delivered{background:var(--good-wash);color:var(--good);}
   .status-select.status-cancelled{background:var(--critical-wash);color:var(--critical);}
+  .ord-delete-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:9px;flex-shrink:0;
+    background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text-dim);
+    cursor:pointer;font-size:.85rem;line-height:1;
+    transition:background .15s ease,border-color .15s ease,color .15s ease;
+  }
+  .ord-delete-btn:hover{background:var(--critical-wash);border-color:rgba(239,68,68,0.4);color:var(--critical);}
+  .ord-delete-btn:disabled{opacity:.5;cursor:default;}
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
@@ -1398,7 +1408,13 @@
       alert("Minimum order value is " + money(MIN_ORDER_VALUE) + ". Your cart is at " + money(total) + " — please add " + money(MIN_ORDER_VALUE - total) + " more to place your order.");
       return;
     }
-    var order = {orderNo: generateOrderNo(), name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
+    // Order No is simply the customer's own mobile number (no +91) — easy for both
+    // the customer and the shop to reference on a call. Note: if the same number
+    // orders more than once, those orders share the same Order No; they're still
+    // separate, independently editable/deletable records underneath (the admin
+    // panel's order search finds all of them together by phone number, and the
+    // date/items columns tell them apart).
+    var order = {orderNo: phoneDigits, name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
     saveOrderToFirestore(order, "site");
 
     // Stays on this page the whole time — no WhatsApp tab or mail app opens for the
@@ -1515,10 +1531,6 @@
         console.warn("Sync recovery check failed:", err && err.code);
       });
     }, 15000);
-  }
-
-  function generateOrderNo(){
-    return "CC-" + Date.now().toString(36).toUpperCase();
   }
 
   function saveOrderToFirestore(order, via){
@@ -1641,6 +1653,7 @@
   var ordersUnsub = null;
   var ordersRange = 14; // days; 0 = all
   var ordersStatusFilterVal = "all";
+  var ordersSearchVal = "";
 
   function ordStatTile(label, value){
     return '<div class="adm-stat-tile"><div class="adm-stat-label">'+esc(label)+'</div><div class="adm-stat-value tabular">'+esc(String(value))+'</div></div>';
@@ -1748,12 +1761,18 @@
     var body = document.getElementById("ordersTableBody");
     var empty = document.getElementById("ordersEmptyState");
     if(!body) return;
+    var q = ordersSearchVal.trim().toLowerCase();
     var rows = ordersCache.filter(ordersWithinRange).filter(function(o){
       return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
+    }).filter(function(o){
+      if(!q) return true;
+      return (o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
+             (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
+             (o.name||"").toLowerCase().indexOf(q) !== -1;
     });
     if(rows.length === 0){
       body.innerHTML = "";
-      if(empty) empty.hidden = false;
+      if(empty){ empty.hidden = false; empty.textContent = q ? "No orders match that search." : "No orders match this filter yet."; }
       return;
     }
     if(empty) empty.hidden = true;
@@ -1761,12 +1780,14 @@
       var itemsSummary = (o.items||[]).map(function(it){ return esc(it.name)+" x"+it.qty; }).join(", ");
       return '' +
         '<tr>' +
+          '<td class="tabular ord-order-no">'+esc(o.orderNo||"—")+'</td>' +
           '<td><div class="ord-cust-name">'+esc(o.name)+'</div><div class="ord-cust-phone">'+esc(o.phone)+'</div></td>' +
           '<td class="ord-items">'+itemsSummary+'</td>' +
           '<td>'+esc(o.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+'</td>' +
           '<td class="tabular ord-amount">'+money(o.total)+'</td>' +
           '<td>'+esc(o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website")+'</td>' +
           '<td>' + statusSelectHtml(o) + '</td>' +
+          '<td><button type="button" class="ord-delete-btn" data-order-id="'+o.id+'" title="Delete this order permanently">🗑</button></td>' +
         '</tr>';
     }).join("");
   }
@@ -1783,6 +1804,22 @@
       alert("Couldn't update order status.\n\n" + (err && err.message ? err.message : err));
     }).finally(function(){
       if(selectEl) selectEl.disabled = false;
+    });
+  }
+
+  // Permanently removes the order document from Firestore — used for a customer
+  // cancellation request, where the order shouldn't be kept around at all (unlike
+  // the "Cancelled" status option above, which keeps a record but marks it void).
+  function deleteOrder(orderId, btnEl){
+    if(!auth || !auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL){
+      alert("Your admin session has expired. Please close this and log in again.");
+      return;
+    }
+    if(btnEl) btnEl.disabled = true;
+    db.collection(FIRESTORE_ORDERS_COLLECTION).doc(orderId).delete().catch(function(err){
+      alert("Couldn't delete this order.\n\n" + (err && err.message ? err.message : err));
+    }).finally(function(){
+      if(btnEl) btnEl.disabled = false;
     });
   }
 
@@ -2246,6 +2283,20 @@
       var orderId = e.target.getAttribute("data-order-id");
       updateOrderStatus(orderId, e.target.value, e.target);
     });
+    document.getElementById("ordersTableBody").addEventListener("click", function(e){
+      var btn = e.target.closest(".ord-delete-btn");
+      if(!btn) return;
+      var orderId = btn.getAttribute("data-order-id");
+      var order = ordersCache.find(function(o){ return o.id === orderId; });
+      var label = order ? ("Order " + (order.orderNo || order.phone) + " (" + order.name + ")") : "this order";
+      if(!confirm(label + " will be permanently deleted from the database — this can't be undone. Continue?")) return;
+      deleteOrder(orderId, btn);
+    });
+    var ordersSearchInput = document.getElementById("ordersSearchInput");
+    if(ordersSearchInput) ordersSearchInput.addEventListener("input", function(e){
+      ordersSearchVal = e.target.value;
+      renderOrdersTable();
+    });
     document.getElementById("visitorsRangeFilter").addEventListener("click", function(e){
       var btn = e.target.closest(".filter-pill");
       if(!btn) return;
@@ -2562,10 +2613,11 @@
             '<button type="button" class="filter-pill" data-status="delivered">Delivered</button>' +
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
+          '<div class="field" style="margin-bottom:12px;"><input type="text" id="ordersSearchInput" placeholder="Search by order no, phone or name"></div>' +
           '<p class="save-hint" id="ordersLoadingState">Loading orders…</p>' +
           '<div class="ord-table-wrap">' +
             '<table class="ord-table">' +
-              '<thead><tr><th>Customer</th><th>Items</th><th>Date</th><th>Total</th><th>Via</th><th>Status</th></tr></thead>' +
+              '<thead><tr><th>Order No</th><th>Customer</th><th>Items</th><th>Date</th><th>Total</th><th>Via</th><th>Status</th><th></th></tr></thead>' +
               '<tbody id="ordersTableBody"></tbody>' +
             '</table>' +
             '<p class="save-hint" id="ordersEmptyState" hidden>No orders match this filter yet.</p>' +
