@@ -85,16 +85,15 @@
   html,body{margin:0;}
   body{
     background:
-      linear-gradient(180deg, rgba(8,4,12,0.72) 0%, rgba(8,4,12,0.5) 22%, rgba(8,4,12,0.55) 55%, rgba(8,4,12,0.8) 100%) fixed;
+      radial-gradient(640px circle at 8% -6%, rgba(243,177,58,0.16), transparent 60%) fixed,
+      radial-gradient(560px circle at 96% 4%, rgba(255,111,145,0.14), transparent 55%) fixed,
+      radial-gradient(760px circle at 50% 108%, rgba(147,51,234,0.16), transparent 60%) fixed,
+      radial-gradient(420px circle at 100% 62%, rgba(56,217,201,0.09), transparent 55%) fixed,
+      linear-gradient(180deg, #1c0f2b 0%, #150a20 45%, #0d0612 100%) fixed;
     background-color:var(--bg);
     color:var(--text);
     font-family:"Mukta","Segoe UI",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;
-  }
-  body::before{
-    content:"";position:fixed;inset:0;z-index:-1;
-    background:url('images/diwali-bg.jpg') center center / cover no-repeat;
-    filter:saturate(.45) brightness(.62) contrast(.96);
   }
   h1,h2,h3,.display{
     font-family:"Baloo 2","Segoe UI",system-ui,sans-serif;
