@@ -671,11 +671,27 @@
       '</div>' +
     '</div>';
 
+    // Preserve whatever's already in the cart across a rebuild (e.g. a live data sync
+    // arriving in the background) — the DOM gets rebuilt from scratch below, but the
+    // customer's selections shouldn't silently vanish while they're mid-checkout.
+    var preservedCart = cart;
     root.innerHTML = html;
     cart = {};
     updateCartBar();
     startFireworks(document.getElementById("fxCanvas"));
     wirePriceListEvents();
+    Object.keys(preservedCart).forEach(function(key){
+      var parts = key.split("_"), ci = parts[0], ii = parts[1];
+      var cat = data.categories && data.categories[ci];
+      var item = cat && cat.items && cat.items[ii];
+      if(!item) return; // that item no longer exists at this index — safely drop it
+      var card = document.querySelector('.item-card[data-cat="'+ci+'"][data-item="'+ii+'"]');
+      if(!card) return;
+      var input = card.querySelector(".qty-input");
+      if(!input) return;
+      input.value = preservedCart[key];
+      applyQty(card, preservedCart[key]);
+    });
   }
 
   /* ---------- ambient fireworks canvas ---------- */
