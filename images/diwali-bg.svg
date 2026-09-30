@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <radialGradient id="warmGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f3b13a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#f3b13a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinkGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6f91" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ff6f91" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tealGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38d9c9" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#38d9c9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="marigold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffb347"/>
+      <stop offset="100%" stop-color="#e8590c"/>
+    </linearGradient>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- ambient bokeh -->
+  <circle cx="180" cy="140" r="10" fill="#f3b13a" opacity="0.5"/>
+  <circle cx="1420" cy="110" r="7" fill="#ff6f91" opacity="0.45"/>
+  <circle cx="760" cy="70" r="5" fill="#ffffff" opacity="0.35"/>
+  <circle cx="330" cy="260" r="4" fill="#ffffff" opacity="0.3"/>
+  <circle cx="1220" cy="240" r="5" fill="#38d9c9" opacity="0.3"/>
+  <circle cx="60" cy="360" r="3" fill="#ffffff" opacity="0.25"/>
+  <circle cx="1540" cy="330" r="3" fill="#ffffff" opacity="0.25"/>
+  <circle cx="950" cy="150" r="3" fill="#ffffff" opacity="0.3"/>
+
+  <!-- subtle firework bursts -->
+  <g opacity="0.28" stroke="#ff6f91" stroke-width="2" stroke-linecap="round">
+    <line x1="260" y1="150" x2="260" y2="90"/>
+    <line x1="260" y1="150" x2="313" y2="120"/>
+    <line x1="260" y1="150" x2="313" y2="180"/>
+    <line x1="260" y1="150" x2="260" y2="210"/>
+    <line x1="260" y1="150" x2="207" y2="180"/>
+    <line x1="260" y1="150" x2="207" y2="120"/>
+  </g>
+  <circle cx="260" cy="150" r="40" fill="url(#pinkGlow)"/>
+
+  <g opacity="0.24" stroke="#f3b13a" stroke-width="2" stroke-linecap="round">
+    <line x1="1300" y1="200" x2="1300" y2="150"/>
+    <line x1="1300" y1="200" x2="1343" y2="175"/>
+    <line x1="1300" y1="200" x2="1343" y2="225"/>
+    <line x1="1300" y1="200" x2="1300" y2="250"/>
+    <line x1="1300" y1="200" x2="1257" y2="225"/>
+    <line x1="1300" y1="200" x2="1257" y2="175"/>
+  </g>
+  <circle cx="1300" cy="200" r="36" fill="url(#warmGlow)"/>
+
+  <g opacity="0.2" stroke="#38d9c9" stroke-width="2" stroke-linecap="round">
+    <line x1="820" y1="110" x2="820" y2="70"/>
+    <line x1="820" y1="110" x2="855" y2="90"/>
+    <line x1="820" y1="110" x2="855" y2="130"/>
+    <line x1="820" y1="110" x2="820" y2="150"/>
+    <line x1="820" y1="110" x2="785" y2="130"/>
+    <line x1="820" y1="110" x2="785" y2="90"/>
+  </g>
+  <circle cx="820" cy="110" r="30" fill="url(#tealGlow)"/>
+
+  <!-- marigold garland clusters, top corners -->
+  <g opacity="0.85">
+    <line x1="0" y1="0" x2="70" y2="60" stroke="#7a4b2a" stroke-width="2" opacity="0.5"/>
+    <circle cx="18" cy="18" r="11" fill="url(#marigold)"/>
+    <circle cx="40" cy="10" r="9" fill="url(#marigold)"/>
+    <circle cx="52" cy="34" r="10" fill="url(#marigold)"/>
+    <circle cx="26" cy="42" r="8" fill="url(#marigold)"/>
+    <circle cx="8" cy="46" r="7" fill="url(#marigold)"/>
+  </g>
+  <g opacity="0.85" transform="translate(1600,0) scale(-1,1)">
+    <line x1="0" y1="0" x2="70" y2="60" stroke="#7a4b2a" stroke-width="2" opacity="0.5"/>
+    <circle cx="18" cy="18" r="11" fill="url(#marigold)"/>
+    <circle cx="40" cy="10" r="9" fill="url(#marigold)"/>
+    <circle cx="52" cy="34" r="10" fill="url(#marigold)"/>
+    <circle cx="26" cy="42" r="8" fill="url(#marigold)"/>
+    <circle cx="8" cy="46" r="7" fill="url(#marigold)"/>
+  </g>
+
+  <!-- string lights across the top -->
+  <path d="M -20 40 Q 200 110 420 45 T 860 45 T 1300 45 T 1620 40" fill="none" stroke="#caa2d8" stroke-width="1.5" opacity="0.35"/>
+  <g fill="#ffd27a">
+    <circle cx="60" cy="58" r="4" opacity="0.85"/>
+    <circle cx="200" cy="92" r="4" opacity="0.85"/>
+    <circle cx="340" cy="68" r="4" opacity="0.85"/>
+    <circle cx="480" cy="50" r="4" opacity="0.85" fill="#ff9db3"/>
+    <circle cx="620" cy="68" r="4" opacity="0.85"/>
+    <circle cx="760" cy="92" r="4" opacity="0.85"/>
+    <circle cx="900" cy="68" r="4" opacity="0.85" fill="#7be0d3"/>
+    <circle cx="1040" cy="50" r="4" opacity="0.85"/>
+    <circle cx="1180" cy="68" r="4" opacity="0.85"/>
+    <circle cx="1320" cy="92" r="4" opacity="0.85" fill="#ff9db3"/>
+    <circle cx="1460" cy="60" r="4" opacity="0.85"/>
+    <circle cx="1560" cy="44" r="4" opacity="0.85"/>
+  </g>
+
+  <!-- temple/palace silhouettes anchored bottom, left and right -->
+  <g opacity="0.5" fill="#1c0f2b">
+    <path d="M -20 900 L -20 780 Q -20 740 30 730 L 30 690 L 60 660 L 90 690 L 90 730 Q 140 740 140 780 L 140 900 Z"/>
+    <path d="M 120 900 L 120 820 Q 120 790 160 780 L 160 750 L 185 725 L 210 750 L 210 780 Q 250 790 250 820 L 250 900 Z"/>
+    <rect x="0" y="800" width="14" height="100"/>
+    <rect x="230" y="800" width="14" height="100"/>
+  </g>
+  <g opacity="0.5" fill="#1c0f2b" transform="translate(1600,0) scale(-1,1)">
+    <path d="M -20 900 L -20 780 Q -20 740 30 730 L 30 690 L 60 660 L 90 690 L 90 730 Q 140 740 140 780 L 140 900 Z"/>
+    <path d="M 120 900 L 120 820 Q 120 790 160 780 L 160 750 L 185 725 L 210 750 L 210 780 Q 250 790 250 820 L 250 900 Z"/>
+    <rect x="0" y="800" width="14" height="100"/>
+    <rect x="230" y="800" width="14" height="100"/>
+  </g>
+
+  <!-- diya row along the bottom -->
+  <g filter="url(#soft)" opacity="0.5">
+    <ellipse cx="500" cy="880" rx="60" ry="18" fill="url(#warmGlow)"/>
+    <ellipse cx="800" cy="890" rx="70" ry="20" fill="url(#warmGlow)"/>
+    <ellipse cx="1100" cy="880" rx="60" ry="18" fill="url(#warmGlow)"/>
+  </g>
+  <g fill="#241537">
+    <path d="M 470 875 Q 500 855 530 875 Q 500 890 470 875 Z"/>
+    <path d="M 770 883 Q 800 860 830 883 Q 800 900 770 883 Z"/>
+    <path d="M 1070 875 Q 1100 855 1130 875 Q 1100 890 1070 875 Z"/>
+  </g>
+  <g fill="#ffb347">
+    <path d="M 500 858 Q 495 846 500 838 Q 505 846 500 858 Z"/>
+    <path d="M 800 866 Q 795 852 800 843 Q 805 852 800 866 Z"/>
+    <path d="M 1100 858 Q 1095 846 1100 838 Q 1105 846 1100 858 Z"/>
+  </g>
+</svg>

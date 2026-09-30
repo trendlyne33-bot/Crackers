@@ -85,12 +85,12 @@
   html,body{margin:0;}
   body{
     background:
-      radial-gradient(640px circle at 8% -6%, rgba(243,177,58,0.14), transparent 60%),
-      radial-gradient(520px circle at 94% 2%, rgba(255,111,145,0.12), transparent 55%),
-      radial-gradient(760px circle at 50% 105%, rgba(147,51,234,0.14), transparent 60%),
-      radial-gradient(420px circle at 100% 60%, rgba(56,217,201,0.08), transparent 55%),
-      linear-gradient(180deg, #1c0f2b 0%, #150a20 45%, #0d0612 100%);
-    background-attachment:fixed;
+      url('images/diwali-bg.svg') bottom center / cover no-repeat fixed,
+      radial-gradient(640px circle at 8% -6%, rgba(243,177,58,0.14), transparent 60%) fixed,
+      radial-gradient(520px circle at 94% 2%, rgba(255,111,145,0.12), transparent 55%) fixed,
+      radial-gradient(760px circle at 50% 105%, rgba(147,51,234,0.14), transparent 60%) fixed,
+      radial-gradient(420px circle at 100% 60%, rgba(56,217,201,0.08), transparent 55%) fixed,
+      linear-gradient(180deg, #1c0f2b 0%, #150a20 45%, #0d0612 100%) fixed;
     background-color:var(--bg);
     color:var(--text);
     font-family:"Mukta","Segoe UI",system-ui,sans-serif;
@@ -123,11 +123,20 @@
     padding-block:10px;
   }
   .brand{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;}
+  .brand-row{display:flex;align-items:center;gap:9px;min-width:0;}
+  .brand-logo{
+    display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:34px;height:34px;border-radius:50%;font-size:1.05rem;
+    background:linear-gradient(160deg, rgba(243,177,58,0.28), rgba(255,111,145,0.14));
+    border:1px solid rgba(243,177,58,0.35);
+    box-shadow:0 0 16px -2px rgba(243,177,58,0.5);
+  }
   .brand-name{font-family:"Baloo 2",sans-serif;font-weight:700;font-size:1.15rem;line-height:1.1;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     background:linear-gradient(135deg, #ffe3a3, var(--accent) 55%, var(--accent-2));
     -webkit-background-clip:text;background-clip:text;color:transparent;}
-  .brand-tag{font-size:.72rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .brand-tag{font-size:.72rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    margin-left:43px;}
   .top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .icon-btn{
     display:inline-flex;align-items:center;justify-content:center;
@@ -186,14 +195,16 @@
   /* quicknav */
   .quicknav-bar{
     position:sticky;top:58px;z-index:35;
-    background:linear-gradient(180deg, rgba(24,12,36,0.62), rgba(18,8,24,0.5));
-    backdrop-filter:blur(14px) saturate(140%);
-    -webkit-backdrop-filter:blur(14px) saturate(140%);
-    border-bottom:1px solid var(--border);
+    padding-block:10px 4px;
   }
   .quicknav{
-    display:flex;gap:8px;overflow-x:auto;padding-block:12px;padding-inline-end:28px;
+    display:flex;gap:10px;overflow-x:auto;padding:16px;padding-inline-end:36px;
     scrollbar-width:none;scroll-snap-type:x proximity;
+    background:linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    border:1px solid var(--border);border-radius:24px;
+    backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    box-shadow:0 16px 40px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
     mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
     -webkit-mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
   }
@@ -202,14 +213,14 @@
      so every category is simply visible, never cropped or requiring a scroll gesture. */
   @media (min-width:561px){
     .quicknav{
-      flex-wrap:wrap;overflow-x:visible;padding-inline-end:0;justify-content:center;
+      flex-wrap:wrap;overflow-x:visible;padding-inline-end:16px;justify-content:center;
       mask-image:none;-webkit-mask-image:none;
     }
   }
   .chip{
-    flex:0 0 auto;padding:9px 17px;border-radius:999px;scroll-snap-align:start;
-    background:var(--surface);border:1px solid var(--border);
-    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+    padding:8px 16px 8px 8px;border-radius:999px;scroll-snap-align:start;
+    background:rgba(255,255,255,0.05);border:1px solid var(--border);
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
     color:var(--text-dim);font-size:.82rem;font-weight:700;text-decoration:none;
     white-space:nowrap;letter-spacing:.01em;
@@ -224,7 +235,19 @@
     border-color:transparent;color:var(--accent-ink);
     box-shadow:var(--glow-gold);
   }
-  .chip-icon{font-size:.9em;margin-right:1px;}
+  .chip.active .chip-icon{background:rgba(255,255,255,0.28);}
+  .chip-icon{
+    display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:26px;height:26px;border-radius:50%;font-size:.92rem;
+    background:rgba(255,255,255,0.08);
+  }
+  .chip:nth-of-type(6n+1) .chip-icon{background:rgba(255,111,145,0.22);}
+  .chip:nth-of-type(6n+2) .chip-icon{background:rgba(243,177,58,0.22);}
+  .chip:nth-of-type(6n+3) .chip-icon{background:rgba(147,110,234,0.22);}
+  .chip:nth-of-type(6n+4) .chip-icon{background:rgba(56,217,201,0.22);}
+  .chip:nth-of-type(6n+5) .chip-icon{background:rgba(255,159,67,0.22);}
+  .chip:nth-of-type(6n+6) .chip-icon{background:rgba(255,111,197,0.22);}
+  .chip.active:nth-of-type(n) .chip-icon{background:rgba(255,255,255,0.28);}
 
   /* price list */
   .cat-section{padding-block:22px;scroll-margin-top:76px;}
@@ -335,17 +358,22 @@
 
   /* cart bar */
   .cartbar{
-    position:fixed;left:0;right:0;bottom:0;z-index:45;
-    background:linear-gradient(180deg, rgba(36,18,50,0.85), rgba(20,10,30,0.92));
-    border-top:1px solid var(--border);
+    position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:45;
+    background:linear-gradient(180deg, rgba(36,18,50,0.88), rgba(20,10,30,0.94));
+    border:1px solid var(--border);
     backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);
-    box-shadow:0 -16px 36px -18px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,0.06);
-    border-radius:20px 20px 0 0;
-    padding-bottom:env(safe-area-inset-bottom,0px);
+    box-shadow:0 16px 40px -16px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,0.06);
+    border-radius:20px;
+    max-width:960px;margin-inline:auto;
   }
-  .cartbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px;}
-  .cartbar-info{font-size:.9rem;color:var(--text-dim);}
+  .cartbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;}
+  .cartbar-info{font-size:.9rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
   .cartbar-info strong{font-size:1rem;color:var(--text);}
+  .cartbar-icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;font-size:.9rem;
+    background:rgba(243,177,58,0.18);border:1px solid rgba(243,177,58,0.3);
+  }
   #checkoutBtn{border-radius:999px;padding:12px 22px;}
   #checkoutBtn::after{content:" →";}
   #checkoutBtn:hover{transform:translateY(-2px);}
@@ -707,7 +735,10 @@
     var html = '' +
     '<div class="topbar"><div class="wrap topbar-inner">' +
       '<div class="brand">' +
-        '<span class="brand-name">'+esc(data.shopName)+'</span>' +
+        '<span class="brand-row">' +
+          '<span class="brand-logo" aria-hidden="true">🪔</span>' +
+          '<span class="brand-name">'+esc(data.shopName)+'</span>' +
+        '</span>' +
         '<span class="brand-tag">'+esc(data.tagline)+'</span>' +
       '</div>' +
       '<div class="top-actions">' +
@@ -761,7 +792,7 @@
 
     '<div class="cartbar" id="cartBar" hidden>' +
       '<div class="wrap cartbar-inner">' +
-        '<div class="cartbar-info"><strong id="cartCount">0</strong> items · <span id="cartTotal" class="tabular">₹0</span></div>' +
+        '<div class="cartbar-info"><span class="cartbar-icon" aria-hidden="true">🛒</span><strong id="cartCount">0</strong> items · <span id="cartTotal" class="tabular">₹0</span></div>' +
         '<button type="button" class="cta cta-primary" id="checkoutBtn">Checkout</button>' +
       '</div>' +
     '</div>';
