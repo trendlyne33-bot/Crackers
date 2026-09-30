@@ -650,6 +650,19 @@
   }
   .ord-delete-btn:hover{background:var(--critical-wash);border-color:rgba(239,68,68,0.4);color:var(--critical);}
   .ord-delete-btn:disabled{opacity:.5;cursor:default;}
+  .ord-select-checkbox, #ordersSelectAll{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+  .ord-bulk-bar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:12px;padding:10px 14px;border-radius:12px;
+    background:rgba(243,177,58,0.1);border:1px solid rgba(243,177,58,0.3);
+    font-size:.82rem;font-weight:700;color:var(--text);
+  }
+  .ord-bulk-bar .ord-bulk-delete{width:auto;height:auto;padding:7px 14px;gap:6px;font-size:.78rem;font-weight:700;}
+  .ord-bulk-clear{
+    background:none;border:none;color:var(--text-dim);font:inherit;font-size:.78rem;font-weight:700;
+    text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;
+  }
+  .ord-bulk-clear:hover{color:var(--text);}
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
@@ -1654,6 +1667,7 @@
   var ordersRange = 14; // days; 0 = all
   var ordersStatusFilterVal = "all";
   var ordersSearchVal = "";
+  var selectedOrderIds = {}; // { [orderId]: true } — which rows are checked in the orders table
 
   function ordStatTile(label, value){
     return '<div class="adm-stat-tile"><div class="adm-stat-label">'+esc(label)+'</div><div class="adm-stat-value tabular">'+esc(String(value))+'</div></div>';
@@ -1770,16 +1784,23 @@
              (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
              (o.name||"").toLowerCase().indexOf(q) !== -1;
     });
+    // Drop any selected id that's no longer in view (deleted elsewhere, or filtered out).
+    var visibleIds = {};
+    rows.forEach(function(o){ visibleIds[o.id] = true; });
+    Object.keys(selectedOrderIds).forEach(function(id){ if(!visibleIds[id]) delete selectedOrderIds[id]; });
     if(rows.length === 0){
       body.innerHTML = "";
       if(empty){ empty.hidden = false; empty.textContent = q ? "No orders match that search." : "No orders match this filter yet."; }
+      renderOrdersBulkBar(rows);
       return;
     }
     if(empty) empty.hidden = true;
     body.innerHTML = rows.map(function(o){
       var itemsSummary = (o.items||[]).map(function(it){ return esc(it.name)+" x"+it.qty; }).join(", ");
+      var checked = selectedOrderIds[o.id] ? " checked" : "";
       return '' +
         '<tr>' +
+          '<td><input type="checkbox" class="ord-select-checkbox" data-order-id="'+o.id+'"'+checked+' aria-label="Select this order"></td>' +
           '<td class="tabular ord-order-no">'+esc(o.orderNo||"—")+'</td>' +
           '<td><div class="ord-cust-name">'+esc(o.name)+'</div><div class="ord-cust-phone">'+esc(o.phone)+'</div></td>' +
           '<td class="ord-items">'+itemsSummary+'</td>' +
@@ -1790,6 +1811,22 @@
           '<td><button type="button" class="ord-delete-btn" data-order-id="'+o.id+'" title="Delete this order permanently">🗑</button></td>' +
         '</tr>';
     }).join("");
+    renderOrdersBulkBar(rows);
+  }
+
+  function renderOrdersBulkBar(visibleRows){
+    var bar = document.getElementById("ordersBulkBar");
+    var selectAll = document.getElementById("ordersSelectAll");
+    if(!bar) return;
+    var count = Object.keys(selectedOrderIds).length;
+    bar.hidden = count === 0;
+    var label = document.getElementById("ordersBulkCount");
+    if(label) label.textContent = count + " selected";
+    if(selectAll){
+      var visibleCount = visibleRows.length;
+      selectAll.checked = visibleCount > 0 && count === visibleCount;
+      selectAll.indeterminate = count > 0 && count < visibleCount;
+    }
   }
 
   function updateOrderStatus(orderId, newStatus, selectEl){
@@ -1818,6 +1855,28 @@
     if(btnEl) btnEl.disabled = true;
     db.collection(FIRESTORE_ORDERS_COLLECTION).doc(orderId).delete().catch(function(err){
       alert("Couldn't delete this order.\n\n" + (err && err.message ? err.message : err));
+    }).finally(function(){
+      if(btnEl) btnEl.disabled = false;
+    });
+  }
+
+  // Deletes every currently-selected order in one batched write — used for clearing
+  // out several cancellations at once instead of one 🗑 click at a time.
+  function deleteSelectedOrders(btnEl){
+    if(!auth || !auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL){
+      alert("Your admin session has expired. Please close this and log in again.");
+      return;
+    }
+    var ids = Object.keys(selectedOrderIds);
+    if(ids.length === 0) return;
+    if(btnEl) btnEl.disabled = true;
+    var batch = db.batch();
+    ids.forEach(function(id){ batch.delete(db.collection(FIRESTORE_ORDERS_COLLECTION).doc(id)); });
+    batch.commit().then(function(){
+      selectedOrderIds = {};
+      renderOrdersTable();
+    }).catch(function(err){
+      alert("Couldn't delete the selected orders.\n\n" + (err && err.message ? err.message : err));
     }).finally(function(){
       if(btnEl) btnEl.disabled = false;
     });
@@ -2279,6 +2338,14 @@
       renderOrdersTable();
     });
     document.getElementById("ordersTableBody").addEventListener("change", function(e){
+      if(e.target.classList.contains("ord-select-checkbox")){
+        var id = e.target.getAttribute("data-order-id");
+        if(e.target.checked) selectedOrderIds[id] = true; else delete selectedOrderIds[id];
+        renderOrdersBulkBar(ordersCache.filter(ordersWithinRange).filter(function(o){
+          return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
+        }));
+        return;
+      }
       if(!e.target.classList.contains("status-select")) return;
       var orderId = e.target.getAttribute("data-order-id");
       updateOrderStatus(orderId, e.target.value, e.target);
@@ -2295,6 +2362,33 @@
     var ordersSearchInput = document.getElementById("ordersSearchInput");
     if(ordersSearchInput) ordersSearchInput.addEventListener("input", function(e){
       ordersSearchVal = e.target.value;
+      renderOrdersTable();
+    });
+    var ordersSelectAll = document.getElementById("ordersSelectAll");
+    if(ordersSelectAll) ordersSelectAll.addEventListener("change", function(e){
+      var q = ordersSearchVal.trim().toLowerCase();
+      var visible = ordersCache.filter(ordersWithinRange).filter(function(o){
+        return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
+      }).filter(function(o){
+        if(!q) return true;
+        return (o.orderNo||"").toLowerCase().indexOf(q) !== -1 ||
+               (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
+               (o.name||"").toLowerCase().indexOf(q) !== -1;
+      });
+      if(e.target.checked){ visible.forEach(function(o){ selectedOrderIds[o.id] = true; }); }
+      else { visible.forEach(function(o){ delete selectedOrderIds[o.id]; }); }
+      renderOrdersTable();
+    });
+    var ordersBulkDeleteBtn = document.getElementById("ordersBulkDeleteBtn");
+    if(ordersBulkDeleteBtn) ordersBulkDeleteBtn.addEventListener("click", function(){
+      var count = Object.keys(selectedOrderIds).length;
+      if(count === 0) return;
+      if(!confirm(count + " order" + (count===1?"":"s") + " will be permanently deleted from the database — this can't be undone. Continue?")) return;
+      deleteSelectedOrders(ordersBulkDeleteBtn);
+    });
+    var ordersBulkClearBtn = document.getElementById("ordersBulkClearBtn");
+    if(ordersBulkClearBtn) ordersBulkClearBtn.addEventListener("click", function(){
+      selectedOrderIds = {};
       renderOrdersTable();
     });
     document.getElementById("visitorsRangeFilter").addEventListener("click", function(e){
@@ -2614,10 +2708,15 @@
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
           '<div class="field" style="margin-bottom:12px;"><input type="text" id="ordersSearchInput" placeholder="Search by order no, phone or name"></div>' +
+          '<div class="ord-bulk-bar" id="ordersBulkBar" hidden>' +
+            '<span id="ordersBulkCount">0 selected</span>' +
+            '<button type="button" class="ord-delete-btn ord-bulk-delete" id="ordersBulkDeleteBtn" title="Delete selected orders permanently">🗑 Delete selected</button>' +
+            '<button type="button" class="ord-bulk-clear" id="ordersBulkClearBtn">Clear</button>' +
+          '</div>' +
           '<p class="save-hint" id="ordersLoadingState">Loading orders…</p>' +
           '<div class="ord-table-wrap">' +
             '<table class="ord-table">' +
-              '<thead><tr><th>Order No</th><th>Customer</th><th>Items</th><th>Date</th><th>Total</th><th>Via</th><th>Status</th><th></th></tr></thead>' +
+              '<thead><tr><th><input type="checkbox" id="ordersSelectAll" aria-label="Select all orders"></th><th>Order No</th><th>Customer</th><th>Items</th><th>Date</th><th>Total</th><th>Via</th><th>Status</th><th></th></tr></thead>' +
               '<tbody id="ordersTableBody"></tbody>' +
             '</table>' +
             '<p class="save-hint" id="ordersEmptyState" hidden>No orders match this filter yet.</p>' +
