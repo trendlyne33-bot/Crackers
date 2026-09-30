@@ -802,6 +802,21 @@
     });
   }
   function slug(s,i){ return "cat-" + i + "-" + String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+  // A saved photo URL that no longer loads (deleted, moved, broken link) would
+  // otherwise show the browser's broken-image icon — swap in the same sparkle
+  // placeholder used when no photo has been added yet.
+  function itemPhotoError(imgEl){
+    imgEl.onerror = null;
+    imgEl.outerHTML = '<div class="item-photo item-photo-empty" aria-hidden="true">🎇</div>';
+  }
+  function adminPhotoError(imgEl){
+    imgEl.onerror = null;
+    imgEl.outerHTML = "+";
+  }
+  // The app script runs inside its own closure, but the inline onerror="…"
+  // attributes on <img> tags run in global scope, so these need to be reachable there.
+  window.itemPhotoError = itemPhotoError;
+  window.adminPhotoError = adminPhotoError;
   function money(n){
     n = Number(n)||0;
     return "₹" + n.toLocaleString("en-IN");
@@ -893,7 +908,7 @@
             '<label class="item-photo-wrap">' +
               '<input type="file" accept="image/*" class="item-photo-input" hidden data-cat="'+i+'" data-item="'+ii+'">' +
               (it.image ?
-                '<img class="item-photo" src="'+it.image+'" alt="'+esc(it.name)+'">' :
+                '<img class="item-photo" src="'+it.image+'" alt="'+esc(it.name)+'" onerror="itemPhotoError(this)">' :
                 '<div class="item-photo item-photo-empty" aria-hidden="true">🎇</div>') +
               '<span class="item-photo-edit-badge" aria-hidden="true">✎</span>' +
             '</label>' +
@@ -1978,7 +1993,7 @@
       '<div class="item-edit" data-cat="'+catIndex+'" data-item="'+itemIndex+'">' +
         '<label class="item-photo-upload" title="'+(item.image ? "Change photo" : "Add photo")+'">' +
           '<input type="file" accept="image/*" class="f-item-photo" hidden>' +
-          (item.image ? '<img src="'+item.image+'" alt="">' : '+') +
+          (item.image ? '<img src="'+item.image+'" alt="" onerror="adminPhotoError(this)">' : '+') +
         '</label>' +
         '<div class="item-fields">' +
           '<div class="item-row">' +
