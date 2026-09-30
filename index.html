@@ -291,6 +291,18 @@
     background:linear-gradient(135deg, #fff2d6, var(--accent) 70%);
     -webkit-background-clip:text;background-clip:text;color:transparent;}
   .cat-count{font-size:.78rem;color:var(--text-dim);}
+  .cat-section.is-collapsed .item-extra{display:none;}
+  .cat-toggle{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    width:100%;margin-top:12px;padding:10px 16px;border-radius:999px;
+    background:rgba(255,255,255,0.06);border:1px solid var(--border);
+    color:var(--text-dim);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transition:background .15s ease,color .15s ease,border-color .15s ease;
+  }
+  .cat-toggle:hover{background:rgba(255,255,255,0.1);color:var(--text);border-color:rgba(243,177,58,0.4);}
+  .cat-toggle .chevron{display:inline-block;font-size:.7rem;transition:transform .25s ease;}
+  .cat-toggle[aria-expanded="true"] .chevron{transform:rotate(180deg);}
   .item-grid{display:grid;gap:12px;}
   .item-card{
     display:flex;flex-direction:column;gap:10px;
@@ -829,11 +841,12 @@
     }).join("");
   }
 
+  var CATEGORY_COLLAPSE_LIMIT = 4;
   function renderCategory(c,i){
     var items = (c.items||[]).map(function(it,ii){
       var off = pctOff(it.mrp, it.price);
       return '' +
-        '<div class="item-card" data-cat="'+i+'" data-item="'+ii+'">' +
+        '<div class="item-card'+(ii>=CATEGORY_COLLAPSE_LIMIT?' item-extra':'')+'" data-cat="'+i+'" data-item="'+ii+'">' +
           '<div class="item-top">' +
             '<label class="item-photo-wrap">' +
               '<input type="file" accept="image/*" class="item-photo-input" hidden data-cat="'+i+'" data-item="'+ii+'">' +
@@ -857,10 +870,16 @@
           '</div>' +
         '</div>';
     }).join("");
+    var itemCount = (c.items||[]).length;
+    var toggleHtml = itemCount > CATEGORY_COLLAPSE_LIMIT ?
+      '<button type="button" class="cat-toggle" aria-expanded="false">' +
+        '<span class="toggle-label">Show all '+itemCount+' items</span><span class="chevron" aria-hidden="true">⌄</span>' +
+      '</button>' : '';
     return '' +
-      '<section class="cat-section" id="'+slug(c.name,i)+'">' +
-        '<div class="cat-head"><h2>'+esc(c.name)+'</h2><span class="cat-count">'+(c.items||[]).length+' items</span></div>' +
+      '<section class="cat-section'+(itemCount>CATEGORY_COLLAPSE_LIMIT?' is-collapsed':'')+'" id="'+slug(c.name,i)+'">' +
+        '<div class="cat-head"><h2>'+esc(c.name)+'</h2><span class="cat-count">'+itemCount+' items</span></div>' +
         '<div class="item-grid">'+items+'</div>' +
+        toggleHtml +
       '</section>';
   }
 
@@ -1016,6 +1035,17 @@
   function wirePriceListEvents(){
     var list = document.getElementById("pricelist");
     list.addEventListener("click", function(e){
+      var catToggle = e.target.closest(".cat-toggle");
+      if(catToggle){
+        var section = catToggle.closest(".cat-section");
+        var collapsed = section.classList.toggle("is-collapsed");
+        catToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        var label = catToggle.querySelector(".toggle-label");
+        var count = section.querySelectorAll(".item-card").length;
+        label.textContent = collapsed ? "Show all " + count + " items" : "Show fewer";
+        if(collapsed) section.scrollIntoView({behavior:"smooth", block:"start"});
+        return;
+      }
       var photoWrap = e.target.closest(".item-photo-wrap");
       if(photoWrap){
         if(adminMode) return; // let the label open the file picker
