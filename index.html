@@ -219,15 +219,15 @@
        one still lets bold text ghost through) so nothing bleeds through
        anywhere inside its box while it's pinned. */
     background:linear-gradient(180deg, #241232, #180c24);
-    backdrop-filter:blur(var(--glass-blur)) saturate(140%);
-    -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    /* No backdrop-filter here (unlike other glass surfaces): a filter on this
+       element makes it the containing block for the floating panel below in a
+       way that clips the panel's own overflow in some browsers. The solid
+       background above already makes blur unnecessary. */
   }
-  /* Expanded to several rows, a sticky chip panel would stay pinned over the price
-     list as the page scrolls past it — cover the same ~400px of products the whole
-     time instead of just being a compact sticky bar. Drop out of sticky positioning
-     while expanded so it scrolls away normally like the rest of the page; it goes
-     back to being a small sticky bar once collapsed again. */
-  .quicknav-bar.is-expanded{position:static;}
+  /* "Show all categories" no longer pushes the page down — the full grid opens
+     as a floating panel over the page instead (see .quicknav:not(.is-collapsed)
+     below), so the bar itself always stays a single compact sticky row. */
+  .quicknav-backdrop{position:fixed;inset:0;background:rgba(8,4,14,0.6);z-index:30;}
   .quicknav{
     display:flex;gap:10px;overflow-x:auto;padding:16px;padding-inline-end:36px;
     scrollbar-width:none;scroll-snap-type:x proximity;
@@ -266,6 +266,16 @@
       max-height:78px;overflow:hidden;
       mask-image:linear-gradient(to bottom, black 52%, transparent 100%);
       -webkit-mask-image:linear-gradient(to bottom, black 52%, transparent 100%);
+    }
+    /* Expanded: float the full grid over the page as a card instead of growing
+       the sticky bar itself, so the bar never occupies more scroll space and
+       nothing beneath it has to reflow. Scrolls internally if it's ever taller
+       than the screen. */
+    .quicknav:not(.is-collapsed){
+      position:absolute;left:20px;right:20px;top:100%;margin-top:10px;
+      max-height:min(72vh, 520px);overflow-y:auto;
+      box-shadow:0 24px 60px -16px rgba(0,0,0,0.75), 0 0 0 1px rgba(243,177,58,0.28);
+      z-index:60;
     }
     .quicknav-bar{display:flex;flex-direction:column;align-items:center;}
     .quicknav-toggle{display:inline-flex;}
@@ -971,6 +981,7 @@
       '<button type="button" class="quicknav-toggle" id="quicknavToggle" aria-expanded="false" aria-controls="quicknav">' +
         '<span class="toggle-label">Show all categories</span><span class="chevron" aria-hidden="true">⌄</span>' +
       '</button>' +
+      '<div class="quicknav-backdrop" id="quicknavBackdrop" hidden aria-hidden="true"></div>' +
     '</div>' +
 
     '<div class="wrap">' +
@@ -2875,14 +2886,27 @@
     });
     var navToggle = document.getElementById("quicknavToggle");
     var nav = document.getElementById("quicknav");
-    var navBar = document.querySelector(".quicknav-bar");
-    if(navToggle && nav) navToggle.addEventListener("click", function(){
-      var collapsed = nav.classList.toggle("is-collapsed");
-      if(navBar) navBar.classList.toggle("is-expanded", !collapsed);
-      navToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
-      navToggle.querySelector(".toggle-label").textContent = collapsed ? "Show all categories" : "Show fewer categories";
-      if(collapsed) nav.scrollIntoView({behavior:"smooth", block:"nearest"});
-    });
+    var navBackdrop = document.getElementById("quicknavBackdrop");
+    function setQuicknavExpanded(expanded){
+      nav.classList.toggle("is-collapsed", !expanded);
+      if(navBackdrop) navBackdrop.hidden = !expanded;
+      navToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      navToggle.querySelector(".toggle-label").textContent = expanded ? "Show fewer categories" : "Show all categories";
+    }
+    if(navToggle && nav){
+      navToggle.addEventListener("click", function(){
+        setQuicknavExpanded(nav.classList.contains("is-collapsed"));
+      });
+      // Tapping a category closes the floating panel instead of leaving it open
+      // over the page while the browser jumps to that section.
+      nav.addEventListener("click", function(e){
+        if(e.target.closest(".chip")) setQuicknavExpanded(false);
+      });
+      if(navBackdrop) navBackdrop.addEventListener("click", function(){ setQuicknavExpanded(false); });
+      document.addEventListener("keydown", function(e){
+        if(e.key === "Escape" && !nav.classList.contains("is-collapsed")) setQuicknavExpanded(false);
+      });
+    }
     wireQuickNavScrollSpy();
   };
 
