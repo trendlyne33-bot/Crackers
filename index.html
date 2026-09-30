@@ -313,7 +313,11 @@
   .chip.active:nth-of-type(n) .chip-icon{background:rgba(255,255,255,0.28);}
 
   /* price list */
-  .cat-section{padding-block:22px;scroll-margin-top:76px;}
+  /* --sticky-offset is measured live in JS from the actual height of the sticky
+     header + category bar (updateStickyOffset()) — a fixed guess here drifted out
+     of sync whenever either bar's height changed, landing jumps partly hidden
+     behind them. 76px is just the fallback before JS has run once. */
+  .cat-section{padding-block:22px;scroll-margin-top:calc(var(--sticky-offset, 76px) + 16px);}
   .cat-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px;}
   .cat-head h2{font-size:1.3rem;font-weight:700;
     background:linear-gradient(135deg, #fff2d6, var(--accent) 70%);
@@ -2848,6 +2852,22 @@
 
   /* Highlight the category chip for whichever section is currently in view, and keep it
      scrolled into sight within the chip row on mobile. */
+  // Jumping to a category (via the quicknav chips, or scroll-spy highlighting)
+  // needs to know how tall the sticky header + category bar currently are, so
+  // the target lands just below them instead of hidden underneath. Measured
+  // live instead of hardcoded, since that height differs by screen width and
+  // can change if either bar's content changes.
+  var STICKY_OFFSET = 76;
+  function updateStickyOffset(){
+    var topbar = document.querySelector(".topbar");
+    var bar = document.querySelector(".quicknav-bar");
+    var total = (topbar ? topbar.getBoundingClientRect().height : 0) +
+                (bar ? bar.getBoundingClientRect().height : 0);
+    STICKY_OFFSET = Math.round(total) || 76;
+    document.documentElement.style.setProperty("--sticky-offset", STICKY_OFFSET + "px");
+  }
+  window.addEventListener("resize", updateStickyOffset);
+
   var _quicknavObserver = null;
   function wireQuickNavScrollSpy(){
     if(_quicknavObserver) _quicknavObserver.disconnect();
@@ -2870,7 +2890,7 @@
           chip.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
         }
       });
-    }, { rootMargin: "-96px 0px -70% 0px", threshold: 0 });
+    }, { rootMargin: "-" + (STICKY_OFFSET + 20) + "px 0px -70% 0px", threshold: 0 });
     sections.forEach(function(s){ _quicknavObserver.observe(s); });
   }
 
@@ -2878,6 +2898,7 @@
   var _origRender = render;
   render = function(data){
     _origRender(data);
+    updateStickyOffset();
     var btn = document.getElementById("checkoutBtn");
     if(btn) btn.addEventListener("click", openCheckout);
     var adminBtn = document.getElementById("adminLoginBtn");
