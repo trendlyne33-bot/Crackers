@@ -1636,6 +1636,31 @@
       render(dataToSave);
 
       if(!db) throw new Error("Database connection isn't ready yet. Please check your internet connection and try again.");
+
+      // Safety check: never let a save silently wipe out existing catalog data (e.g. if
+      // the admin panel happened to load before live data had finished syncing in). If we
+      // can confirm the server currently has meaningfully more categories than this save
+      // would keep, block it rather than risk erasing real data. If we can't verify in
+      // time (e.g. genuinely offline), don't block — proceed as before, queued locally.
+      try{
+        var timeoutPromise = new Promise(function(resolve){ setTimeout(function(){ resolve(null); }, 6000); });
+        var currentSnap = await Promise.race([
+          db.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).get({source:"server"}),
+          timeoutPromise
+        ]);
+        if(currentSnap && currentSnap.exists){
+          var currentData = currentSnap.data();
+          var currentCount = (currentData && Array.isArray(currentData.categories)) ? currentData.categories.length : 0;
+          var newCount = Array.isArray(dataToSave.categories) ? dataToSave.categories.length : 0;
+          if(currentCount >= 2 && newCount < currentCount / 2){
+            throw new Error("Save blocked to protect your data: the live database currently has " + currentCount + " categories, but this save would only keep " + newCount + ". This usually means the admin panel loaded before your latest data finished syncing in. Please close this, reload the page fully, and try again.");
+          }
+        }
+      }catch(guardErr){
+        if(guardErr && /^Save blocked/.test(guardErr.message)) throw guardErr;
+        console.warn("Could not verify existing data before saving (proceeding with save anyway):", guardErr);
+      }
+
       // Intentionally not awaited: Firestore queues this write locally (offline persistence)
       // and syncs automatically once the connection is back, so we never block or lose data here.
       db.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).set(dataToSave).catch(function(err){
