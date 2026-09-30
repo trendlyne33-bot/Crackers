@@ -629,6 +629,35 @@
   @media (prefers-reduced-motion: reduce){
     .intro-sparkle{display:none;}
   }
+
+  /* new-orders-since-last-visit toast, shown to the admin on login */
+  .new-orders-toast{
+    position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:80;
+    display:flex;align-items:center;gap:10px;
+    max-width:calc(100% - 32px);
+    padding:12px 16px;border-radius:14px;
+    background:linear-gradient(160deg, rgba(36,18,50,0.94), rgba(24,12,36,0.9));
+    border:1px solid rgba(243,177,58,0.4);
+    box-shadow:0 16px 40px -16px rgba(0,0,0,0.65), var(--glow-gold);
+    backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    color:var(--text);font-size:.88rem;font-weight:600;
+    animation:toastIn .3s ease;
+  }
+  .new-orders-toast button{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:50%;flex-shrink:0;
+    background:rgba(255,255,255,0.08);border:1px solid var(--border);color:var(--text-dim);
+    cursor:pointer;font-size:.7rem;line-height:1;
+  }
+  .new-orders-toast button:hover{background:rgba(255,255,255,0.15);color:var(--text);}
+  @keyframes toastIn{ from{opacity:0;transform:translateX(-50%) translateY(-10px);} to{opacity:1;transform:translateX(-50%) translateY(0);} }
+  @media (max-width:560px){
+    .new-orders-toast{
+      top:76px;width:calc(100% - 24px);max-width:calc(100% - 24px);
+      font-size:.8rem;padding:10px 12px;
+    }
+  }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1085,7 +1114,15 @@
     });
   }
 
-  function sendOrder(order){
+  /* Sends the order-notification email via EmailJS when it's configured, entirely in the
+     background — no window, tab, or app opens on the customer's device either way.
+     options.fallbackToMailto controls what happens when EmailJS isn't configured or the send
+     fails: the desktop "Place order" flow still needs *some* guaranteed path to reach the
+     shop, so it falls back to opening a pre-filled email draft; the WhatsApp flow already has
+     WhatsApp as its guaranteed path, so it stays silent instead of interrupting the customer
+     with an extra popup. */
+  function sendOrderEmail(order, options){
+    options = options || {};
     var data = window.__DATA__;
     var cfg = data.email || {};
     if(cfg.serviceId && cfg.templateId && cfg.publicKey){
@@ -1102,13 +1139,14 @@
         });
       }).then(function(){
         return {ok:true, method:"email"};
-      }).catch(function(){
-        openMailtoFallback(order, data);
-        return {ok:true, method:"mailto"};
+      }).catch(function(err){
+        console.warn("Background order email failed:", err && err.message ? err.message : err);
+        if(options.fallbackToMailto){ openMailtoFallback(order, data); return {ok:true, method:"mailto"}; }
+        return {ok:false, method:"none"};
       });
     }
-    openMailtoFallback(order, data);
-    return Promise.resolve({ok:true, method:"mailto"});
+    if(options.fallbackToMailto){ openMailtoFallback(order, data); return Promise.resolve({ok:true, method:"mailto"}); }
+    return Promise.resolve({ok:false, method:"none"});
   }
 
   function openMailtoFallback(order, data){
@@ -1261,6 +1299,7 @@
 
     if(via === "whatsapp"){
       window.open(waLink(window.__DATA__, buildOrderSummaryText(order)), "_blank");
+      sendOrderEmail(order, {fallbackToMailto:false}); // silent background copy to the shop inbox, if EmailJS is set up
       showOrderConfirmation(order);
       resetCart();
       return;
@@ -1268,7 +1307,7 @@
 
     var btn = document.getElementById("submitOrderBtn");
     if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
-    sendOrder(order).then(function(){
+    sendOrderEmail(order, {fallbackToMailto:true}).then(function(){
       showOrderConfirmation(order);
       resetCart();
     }).finally(function(){
@@ -2306,6 +2345,42 @@
   function enterAdminMode(){
     adminMode = true;
     document.body.classList.add("admin-active");
+    checkNewOrdersSinceLastVisit();
+  }
+
+  /* Tells the admin, right when they log in (or are auto-logged-in on their own device),
+     how many orders came in since they were last here — independent of whether the
+     background email notification is configured or reached them. */
+  var NEW_ORDERS_SEEN_KEY = "crackleCartLastOrdersSeen";
+  var _newOrdersToastTimer = null;
+  function checkNewOrdersSinceLastVisit(){
+    if(!db) return;
+    var stored = Number(localStorage.getItem(NEW_ORDERS_SEEN_KEY));
+    var since = (stored && !isNaN(stored)) ? new Date(stored) : new Date(Date.now() - 24*60*60*1000);
+    db.collection(FIRESTORE_ORDERS_COLLECTION)
+      .where("createdAt", ">", since)
+      .orderBy("createdAt", "desc")
+      .limit(50)
+      .get()
+      .then(function(snap){
+        localStorage.setItem(NEW_ORDERS_SEEN_KEY, String(Date.now()));
+        if(snap.empty) return;
+        var revenue = 0;
+        snap.forEach(function(doc){ revenue += Number(doc.data().total) || 0; });
+        showNewOrdersToast(snap.size, revenue);
+      })
+      .catch(function(err){ console.warn("New-orders check failed:", err && err.message ? err.message : err); });
+  }
+  function showNewOrdersToast(count, revenue){
+    var el = document.getElementById("newOrdersToast");
+    if(!el) return;
+    el.innerHTML =
+      '<span>🎉 <strong class="tabular">'+count+'</strong> new order'+(count===1?"":"s")+' since your last visit'+(revenue ? ' · <span class="tabular">'+money(revenue)+'</span>' : '')+'</span>' +
+      '<button type="button" id="newOrdersToastClose" aria-label="Dismiss">✕</button>';
+    el.hidden = false;
+    document.getElementById("newOrdersToastClose").addEventListener("click", function(){ el.hidden = true; });
+    if(_newOrdersToastTimer) clearTimeout(_newOrdersToastTimer);
+    _newOrdersToastTimer = setTimeout(function(){ el.hidden = true; }, 10000);
   }
   function adminSignOut(){
     if(auth) auth.signOut();
@@ -2319,6 +2394,7 @@
     var host = document.createElement("div");
     host.innerHTML = '' +
       '<div id="syncBadge" hidden style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:70;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:.75rem;font-weight:700;box-shadow:var(--shadow);"></div>' +
+      '<div id="newOrdersToast" class="new-orders-toast" hidden></div>' +
       /* checkout */
       '<div class="backdrop" id="checkoutBackdrop" hidden></div>' +
       '<aside class="drawer" id="checkoutDrawer" hidden role="dialog" aria-label="Complete your order">' +
