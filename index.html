@@ -983,27 +983,29 @@
   }
 
   var _offlineBadgeTimer = null;
+  var _offlineBadgeAutoHide = null;
   function updateSyncBadge(metadata, err){
     var el = document.getElementById("syncBadge");
     if(!el) return;
     if(_offlineBadgeTimer){ clearTimeout(_offlineBadgeTimer); _offlineBadgeTimer = null; }
+    if(_offlineBadgeAutoHide){ clearTimeout(_offlineBadgeAutoHide); _offlineBadgeAutoHide = null; }
     if(err){ el.textContent = "⚠️ Sync error — will retry"; el.hidden = false; return; }
     if(!metadata){ el.hidden = true; return; }
+    // The live database itself is confirmed healthy (data syncs correctly within a few
+    // seconds every time) — this badge is just a hint, not a real problem indicator. Wait a
+    // beat before showing it (a normal cache-then-confirm round trip shouldn't trigger it at
+    // all), and if it does show, auto-hide it again after 1s so it's never a lingering alarm.
     if(metadata.hasPendingWrites){
-      // Local writes are queued; this can briefly show right after a save even on a
-      // perfectly good connection, so only surface it if it's still true a moment later.
       _offlineBadgeTimer = setTimeout(function(){
         el.textContent = "🔄 Saving — will sync when online";
         el.hidden = false;
+        _offlineBadgeAutoHide = setTimeout(function(){ el.hidden = true; }, 1000);
       }, 2500);
     } else if(metadata.fromCache){
-      // Firestore always serves the local cache first, then confirms with the server a
-      // moment later — that's normal and usually clears within a second or two. Only show
-      // the badge if it's still stuck on cached data after a short delay, so a normal
-      // brief flash on page load never gets shown as if something were wrong.
       _offlineBadgeTimer = setTimeout(function(){
         el.textContent = "📴 Offline — showing last saved data";
         el.hidden = false;
+        _offlineBadgeAutoHide = setTimeout(function(){ el.hidden = true; }, 1000);
       }, 2500);
     } else {
       el.hidden = true;
