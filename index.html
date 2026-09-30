@@ -651,6 +651,7 @@
     border:1px solid var(--border);cursor:pointer;
   }
   .status-select.status-pending{background:var(--warning-wash);color:var(--warning);}
+  .status-select.status-acknowledged{background:rgba(96,165,250,0.16);color:#60a5fa;}
   .status-select.status-delivered{background:var(--good-wash);color:var(--good);}
   .status-select.status-cancelled{background:var(--critical-wash);color:var(--critical);}
   .ord-delete-btn{
@@ -1777,7 +1778,7 @@
   }
 
   function statusSelectHtml(o){
-    var opts = ["pending","delivered","cancelled"].map(function(s){
+    var opts = ["pending","acknowledged","delivered","cancelled"].map(function(s){
       return '<option value="'+s+'"'+(o.status===s?" selected":"")+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
     }).join("");
     return '<select class="status-select status-'+o.status+'" data-order-id="'+o.id+'">'+opts+'</select>';
@@ -2716,6 +2717,7 @@
           '<div class="filter-row" style="margin-bottom:12px;" id="ordersStatusFilter">' +
             '<button type="button" class="filter-pill active" data-status="all">All</button>' +
             '<button type="button" class="filter-pill" data-status="pending">Pending</button>' +
+            '<button type="button" class="filter-pill" data-status="acknowledged">Acknowledged</button>' +
             '<button type="button" class="filter-pill" data-status="delivered">Delivered</button>' +
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
