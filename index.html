@@ -1195,9 +1195,7 @@
     renderCheckoutBody();
     var hintEl = document.getElementById("checkoutSendHint");
     if(hintEl){
-      hintEl.textContent = isMobileDevice()
-        ? "Placing your order opens WhatsApp with your order details ready to send to the shop."
-        : "Placing your order sends it to the shop by email.";
+      hintEl.textContent = "We'll save your order and the shop will reach out to confirm availability, delivery and payment.";
     }
     document.getElementById("checkoutBackdrop").hidden = false;
     document.getElementById("checkoutDrawer").hidden = false;
@@ -1228,63 +1226,105 @@
     document.getElementById("checkoutFoot").hidden = false;
   }
 
-  function downloadBlob(content, type, filename){
-    try{
-      var blob = new Blob([content], {type:type});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      a.href = url; a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
-      return true;
-    }catch(e){ return false; }
+  function ensureJsPdfLoaded(){
+    return new Promise(function(resolve, reject){
+      if(window.jspdf && window.jspdf.jsPDF && window.jspdf.jsPDF.API && window.jspdf.jsPDF.API.autoTable){ resolve(); return; }
+      var core = document.createElement("script");
+      core.src = "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js";
+      core.onload = function(){
+        var table = document.createElement("script");
+        table.src = "https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js";
+        table.onload = function(){ resolve(); };
+        table.onerror = function(){ reject(new Error("failed to load PDF table library")); };
+        document.head.appendChild(table);
+      };
+      core.onerror = function(){ reject(new Error("failed to load PDF library")); };
+      document.head.appendChild(core);
+    });
   }
 
-  function buildReceiptHtml(order, data){
-    var itemsRows = order.items.map(function(it){
-      return '<tr><td>'+esc(it.name)+'</td><td>'+esc(it.unit||"")+'</td><td class="tabular">'+it.qty+'</td><td class="tabular">'+money(it.price)+'</td><td class="tabular">'+money(it.lineTotal)+'</td></tr>';
-    }).join("");
+  // jsPDF's built-in (non-embedded) fonts can't render the ₹ glyph — it comes out as a
+  // broken/blank character — so the PDF uses "Rs." instead, just for this document.
+  function moneyPdf(n){
+    n = Number(n)||0;
+    return "Rs. " + n.toLocaleString("en-IN");
+  }
+
+  function buildReceiptPdf(order, data){
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({unit:"pt", format:"a4"});
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var margin = 44;
+    var y = 54;
+
+    doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(42,20,32);
+    doc.text(data.shopName || "Receipt", margin, y);
+    y += 18;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(110,90,99);
+    var addrLine = [data.address, data.phone].filter(Boolean).join("   ·   ");
+    var addrLines = doc.splitTextToSize(addrLine, pageWidth - margin*2);
+    doc.text(addrLines, margin, y);
+    y += addrLines.length * 12 + 16;
+
     var dateStr = (order.createdAt instanceof Date ? order.createdAt : new Date()).toLocaleString("en-IN", {dateStyle:"medium", timeStyle:"short"});
-    return "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"UTF-8\">" +
-      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-      "<title>Receipt " + esc(order.orderNo) + "</title>" +
-      "<style>" +
-        "body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:640px;margin:32px auto;padding:0 20px;color:#2a1420;}" +
-        "h1{font-size:1.3rem;margin-bottom:4px;}" +
-        ".muted{color:#6b5a63;font-size:.85rem;}" +
-        "table{width:100%;border-collapse:collapse;margin-top:18px;}" +
-        "th,td{text-align:left;padding:8px 6px;border-bottom:1px solid #eee;font-size:.9rem;}" +
-        "th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:#6b5a63;}" +
-        ".tabular{font-variant-numeric:tabular-nums;text-align:right;}" +
-        ".total-row td{font-weight:800;font-size:1.05rem;border-top:2px solid #2a1420;border-bottom:none;}" +
-        ".section{margin-top:20px;}" +
-        ".section-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:#6b5a63;margin-bottom:4px;}" +
-        "@media print{body{margin:0;}}" +
-      "</style></head><body>" +
-      "<h1>" + esc(data.shopName||"Receipt") + "</h1>" +
-      "<div class=\"muted\">" + esc(data.address||"") + (data.phone?(" &middot; " + esc(data.phone)):"") + "</div>" +
-      "<div class=\"section\"><div class=\"section-title\">Order</div>" +
-        "<div>Order No: <strong>" + esc(order.orderNo) + "</strong></div>" +
-        "<div class=\"muted\">" + esc(dateStr) + "</div>" +
-      "</div>" +
-      "<div class=\"section\"><div class=\"section-title\">Customer</div>" +
-        "<div>" + esc(order.name) + "</div>" +
-        "<div class=\"muted\">" + esc(order.phone) + "</div>" +
-        "<div class=\"muted\">" + esc(order.address) + "</div>" +
-      "</div>" +
-      "<table><thead><tr><th>Item</th><th>Unit</th><th class=\"tabular\">Qty</th><th class=\"tabular\">Price</th><th class=\"tabular\">Amount</th></tr></thead><tbody>" +
-        itemsRows +
-        "<tr class=\"total-row\"><td colspan=\"4\">Total</td><td class=\"tabular\">" + money(order.total) + "</td></tr>" +
-      "</tbody></table>" +
-      "<p class=\"muted\" style=\"margin-top:24px;\">This is a summary of your order request, not a payment confirmation. The shop will contact you to confirm availability, delivery and payment.</p>" +
-      "</body></html>";
+    doc.setDrawColor(230,220,225); doc.line(margin, y, pageWidth - margin, y); y += 18;
+
+    doc.setFontSize(9); doc.setTextColor(110,90,99);
+    doc.text("ORDER NO", margin, y);
+    doc.text("DATE", pageWidth/2, y);
+    y += 13;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(42,20,32);
+    doc.text(String(order.orderNo), margin, y);
+    doc.setFont("helvetica", "normal");
+    doc.text(dateStr, pageWidth/2, y);
+    y += 22;
+
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(110,90,99);
+    doc.text("CUSTOMER", margin, y); y += 14;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor(42,20,32);
+    doc.text(order.name, margin, y); y += 14;
+    doc.setFontSize(9.5); doc.setTextColor(110,90,99);
+    doc.text(order.phone, margin, y); y += 13;
+    var addrWrapped = doc.splitTextToSize(order.address, pageWidth - margin*2);
+    doc.text(addrWrapped, margin, y);
+    y += addrWrapped.length * 12 + 14;
+
+    var rows = order.items.map(function(it){
+      return [it.name, it.unit||"", String(it.qty), moneyPdf(it.price), moneyPdf(it.lineTotal)];
+    });
+    doc.autoTable({
+      startY: y,
+      margin: {left: margin, right: margin},
+      head: [["Item","Unit","Qty","Price","Amount"]],
+      body: rows,
+      foot: [["", "", "", "Total", moneyPdf(order.total)]],
+      styles: {font:"helvetica", fontSize:9, cellPadding:6, textColor:[42,20,32]},
+      headStyles: {fillColor:[42,20,32], textColor:255, fontStyle:"bold"},
+      footStyles: {fillColor:[248,244,246], textColor:[42,20,32], fontStyle:"bold"},
+      columnStyles: {2:{halign:"right"}, 3:{halign:"right"}, 4:{halign:"right"}},
+      theme: "grid"
+    });
+
+    var finalY = doc.lastAutoTable.finalY + 22;
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(110,90,99);
+    var note = "This is a summary of your order request, not a payment confirmation. The shop will contact you to confirm availability, delivery and payment.";
+    doc.text(doc.splitTextToSize(note, pageWidth - margin*2), margin, finalY);
+
+    return doc;
   }
 
   function downloadReceipt(order){
-    var html = buildReceiptHtml(order, window.__DATA__ || {});
-    downloadBlob(html, "text/html", "Receipt-" + (order.orderNo||"order") + ".html");
+    var btn = document.getElementById("downloadReceiptBtn");
+    if(btn){ btn.disabled = true; btn.textContent = "Preparing…"; }
+    ensureJsPdfLoaded().then(function(){
+      var doc = buildReceiptPdf(order, window.__DATA__ || {});
+      doc.save("Receipt-" + (order.orderNo||"order") + ".pdf");
+    }).catch(function(err){
+      console.warn("PDF receipt failed:", err && err.message ? err.message : err);
+      alert("Couldn't prepare the PDF receipt — please check your internet connection and try again.");
+    }).finally(function(){
+      if(btn){ btn.disabled = false; btn.textContent = "Download receipt"; }
+    });
   }
 
   function showOrderConfirmation(order){
@@ -1301,7 +1341,7 @@
     if(receiptBtn) receiptBtn.addEventListener("click", function(){ downloadReceipt(order); });
   }
 
-  function submitOrder(via){
+  function submitOrder(){
     var name = document.getElementById("ord-name").value.trim();
     var cc = document.getElementById("ord-phone-cc").value || "+91";
     var phoneDigits = document.getElementById("ord-phone").value.trim();
@@ -1323,19 +1363,14 @@
       return;
     }
     var order = {orderNo: generateOrderNo(), name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
-    saveOrderToFirestore(order, via);
+    saveOrderToFirestore(order, "site");
 
-    if(via === "whatsapp"){
-      window.open(waLink(window.__DATA__, buildOrderSummaryText(order)), "_blank");
-      sendOrderEmail(order, {fallbackToMailto:false}); // silent background copy to the shop inbox, if EmailJS is set up
-      showOrderConfirmation(order);
-      resetCart();
-      return;
-    }
-
+    // Stays on this page the whole time — no WhatsApp tab or mail app opens for the
+    // customer. The order is saved to the shop's database immediately, and a copy is
+    // emailed to the shop in the background (silently) if EmailJS is configured.
     var btn = document.getElementById("submitOrderBtn");
     if(btn){ btn.disabled = true; btn.textContent = "Sending…"; }
-    sendOrderEmail(order, {fallbackToMailto:true}).then(function(){
+    sendOrderEmail(order, {fallbackToMailto:false}).then(function(){
       showOrderConfirmation(order);
       resetCart();
     }).finally(function(){
@@ -1694,7 +1729,7 @@
           '<td class="ord-items">'+itemsSummary+'</td>' +
           '<td>'+esc(o.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+'</td>' +
           '<td class="tabular ord-amount">'+money(o.total)+'</td>' +
-          '<td>'+esc(o.via==="whatsapp"?"WhatsApp":"Email")+'</td>' +
+          '<td>'+esc(o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website")+'</td>' +
           '<td>' + statusSelectHtml(o) + '</td>' +
         '</tr>';
     }).join("");
@@ -2571,7 +2606,7 @@
     document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
     document.getElementById("cancelCheckoutBtn").addEventListener("click", closeCheckout);
     document.getElementById("checkoutBackdrop").addEventListener("click", closeCheckout);
-    document.getElementById("submitOrderBtn").addEventListener("click", function(){ submitOrder(isMobileDevice() ? "whatsapp" : "email"); });
+    document.getElementById("submitOrderBtn").addEventListener("click", function(){ submitOrder(); });
 
     wireSettingsEvents();
 
