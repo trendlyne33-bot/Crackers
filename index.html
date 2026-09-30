@@ -982,17 +982,29 @@
     }catch(e){ console.warn("Firebase init failed", e); }
   }
 
+  var _offlineBadgeTimer = null;
   function updateSyncBadge(metadata, err){
     var el = document.getElementById("syncBadge");
     if(!el) return;
+    if(_offlineBadgeTimer){ clearTimeout(_offlineBadgeTimer); _offlineBadgeTimer = null; }
     if(err){ el.textContent = "⚠️ Sync error — will retry"; el.hidden = false; return; }
     if(!metadata){ el.hidden = true; return; }
     if(metadata.hasPendingWrites){
-      el.textContent = "🔄 Saving — will sync when online";
-      el.hidden = false;
+      // Local writes are queued; this can briefly show right after a save even on a
+      // perfectly good connection, so only surface it if it's still true a moment later.
+      _offlineBadgeTimer = setTimeout(function(){
+        el.textContent = "🔄 Saving — will sync when online";
+        el.hidden = false;
+      }, 2500);
     } else if(metadata.fromCache){
-      el.textContent = "📴 Offline — showing last saved data";
-      el.hidden = false;
+      // Firestore always serves the local cache first, then confirms with the server a
+      // moment later — that's normal and usually clears within a second or two. Only show
+      // the badge if it's still stuck on cached data after a short delay, so a normal
+      // brief flash on page load never gets shown as if something were wrong.
+      _offlineBadgeTimer = setTimeout(function(){
+        el.textContent = "📴 Offline — showing last saved data";
+        el.hidden = false;
+      }, 2500);
     } else {
       el.hidden = true;
     }
