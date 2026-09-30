@@ -110,7 +110,10 @@
   /* topbar */
   .topbar{
     position:sticky;top:0;z-index:40;
-    background:linear-gradient(180deg, rgba(36,18,50,0.72), rgba(24,12,36,0.62));
+    /* Fully opaque: any transparency here lets headings/labels scrolling
+       underneath show through as a faded ghost behind the sticky header,
+       since bold white text stays faintly visible even at ~95% opacity. */
+    background:linear-gradient(180deg, #241232, #180c24);
     backdrop-filter:blur(var(--glass-blur)) saturate(140%);
     -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
     border-bottom:1px solid var(--border);
@@ -209,6 +212,15 @@
   .quicknav-bar{
     position:sticky;top:58px;z-index:35;
     padding-block:10px 4px;
+    /* The bar is sticky and sits above scrolling content, but only the chip
+       pill inside it painted a background — the bar's own padding/edges were
+       transparent, so category headings scrolling underneath showed through
+       in that gap. Give the bar itself a fully opaque backing (a partial-alpha
+       one still lets bold text ghost through) so nothing bleeds through
+       anywhere inside its box while it's pinned. */
+    background:linear-gradient(180deg, #241232, #180c24);
+    backdrop-filter:blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(140%);
   }
   /* Expanded to several rows, a sticky chip panel would stay pinned over the price
      list as the page scrolls past it — cover the same ~400px of products the whole
