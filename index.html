@@ -355,6 +355,34 @@
   }
   .line-total{margin-left:auto;font-weight:800;color:var(--accent-2);font-size:.92rem;}
 
+  /* On desktop/tablet the stacked mobile layout (small thumbnail + a thin row of
+     content, qty controls on their own line below) left most of the card empty.
+     Turn each card into one wide row instead — bigger photo, roomier type, price
+     and qty controls inline — so it actually uses the width it's given. Mobile is
+     untouched. Placed after the base rules above so it wins the cascade here. */
+  @media (min-width:561px){
+    .item-grid{gap:14px;}
+    .item-card{
+      display:grid;
+      grid-template-columns:96px 1fr auto auto;
+      align-items:center;
+      column-gap:22px;
+      padding:16px 24px;
+    }
+    .item-top{display:contents;}
+    .item-card .item-photo,
+    .item-card .item-photo-empty{width:96px;height:96px;border-radius:16px;}
+    .item-card .item-photo-empty{font-size:2.1rem;}
+    .item-card .item-photo-edit-badge{width:22px;height:22px;font-size:.72rem;}
+    .item-card .item-name{font-size:1.14rem;}
+    .item-card .item-unit{font-size:.86rem;margin-top:4px;}
+    .item-card .item-price{padding-inline-start:20px;border-left:1px dashed var(--border);}
+    .item-card .price-net{font-size:1.6rem;}
+    .item-card .price-mrp{font-size:.85rem;}
+    .item-card .price-off{font-size:.72rem;padding:4px 10px;margin-top:5px;}
+    .item-card .qty-row{border-top:none;padding-top:0;padding-inline-start:20px;border-left:1px dashed var(--border);}
+  }
+
   /* legal strip */
   .legal{
     background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
