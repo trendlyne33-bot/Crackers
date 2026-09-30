@@ -156,6 +156,14 @@
     -webkit-mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
   }
   .quicknav::-webkit-scrollbar{display:none;}
+  /* On wider screens, nobody expects to horizontally scroll a chip row — wrap instead
+     so every category is simply visible, never cropped or requiring a scroll gesture. */
+  @media (min-width:561px){
+    .quicknav{
+      flex-wrap:wrap;overflow-x:visible;padding-inline-end:0;
+      mask-image:none;-webkit-mask-image:none;
+    }
+  }
   .chip{
     flex:0 0 auto;padding:8px 14px;border-radius:999px;
     background:var(--surface);border:1px solid var(--border);
