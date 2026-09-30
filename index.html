@@ -582,6 +582,8 @@
     padding:11px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.82rem;
   }
   .save-hint{font-size:.72rem;color:var(--text-dim);line-height:1.45;}
+  .save-hint-error{color:var(--critical);font-weight:700;}
+  .save-hint-good{color:var(--good);font-weight:700;}
   .remove-cat{color:var(--accent-2);}
 
   /* checkout specifics */
@@ -617,10 +619,14 @@
   .photo-lightbox-zoom-label{font-size:.78rem;opacity:.75;min-width:36px;text-align:center;}
 
   /* admin tabs + orders dashboard */
-  .admin-tabs{display:flex;gap:6px;padding:10px 18px 0;flex-shrink:0;}
+  /* A 4th tab (Security) can outgrow the drawer on narrow phones — scroll
+     horizontally instead of clipping or wrapping awkwardly. */
+  .admin-tabs{display:flex;gap:6px;padding:10px 18px 0;flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+  .admin-tabs::-webkit-scrollbar{display:none;}
   .admin-tab{
     border:1px solid var(--border);background:transparent;color:var(--text-dim);
     font:inherit;font-size:.84rem;font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer;
+    flex:0 0 auto;white-space:nowrap;
   }
   .admin-tab.active{background:linear-gradient(135deg, var(--accent), var(--accent-deep));border-color:transparent;color:var(--accent-ink);box-shadow:var(--glow-gold);}
   .filter-row{display:flex;gap:6px;flex-wrap:wrap;}
@@ -2112,14 +2118,18 @@
     document.getElementById("settingsPanel").hidden = !isSettings;
     document.getElementById("ordersPanel").hidden = tab !== "orders";
     document.getElementById("visitorsPanel").hidden = tab !== "visitors";
+    document.getElementById("securityPanel").hidden = tab !== "security";
     document.getElementById("downloadBtn").hidden = !isSettings;
     document.getElementById("saveBtn").hidden = !isSettings;
     document.getElementById("settingsSaveHint").hidden = !isSettings;
     document.querySelectorAll("#adminTabs .admin-tab").forEach(function(b){
-      b.classList.toggle("active", b.getAttribute("data-tab") === tab);
+      var isActive = b.getAttribute("data-tab") === tab;
+      b.classList.toggle("active", isActive);
+      if(isActive) b.scrollIntoView({behavior:"smooth", inline:"nearest", block:"nearest"});
     });
     if(tab === "orders"){ openOrdersTab(); } else { closeOrdersTab(); }
     if(tab === "visitors"){ openVisitorsTab(); } else { closeVisitorsTab(); }
+    if(tab === "security") resetChangePasswordForm();
   }
 
   function openSettingsDrawer(){
@@ -2364,6 +2374,7 @@
       if(!btn) return;
       switchAdminTab(btn.getAttribute("data-tab"));
     });
+    document.getElementById("changePasswordBtn").addEventListener("click", changeAdminPassword);
     document.getElementById("ordersRangeFilter").addEventListener("click", function(e){
       var btn = e.target.closest(".filter-pill");
       if(!btn) return;
@@ -2676,6 +2687,59 @@
     closeSettingsDrawer();
   }
 
+  function resetChangePasswordForm(){
+    ["f-currentPassword","f-newPassword","f-newPasswordConfirm"].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.value = "";
+    });
+    var msg = document.getElementById("changePasswordMsg");
+    if(msg){ msg.hidden = true; msg.textContent = ""; msg.className = "save-hint"; }
+  }
+  function showChangePasswordMsg(text, isError){
+    var msg = document.getElementById("changePasswordMsg");
+    if(!msg) return;
+    msg.textContent = text;
+    msg.hidden = false;
+    msg.className = "save-hint" + (isError ? " save-hint-error" : " save-hint-good");
+  }
+  // Changes the password Firebase Authentication holds for the admin account.
+  // Firebase stores it one-way encrypted (scrypt-hashed) on Google's servers —
+  // this code only ever passes the plaintext once, over HTTPS, straight to
+  // Firebase's own servers; the site itself never sees or stores it anywhere.
+  function changeAdminPassword(){
+    var current = document.getElementById("f-currentPassword").value;
+    var next = document.getElementById("f-newPassword").value;
+    var confirm = document.getElementById("f-newPasswordConfirm").value;
+    var btn = document.getElementById("changePasswordBtn");
+    if(!auth || !auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL){
+      showChangePasswordMsg("Your admin session has expired. Please close this and log in again.", true);
+      return;
+    }
+    if(!current){ showChangePasswordMsg("Enter your current password.", true); return; }
+    if(next.length < 8){ showChangePasswordMsg("New password must be at least 8 characters.", true); return; }
+    if(next !== confirm){ showChangePasswordMsg("New password and confirmation don't match.", true); return; }
+    if(next === current){ showChangePasswordMsg("New password must be different from the current one.", true); return; }
+    if(btn){ btn.disabled = true; btn.textContent = "Changing…"; }
+    var credential = firebase.auth.EmailAuthProvider.credential(ADMIN_EMAIL, current);
+    auth.currentUser.reauthenticateWithCredential(credential).then(function(){
+      return auth.currentUser.updatePassword(next);
+    }).then(function(){
+      showChangePasswordMsg("Password changed. Use the new password next time you log in.", false);
+      ["f-currentPassword","f-newPassword","f-newPasswordConfirm"].forEach(function(id){
+        document.getElementById(id).value = "";
+      });
+    }).catch(function(err){
+      var msg = "Couldn't change the password.";
+      if(err && err.code === "auth/wrong-password") msg = "Current password is incorrect.";
+      else if(err && err.code === "auth/weak-password") msg = "New password is too weak — try a longer one.";
+      else if(err && err.code === "auth/too-many-requests") msg = "Too many attempts — please wait a bit and try again.";
+      else if(err && err.code === "auth/network-request-failed") msg = "Couldn't reach the login server. Please check your internet connection.";
+      showChangePasswordMsg(msg, true);
+    }).finally(function(){
+      if(btn){ btn.disabled = false; btn.textContent = "Change password"; }
+    });
+  }
+
   /* ================= build overlay markup (once) ================= */
   function buildOverlays(){
     var host = document.createElement("div");
@@ -2703,6 +2767,7 @@
           '<button type="button" class="admin-tab active" data-tab="settings">Shop settings</button>' +
           '<button type="button" class="admin-tab" data-tab="orders">Orders</button>' +
           '<button type="button" class="admin-tab" data-tab="visitors">Visitors</button>' +
+          '<button type="button" class="admin-tab" data-tab="security">Security</button>' +
         '</div>' +
         '<div class="drawer-body" id="settingsPanel">' +
           '<div class="section-label" style="margin-top:0;">Shop details</div>' +
@@ -2778,6 +2843,15 @@
           '</div>' +
           '<div class="adm-chart-shell" id="visitorsChartShell"></div>' +
           '<p class="save-hint" id="visitorsLoadingState">Loading visitor data…</p>' +
+        '</div>' +
+        '<div class="drawer-body" id="securityPanel" hidden>' +
+          '<div class="section-label" style="margin-top:0;">Admin password</div>' +
+          '<p class="save-hint" style="margin-top:0;">Your password is never stored on this website or in its code — it\'s held only by Google\'s login system (Firebase Authentication), the same secure sign-in service Google itself uses, in one-way encrypted form that even we can\'t read back. Changing it here updates it there directly.</p>' +
+          '<div class="field"><label for="f-currentPassword">Current password</label><input id="f-currentPassword" type="password" autocomplete="current-password"></div>' +
+          '<div class="field"><label for="f-newPassword">New password</label><input id="f-newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters"></div>' +
+          '<div class="field"><label for="f-newPasswordConfirm">Confirm new password</label><input id="f-newPasswordConfirm" type="password" autocomplete="new-password"></div>' +
+          '<p class="save-hint" id="changePasswordMsg" hidden></p>' +
+          '<button type="button" class="add-btn" id="changePasswordBtn">Change password</button>' +
         '</div>' +
         '<div class="drawer-foot">' +
           '<p class="save-hint" id="settingsSaveHint">Save stores your changes in the shop\'s database. If you\'re offline, it\'s saved on this device and syncs automatically the moment you\'re back online — nothing is lost.</p>' +
