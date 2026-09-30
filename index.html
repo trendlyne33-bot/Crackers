@@ -149,9 +149,15 @@
   .cta-whatsapp{background:#25d366;color:#04220f;}
 
   /* quicknav */
+  .quicknav-bar{
+    position:sticky;top:58px;z-index:35;
+    background:color-mix(in srgb, var(--bg) 90%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
   .quicknav{
-    display:flex;gap:8px;overflow-x:auto;padding-block:14px;padding-inline-end:28px;
-    scrollbar-width:none;
+    display:flex;gap:8px;overflow-x:auto;padding-block:12px;padding-inline-end:28px;
+    scrollbar-width:none;scroll-snap-type:x proximity;
     mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
     -webkit-mask-image:linear-gradient(to right, black calc(100% - 28px), transparent 100%);
   }
@@ -160,17 +166,21 @@
      so every category is simply visible, never cropped or requiring a scroll gesture. */
   @media (min-width:561px){
     .quicknav{
-      flex-wrap:wrap;overflow-x:visible;padding-inline-end:0;
+      flex-wrap:wrap;overflow-x:visible;padding-inline-end:0;justify-content:center;
       mask-image:none;-webkit-mask-image:none;
     }
   }
   .chip{
-    flex:0 0 auto;padding:8px 14px;border-radius:999px;
+    flex:0 0 auto;padding:8px 16px;border-radius:999px;scroll-snap-align:start;
     background:var(--surface);border:1px solid var(--border);
-    color:var(--text);font-size:.85rem;font-weight:600;text-decoration:none;
-    white-space:nowrap;
+    color:var(--text-dim);font-size:.82rem;font-weight:700;text-decoration:none;
+    white-space:nowrap;letter-spacing:.01em;
+    transition:background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
   }
-  .chip:hover{border-color:var(--accent);}
+  .chip:hover{border-color:var(--accent);color:var(--text);transform:translateY(-1px);}
+  .chip:active{transform:translateY(0);}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .chip.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
 
   /* price list */
   .cat-section{padding-block:22px;scroll-margin-top:76px;}
@@ -623,8 +633,11 @@
       '</div>' +
     '</div>' +
 
+    '<div class="quicknav-bar">' +
+      '<nav class="wrap quicknav" id="quicknav" aria-label="Jump to category">'+renderQuickNav(data)+'</nav>' +
+    '</div>' +
+
     '<div class="wrap">' +
-      '<nav class="quicknav" aria-label="Jump to category">'+renderQuickNav(data)+'</nav>' +
       '<div id="pricelist">' + data.categories.map(renderCategory).join("") + '</div>' +
       '<div class="legal">' +
         '<div class="legal-title">'+esc(data.license||"")+'</div>' +
@@ -2176,6 +2189,34 @@
     });
   }
 
+  /* Highlight the category chip for whichever section is currently in view, and keep it
+     scrolled into sight within the chip row on mobile. */
+  var _quicknavObserver = null;
+  function wireQuickNavScrollSpy(){
+    if(_quicknavObserver) _quicknavObserver.disconnect();
+    var nav = document.getElementById("quicknav");
+    var sections = document.querySelectorAll(".cat-section");
+    if(!nav || !sections.length || typeof IntersectionObserver === "undefined") return;
+    var chips = {};
+    nav.querySelectorAll(".chip").forEach(function(chip){
+      var id = (chip.getAttribute("href")||"").slice(1);
+      if(id) chips[id] = chip;
+    });
+    _quicknavObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        var chip = chips[entry.target.id];
+        if(!chip) return;
+        Object.keys(chips).forEach(function(k){ chips[k].classList.remove("active"); });
+        chip.classList.add("active");
+        if(nav.scrollWidth > nav.clientWidth + 1){
+          chip.scrollIntoView({behavior:"smooth", inline:"center", block:"nearest"});
+        }
+      });
+    }, { rootMargin: "-96px 0px -70% 0px", threshold: 0 });
+    sections.forEach(function(s){ _quicknavObserver.observe(s); });
+  }
+
   /* Re-wire checkoutBtn/adminLoginBtn events after each full render(), since #root is rebuilt */
   var _origRender = render;
   render = function(data){
@@ -2186,6 +2227,7 @@
     if(adminBtn) adminBtn.addEventListener("click", function(){
       if(adminMode){ openSettingsDrawer(); } else { openAdminModal(); }
     });
+    wireQuickNavScrollSpy();
   };
 
   function applyGitHubImagePaths(data){
