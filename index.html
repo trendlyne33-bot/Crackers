@@ -210,6 +210,12 @@
     position:sticky;top:58px;z-index:35;
     padding-block:10px 4px;
   }
+  /* Expanded to several rows, a sticky chip panel would stay pinned over the price
+     list as the page scrolls past it — cover the same ~400px of products the whole
+     time instead of just being a compact sticky bar. Drop out of sticky positioning
+     while expanded so it scrolls away normally like the rest of the page; it goes
+     back to being a small sticky bar once collapsed again. */
+  .quicknav-bar.is-expanded{position:static;}
   .quicknav{
     display:flex;gap:10px;overflow-x:auto;padding:16px;padding-inline-end:36px;
     scrollbar-width:none;scroll-snap-type:x proximity;
@@ -2689,8 +2695,10 @@
     });
     var navToggle = document.getElementById("quicknavToggle");
     var nav = document.getElementById("quicknav");
+    var navBar = document.querySelector(".quicknav-bar");
     if(navToggle && nav) navToggle.addEventListener("click", function(){
       var collapsed = nav.classList.toggle("is-collapsed");
+      if(navBar) navBar.classList.toggle("is-expanded", !collapsed);
       navToggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
       navToggle.querySelector(".toggle-label").textContent = collapsed ? "Show all categories" : "Show fewer categories";
       if(collapsed) nav.scrollIntoView({behavior:"smooth", block:"nearest"});
