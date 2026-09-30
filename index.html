@@ -283,6 +283,12 @@
   }
   .field textarea{resize:vertical;min-height:52px;}
   .field input:focus-visible,.field textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .phone-input-row{display:flex;gap:8px;}
+  .phone-input-row select{
+    flex:0 0 auto;width:auto;max-width:112px;padding:9px 6px;border-radius:9px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text);font:inherit;font-size:.85rem;
+  }
+  .phone-input-row input{flex:1;min-width:0;}
   .section-label{
     font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
     color:var(--accent-2);margin:20px 0 10px;
@@ -361,9 +367,16 @@
   .modal-actions{display:flex;gap:10px;margin-top:14px;}
   .modal-actions .btn-save{flex:1;}
   .photo-lightbox{width:auto;max-width:min(92vw,480px);text-align:center;}
-  .photo-lightbox img{max-width:100%;max-height:70vh;border-radius:12px;display:block;margin:0 auto;background:var(--surface-2);}
+  .photo-lightbox-viewport{overflow:hidden;max-height:70vh;border-radius:12px;background:var(--surface-2);touch-action:none;cursor:grab;}
+  .photo-lightbox-viewport.zoomed{cursor:grab;}
+  .photo-lightbox-viewport.dragging{cursor:grabbing;}
+  .photo-lightbox-viewport img{max-width:100%;max-height:70vh;display:block;margin:0 auto;transform-origin:0 0;will-change:transform;user-select:none;-webkit-user-drag:none;}
   .photo-lightbox-close{position:absolute;top:8px;right:8px;}
   .photo-lightbox-caption{margin-top:10px;font-weight:700;font-size:.9rem;}
+  .photo-lightbox-zoom{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:10px;}
+  .photo-lightbox-zoom button{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:1.15rem;line-height:1;cursor:pointer;}
+  .photo-lightbox-zoom button:hover{border-color:var(--accent);}
+  .photo-lightbox-zoom-label{font-size:.78rem;opacity:.75;min-width:36px;text-align:center;}
 
   /* admin tabs + orders dashboard */
   .admin-tabs{display:flex;gap:6px;padding:10px 18px 0;flex-shrink:0;}
@@ -460,6 +473,7 @@
   "use strict";
 
   var STORAGE_KEY = "crackersShopData";
+  var GITHUB_TOKEN_STORAGE_KEY = "crackersGithubToken";
   var cart = {}; // key: "ci_ii" -> qty
   var adminMode = false;
 
@@ -485,11 +499,32 @@
   function telLink(data){
     return "tel:" + (data.phone||"").replace(/[^0-9+\-()]/g,"");
   }
-  var PHONE_PATTERN = /^(\+91-\d{10}|0\d{2,4}-\d{6,8})$/;
-  function isValidIndianPhone(v){
-    return PHONE_PATTERN.test(String(v||"").trim());
+  var PHONE_HINT = "Please enter a valid mobile number (digits only, no spaces or dashes).";
+  var COUNTRY_CODES = [
+    {code:"+91", name:"India"},
+    {code:"+1", name:"USA/Canada"},
+    {code:"+44", name:"UK"},
+    {code:"+61", name:"Australia"},
+    {code:"+971", name:"UAE"},
+    {code:"+966", name:"Saudi Arabia"},
+    {code:"+974", name:"Qatar"},
+    {code:"+968", name:"Oman"},
+    {code:"+965", name:"Kuwait"},
+    {code:"+973", name:"Bahrain"},
+    {code:"+60", name:"Malaysia"},
+    {code:"+65", name:"Singapore"},
+    {code:"+94", name:"Sri Lanka"},
+    {code:"+977", name:"Nepal"},
+    {code:"+880", name:"Bangladesh"}
+  ];
+  function countryCodeOptionsHtml(selected){
+    return COUNTRY_CODES.map(function(c){
+      return '<option value="'+c.code+'"'+(c.code===selected?' selected':'')+'>'+c.code+' '+esc(c.name)+'</option>';
+    }).join("");
   }
-  var PHONE_HINT = "Please enter a valid contact number — mobile as +91-9841632734, or landline as 044-26147874.";
+  function isValidPhoneDigits(v){
+    return /^\d{7,12}$/.test(String(v||"").trim());
+  }
 
   function loadStoredData(){
     try{
@@ -860,7 +895,12 @@
       '<div class="checkout-summary">'+itemsHtml+'<div class="checkout-line checkout-total"><span>Total</span><span class="tabular">'+money(total)+'</span></div></div>' +
       '<div class="section-label">Your details</div>' +
       '<div class="field"><label for="ord-name">Full name</label><input id="ord-name" type="text" autocomplete="name"></div>' +
-      '<div class="field"><label for="ord-phone">Contact number</label><input id="ord-phone" type="tel" autocomplete="tel" placeholder="+91-9841632734 or 044-26147874" pattern="^(\\+91-\\d{10}|0\\d{2,4}-\\d{6,8})$"><p class="save-hint" style="margin-top:4px;">Mobile: +91-9841632734 &middot; Landline: 044-26147874</p></div>' +
+      '<div class="field"><label for="ord-phone">Contact number</label>' +
+        '<div class="phone-input-row">' +
+          '<select id="ord-phone-cc" aria-label="Country code">'+countryCodeOptionsHtml("+91")+'</select>' +
+          '<input id="ord-phone" type="tel" autocomplete="tel" inputmode="numeric" placeholder="9841632734" maxlength="12">' +
+        '</div>' +
+      '</div>' +
       '<div class="field"><label for="ord-address">Address to send the parcel</label><textarea id="ord-address" autocomplete="street-address"></textarea></div>';
     document.getElementById("checkoutFoot").hidden = false;
   }
@@ -877,16 +917,18 @@
 
   function submitOrder(via){
     var name = document.getElementById("ord-name").value.trim();
-    var phone = document.getElementById("ord-phone").value.trim();
+    var cc = document.getElementById("ord-phone-cc").value || "+91";
+    var phoneDigits = document.getElementById("ord-phone").value.trim();
     var address = document.getElementById("ord-address").value.trim();
-    if(!name || !phone || !address){
+    if(!name || !phoneDigits || !address){
       alert("Please fill your name, contact number and delivery address.");
       return;
     }
-    if(!isValidIndianPhone(phone)){
+    if(!isValidPhoneDigits(phoneDigits)){
       alert(PHONE_HINT);
       return;
     }
+    var phone = cc + "-" + phoneDigits;
     var items = getCartItems();
     if(items.length===0){ alert("Your cart is empty."); return; }
     var total = items.reduce(function(s,it){ return s+it.lineTotal; },0);
@@ -1396,6 +1438,10 @@
     document.getElementById("f-emailService").value = (draft.email&&draft.email.serviceId)||"";
     document.getElementById("f-emailTemplate").value = (draft.email&&draft.email.templateId)||"";
     document.getElementById("f-emailPublicKey").value = (draft.email&&draft.email.publicKey)||"";
+    var savedToken = "";
+    try{ savedToken = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || ""; }catch(e){}
+    var tokenField = document.getElementById("f-githubToken");
+    if(tokenField) tokenField.value = savedToken;
     renderCatEditors();
   }
 
@@ -1624,9 +1670,14 @@
 
       var tokenInput = document.getElementById("f-githubToken");
       var token = tokenInput ? tokenInput.value.trim() : "";
+      if(!token){
+        try{ token = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || ""; }catch(e){}
+      }
       if(token && Object.keys(pendingImageFiles).length){
         await uploadPendingImages(dataToSave, token);
         draft.categories = dataToSave.categories; // keep local draft's image paths in sync
+        // Remember the token on this device only, so future photo uploads are automatic.
+        try{ localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token); }catch(e){}
       }
 
       // Update local/browser view immediately so the admin sees the change right away,
@@ -1779,11 +1830,100 @@
     });
   }
 
-  /* ---------- photo lightbox ---------- */
+  /* ---------- photo lightbox (with pinch/scroll zoom + drag pan) ---------- */
+  var photoZoomState = { scale: 1, x: 0, y: 0, minScale: 1, maxScale: 5 };
+
+  function applyPhotoZoomTransform(){
+    var img = document.getElementById("photoLightboxImg");
+    if(!img) return;
+    img.style.transform = "translate("+photoZoomState.x+"px,"+photoZoomState.y+"px) scale("+photoZoomState.scale+")";
+    var vp = document.getElementById("photoLightboxViewport");
+    if(vp) vp.classList.toggle("zoomed", photoZoomState.scale > 1);
+    var label = document.getElementById("photoZoomLabel");
+    if(label) label.textContent = photoZoomState.scale.toFixed(1) + "×";
+  }
+  function clampPhotoZoom(){
+    if(photoZoomState.scale < photoZoomState.minScale) photoZoomState.scale = photoZoomState.minScale;
+    if(photoZoomState.scale > photoZoomState.maxScale) photoZoomState.scale = photoZoomState.maxScale;
+    if(photoZoomState.scale === 1){ photoZoomState.x = 0; photoZoomState.y = 0; }
+  }
+  function setPhotoZoom(newScale){
+    photoZoomState.scale = newScale;
+    clampPhotoZoom();
+    applyPhotoZoomTransform();
+  }
+  function resetPhotoZoom(){
+    photoZoomState.scale = 1; photoZoomState.x = 0; photoZoomState.y = 0;
+    applyPhotoZoomTransform();
+  }
+
+  function wirePhotoZoomEvents(){
+    var vp = document.getElementById("photoLightboxViewport");
+    if(!vp) return;
+    document.getElementById("photoZoomIn").addEventListener("click", function(){ setPhotoZoom(photoZoomState.scale + 0.5); });
+    document.getElementById("photoZoomOut").addEventListener("click", function(){ setPhotoZoom(photoZoomState.scale - 0.5); });
+
+    vp.addEventListener("wheel", function(e){
+      e.preventDefault();
+      setPhotoZoom(photoZoomState.scale + (e.deltaY < 0 ? 0.2 : -0.2));
+    }, {passive:false});
+
+    vp.addEventListener("dblclick", function(){
+      if(photoZoomState.scale > 1) resetPhotoZoom(); else setPhotoZoom(2.5);
+    });
+
+    var dragging = false, startX = 0, startY = 0, startPanX = 0, startPanY = 0;
+    vp.addEventListener("mousedown", function(e){
+      if(photoZoomState.scale <= 1) return;
+      dragging = true;
+      vp.classList.add("dragging");
+      startX = e.clientX; startY = e.clientY;
+      startPanX = photoZoomState.x; startPanY = photoZoomState.y;
+    });
+    window.addEventListener("mousemove", function(e){
+      if(!dragging) return;
+      photoZoomState.x = startPanX + (e.clientX - startX);
+      photoZoomState.y = startPanY + (e.clientY - startY);
+      applyPhotoZoomTransform();
+    });
+    window.addEventListener("mouseup", function(){
+      dragging = false;
+      vp.classList.remove("dragging");
+    });
+
+    var touchState = null;
+    vp.addEventListener("touchstart", function(e){
+      if(e.touches.length === 2){
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        touchState = { mode:"pinch", startDist: Math.hypot(dx,dy), startScale: photoZoomState.scale };
+      } else if(e.touches.length === 1 && photoZoomState.scale > 1){
+        touchState = { mode:"pan", startX: e.touches[0].clientX, startY: e.touches[0].clientY, startPanX: photoZoomState.x, startPanY: photoZoomState.y };
+      }
+    }, {passive:true});
+    vp.addEventListener("touchmove", function(e){
+      if(!touchState) return;
+      if(touchState.mode === "pinch" && e.touches.length === 2){
+        e.preventDefault();
+        var dx2 = e.touches[0].clientX - e.touches[1].clientX;
+        var dy2 = e.touches[0].clientY - e.touches[1].clientY;
+        var dist = Math.hypot(dx2, dy2);
+        setPhotoZoom(touchState.startScale * (dist / touchState.startDist));
+      } else if(touchState.mode === "pan" && e.touches.length === 1){
+        e.preventDefault();
+        photoZoomState.x = touchState.startPanX + (e.touches[0].clientX - touchState.startX);
+        photoZoomState.y = touchState.startPanY + (e.touches[0].clientY - touchState.startY);
+        applyPhotoZoomTransform();
+      }
+    }, {passive:false});
+    vp.addEventListener("touchend", function(){ touchState = null; });
+  }
+
   function openPhotoLightbox(src, name){
     document.getElementById("photoLightboxImg").src = src;
     document.getElementById("photoLightboxImg").alt = name || "";
     document.getElementById("photoLightboxCaption").textContent = name || "";
+    resetPhotoZoom();
     document.getElementById("photoLightboxBackdrop").hidden = false;
     document.getElementById("photoLightbox").hidden = false;
   }
@@ -1887,8 +2027,8 @@
           '<div class="field"><label for="f-emailPublicKey">EmailJS Public Key</label><input id="f-emailPublicKey" type="text"></div>' +
 
           '<div class="section-label">Product photos (optional)</div>' +
-          '<div class="field"><label for="f-githubToken">GitHub token</label><input id="f-githubToken" type="password" autocomplete="off" placeholder="Only needed if you are adding/changing a product photo"></div>' +
-          '<p class="save-hint">Text and price changes save straight to the database below — no token needed. A GitHub token is only used if you add or replace a product photo (so the image file can be uploaded to the site\'s image folder). It is never saved anywhere.</p>' +
+          '<div class="field"><label for="f-githubToken">GitHub token</label><input id="f-githubToken" type="password" autocomplete="off" placeholder="Paste once — remembered on this device"></div>' +
+          '<p class="save-hint">Text and price changes save straight to the database below — no token needed. A GitHub token is only needed the first time you add or replace a product photo, so the image file can be uploaded to the site\'s image folder — after that, it\'s remembered on this device and photo uploads happen automatically on Save. It\'s stored only in this browser, never sent anywhere except to GitHub itself.</p>' +
 
           '<div class="section-label">Categories &amp; price list</div>' +
           '<div id="catEditorHost"></div>' +
@@ -1959,7 +2099,14 @@
       '<div class="backdrop" id="photoLightboxBackdrop" hidden></div>' +
       '<div class="modal photo-lightbox" id="photoLightbox" hidden role="dialog" aria-label="Product photo">' +
         '<button type="button" class="icon-btn photo-lightbox-close" id="closePhotoLightbox" aria-label="Close">✕</button>' +
-        '<img id="photoLightboxImg" src="" alt="">' +
+        '<div class="photo-lightbox-viewport" id="photoLightboxViewport">' +
+          '<img id="photoLightboxImg" src="" alt="">' +
+        '</div>' +
+        '<div class="photo-lightbox-zoom">' +
+          '<button type="button" id="photoZoomOut" aria-label="Zoom out">−</button>' +
+          '<span class="photo-lightbox-zoom-label" id="photoZoomLabel">1.0×</span>' +
+          '<button type="button" id="photoZoomIn" aria-label="Zoom in">+</button>' +
+        '</div>' +
         '<div class="photo-lightbox-caption" id="photoLightboxCaption"></div>' +
       '</div>';
     while(host.firstChild) document.body.appendChild(host.firstChild);
@@ -1978,6 +2125,7 @@
     });
     document.getElementById("closePhotoLightbox").addEventListener("click", closePhotoLightbox);
     document.getElementById("photoLightboxBackdrop").addEventListener("click", closePhotoLightbox);
+    wirePhotoZoomEvents();
 
     document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
     document.getElementById("cancelCheckoutBtn").addEventListener("click", closeCheckout);
