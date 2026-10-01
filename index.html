@@ -219,13 +219,27 @@
   @media (min-width:561px){
     .hero-content{padding-block:16px 14px;}
   }
-  .hero-offer-sub{margin-top:0;color:var(--text-dim);font-size:1.02rem;max-width:44ch;margin-inline:auto;}
+  /* The offer line also runs as a scrolling banner, same seamless two-halves
+     technique as the topbar marquee: the track holds the phrase twice back to
+     back and slides by exactly -50%, so there's no jump at the loop point. */
+  .hero-offer-marquee{
+    width:100%;max-width:520px;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+    mask-image:linear-gradient(90deg, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  }
+  .hero-offer-marquee-track{display:flex;width:max-content;animation:heroOfferMarquee 24s linear infinite;}
+  .hero-offer-marquee-item{
+    display:inline-flex;white-space:nowrap;padding-inline-end:56px;
+    color:var(--text-dim);font-size:1.02rem;
+  }
+  @keyframes heroOfferMarquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){ .hero-offer-marquee-track{animation:none;} }
   /* On desktop/tablet the hero was disproportionately tall relative to how little
      it says — cut its heading size, line-wrap and spacing way down so it reads as
      a slim banner, not a full section. Placed after the base rules above so it
      wins the cascade at this breakpoint. */
   @media (min-width:561px){
-    .hero-offer-sub{font-size:.9rem;}
+    .hero-offer-marquee-item{font-size:.9rem;}
   }
   .hero-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
   .cta{
@@ -1099,6 +1113,15 @@
     '</div>';
   }
 
+  function renderHeroOfferMarquee(text){
+    if(!text) return "";
+    var item = '<span class="hero-offer-marquee-item">'+esc(text)+'</span>';
+    var half = item + item; // the text itself is longer, so two copies per half is enough
+    return '<div class="hero-offer-marquee" role="marquee" aria-label="'+esc(text)+'">' +
+      '<div class="hero-offer-marquee-track">'+half+half+'</div>' +
+    '</div>';
+  }
+
   function render(data){
     var root = document.getElementById("root");
     var html = '' +
@@ -1116,7 +1139,7 @@
         '<div class="hero-logo"><img src="images/logo.png" alt="'+esc(data.shopName)+' logo"></div>' +
         '<h1 class="hero-brand-name">'+esc(data.shopName)+'</h1>' +
         '<p class="hero-tagline">'+esc(data.tagline)+'</p>' +
-        '<p class="hero-offer-sub">'+esc(data.offerSubtext||"")+'</p>' +
+        renderHeroOfferMarquee(data.offerSubtext) +
       '</div>' +
     '</div>' +
 
