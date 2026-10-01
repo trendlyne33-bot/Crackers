@@ -210,7 +210,12 @@
 
   /* quicknav */
   .quicknav-bar{
-    position:sticky;top:58px;z-index:35;
+    /* top is measured live in JS from the topbar's real rendered height
+       (updateStickyOffset() sets --topbar-h) — a fixed guess here drifted out
+       of sync whenever the topbar's height changed (longer shop name/tagline,
+       font load, a wrapped line) and let this bar overlap or gap against the
+       topbar above it while both were pinned during scroll. */
+    position:sticky;top:var(--topbar-h, 58px);z-index:35;
     padding-block:10px 4px;
     /* The bar is sticky and sits above scrolling content, but only the chip
        pill inside it painted a background — the bar's own padding/edges were
@@ -473,13 +478,40 @@
     border-radius:20px;
     max-width:960px;margin-inline:auto;
   }
-  .cartbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;}
-  .cartbar-info{font-size:.9rem;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+  .cartbar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;flex-wrap:nowrap;}
+  /* Was a flex row with a bare "items ·" text node mixed in with the spans — on
+     narrow screens that anonymous text node could wrap onto its own line while
+     the count/price stayed put, making the bar jump vertically. Every piece is
+     now its own non-wrapping span, and the row itself never wraps or scales its
+     font, so "N items · ₹total" always reads as one steady line. */
+  .cartbar-info{
+    font-size:.9rem;color:var(--text-dim);
+    display:flex;align-items:baseline;gap:6px;row-gap:2px;
+    flex:1 1 auto;min-width:0;
+    /* Each piece below (icon/count/separator/total) is its own non-wrapping
+       unit, so if the row is ever too tight to fit on one line (a long total
+       next to a double-digit count on a very narrow phone), it wraps as whole
+       units onto a second line instead of invisibly clipping the price, and
+       never splits "N" from "items" like the old bare-text-node bug did. */
+    flex-wrap:wrap;
+  }
   .cartbar-info strong{font-size:1rem;color:var(--text);}
+  .cartbar-count{white-space:nowrap;flex-shrink:0;}
+  .cartbar-sep{opacity:.55;flex-shrink:0;}
+  #cartTotal{white-space:nowrap;}
   .cartbar-icon{
     display:inline-flex;align-items:center;justify-content:center;
+    align-self:center;flex-shrink:0;
     width:30px;height:30px;border-radius:50%;font-size:.9rem;
     background:rgba(243,177,58,0.18);border:1px solid rgba(243,177,58,0.3);
+  }
+  #checkoutBtn{flex-shrink:0;}
+  /* Reclaim a little width on the narrowest phones so "N items · ₹total" has
+     the best chance of staying on one line before it needs to wrap at all. */
+  @media (max-width:380px){
+    .cartbar-icon{display:none;}
+    .cartbar-info{font-size:.84rem;}
+    #checkoutBtn{padding:11px 16px;font-size:.88rem;}
   }
   #checkoutBtn{border-radius:999px;padding:12px 22px;}
   #checkoutBtn::after{content:" →";}
@@ -515,7 +547,13 @@
     background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
   }
   .field textarea{resize:vertical;min-height:52px;}
-  .field input:focus-visible,.field textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .field select{
+    width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--border);
+    background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
+  }
+  .field input:focus-visible,.field textarea:focus-visible,.field select:focus-visible{outline:2px solid var(--accent);outline-offset:1px;}
+  .field-row{display:flex;gap:10px;}
+  .field-row .field{flex:1;min-width:0;}
   .phone-input-row{display:flex;gap:8px;}
   .phone-input-row select{
     flex:0 0 auto;width:auto;max-width:112px;padding:9px 6px;border-radius:9px;border:1px solid var(--border);
@@ -606,17 +644,61 @@
   .modal h2{font-size:1.05rem;margin-bottom:8px;}
   .modal-actions{display:flex;gap:10px;margin-top:14px;}
   .modal-actions .btn-save{flex:1;}
-  .photo-lightbox{width:auto;max-width:min(92vw,480px);text-align:center;}
-  .photo-lightbox-viewport{overflow:hidden;max-height:70vh;border-radius:12px;background:var(--surface-2);touch-action:none;cursor:grab;}
+  /* Product popup — a true full-screen overlay on mobile (not a small centered
+     box) with its own header bar so the close button is always visible at the
+     top, never floating over the photo where it could get lost against a
+     bright image. On wider screens it settles into a centered card instead,
+     since there's no need to fill the whole viewport there. */
+  .photo-lightbox{
+    position:fixed;inset:0;top:0;left:0;right:0;bottom:0;transform:none;
+    width:100%;height:100%;max-width:none;max-height:none;
+    border-radius:0;border:none;padding:0;
+    display:flex;flex-direction:column;
+    text-align:center;
+  }
+  .photo-lightbox-header{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:14px 16px;flex-shrink:0;
+    border-bottom:1px solid var(--border);
+  }
+  .photo-lightbox-title{font-weight:700;font-size:1rem;text-align:left;}
+  .photo-lightbox-close{
+    display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+    width:38px;height:38px;border-radius:50%;font-size:1.1rem;
+    border:1px solid var(--border);background:var(--surface-2);color:var(--text);
+    cursor:pointer;
+  }
+  .photo-lightbox-close:hover{border-color:var(--accent);}
+  .photo-lightbox-viewport{
+    flex:1 1 auto;min-height:0;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);touch-action:none;cursor:grab;
+  }
   .photo-lightbox-viewport.zoomed{cursor:grab;}
   .photo-lightbox-viewport.dragging{cursor:grabbing;}
-  .photo-lightbox-viewport img{max-width:100%;max-height:70vh;display:block;margin:0 auto;transform-origin:0 0;will-change:transform;user-select:none;-webkit-user-drag:none;}
-  .photo-lightbox-close{position:absolute;top:8px;right:8px;}
-  .photo-lightbox-caption{margin-top:10px;font-weight:700;font-size:.9rem;}
-  .photo-lightbox-zoom{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:10px;}
+  .photo-lightbox-viewport img{max-width:100%;max-height:100%;display:block;margin:0 auto;transform-origin:center center;will-change:transform;user-select:none;-webkit-user-drag:none;}
+  .photo-lightbox-caption{display:none;}
+  .photo-lightbox-zoom{display:flex;justify-content:center;align-items:center;gap:10px;padding:10px 16px;flex-shrink:0;}
   .photo-lightbox-zoom button{width:36px;height:36px;border-radius:50%;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:1.15rem;line-height:1;cursor:pointer;}
   .photo-lightbox-zoom button:hover{border-color:var(--accent);}
   .photo-lightbox-zoom-label{font-size:.78rem;opacity:.75;min-width:36px;text-align:center;}
+  .photo-lightbox-footer{
+    flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 16px calc(env(safe-area-inset-bottom,0px) + 14px);
+    border-top:1px solid var(--border);
+  }
+  .photo-lightbox-price{text-align:left;}
+  .photo-lightbox-price .price-mrp{color:var(--text-dim);text-decoration:line-through;font-size:.8rem;}
+  .photo-lightbox-price .price-net{font-weight:800;font-size:1.15rem;color:var(--text);}
+  .photo-lightbox-footer .qty-row{border:none;padding:0;flex-shrink:0;}
+  @media (min-width:641px){
+    .photo-lightbox{
+      inset:auto;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:min(480px,92vw);height:auto;max-height:86vh;
+      border-radius:18px;border:1px solid var(--border);
+    }
+    .photo-lightbox-viewport{max-height:56vh;}
+  }
 
   /* admin tabs + orders dashboard */
   /* A 4th tab (Security) can outgrow the drawer on narrow phones — scroll
@@ -663,6 +745,7 @@
   .ord-table tbody td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:top;}
   .ord-cust-name{font-weight:700;}
   .ord-cust-phone{font-size:.72rem;color:var(--text-dim);}
+  .ord-cust-location{font-size:.72rem;color:var(--text-dim);}
   .ord-items{color:var(--text-dim);font-size:.78rem;max-width:180px;}
   .ord-amount{font-weight:800;}
   .ord-order-no{font-weight:700;color:var(--accent);white-space:nowrap;}
@@ -879,6 +962,19 @@
   function isValidPhoneDigits(v){
     return /^\d{7,12}$/.test(String(v||"").trim());
   }
+  var INDIA_STATES = [
+    "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat",
+    "Haryana","Himachal Pradesh","Jharkhand","Karnataka","Kerala","Madhya Pradesh",
+    "Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan",
+    "Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal",
+    "Andaman and Nicobar Islands","Chandigarh","Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry","Other / Outside India"
+  ];
+  function stateOptionsHtml(selected){
+    return '<option value="">Select state</option>' + INDIA_STATES.map(function(s){
+      return '<option value="'+esc(s)+'"'+(s===selected?' selected':'')+'>'+esc(s)+'</option>';
+    }).join("");
+  }
   var MIN_ORDER_VALUE = 3000;
   function isMobileDevice(){
     var uaMobile = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent||"");
@@ -1022,7 +1118,7 @@
 
     '<div class="cartbar" id="cartBar" hidden>' +
       '<div class="wrap cartbar-inner">' +
-        '<div class="cartbar-info"><span class="cartbar-icon" aria-hidden="true">🛒</span><strong id="cartCount">0</strong> items · <span id="cartTotal" class="tabular">₹0</span></div>' +
+        '<div class="cartbar-info"><span class="cartbar-icon" aria-hidden="true">🛒</span><span class="cartbar-count"><strong id="cartCount">0</strong> items</span><span class="cartbar-sep" aria-hidden="true">·</span><span id="cartTotal" class="tabular">₹0</span></div>' +
         '<button type="button" class="cta cta-primary" id="checkoutBtn">Checkout</button>' +
       '</div>' +
     '</div>';
@@ -1131,7 +1227,7 @@
         var card0 = photoWrap.closest(".item-card");
         var ci0 = card0.getAttribute("data-cat"), ii0 = card0.getAttribute("data-item");
         var item0 = window.__DATA__.categories[ci0] && window.__DATA__.categories[ci0].items[ii0];
-        if(item0 && item0.image){ openPhotoLightbox(item0.image, item0.name); }
+        if(item0 && item0.image){ openPhotoLightbox(item0.image, item0.name, card0); }
         return;
       }
       var minus = e.target.closest(".qty-minus");
@@ -1330,7 +1426,11 @@
           '<input id="ord-phone" type="tel" autocomplete="tel" inputmode="numeric" placeholder="Enter mobile number" maxlength="12">' +
         '</div>' +
       '</div>' +
-      '<div class="field"><label for="ord-address">Address to send the parcel</label><textarea id="ord-address" autocomplete="street-address"></textarea></div>';
+      '<div class="field"><label for="ord-address">Address to send the parcel</label><textarea id="ord-address" autocomplete="street-address"></textarea></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label for="ord-city">City</label><input id="ord-city" type="text" autocomplete="address-level2" placeholder="e.g. Sivakasi"></div>' +
+        '<div class="field"><label for="ord-state">State</label><select id="ord-state" autocomplete="address-level1">'+stateOptionsHtml("Tamil Nadu")+'</select></div>' +
+      '</div>';
     document.getElementById("checkoutFoot").hidden = false;
   }
 
@@ -1454,8 +1554,10 @@
     var cc = document.getElementById("ord-phone-cc").value || "+91";
     var phoneDigits = document.getElementById("ord-phone").value.trim();
     var address = document.getElementById("ord-address").value.trim();
-    if(!name || !phoneDigits || !address){
-      alert("Please fill your name, contact number and delivery address.");
+    var city = document.getElementById("ord-city").value.trim();
+    var state = document.getElementById("ord-state").value.trim();
+    if(!name || !phoneDigits || !address || !city || !state){
+      alert("Please fill your name, contact number, delivery address, city and state.");
       return;
     }
     if(!isValidPhoneDigits(phoneDigits)){
@@ -1478,7 +1580,7 @@
     // Order No is a running count (1, 2, 3…) claimed from the shared counter —
     // see getNextOrderNumber() for how it stays unique across simultaneous orders.
     getNextOrderNumber().then(function(orderNo){
-      var order = {orderNo: orderNo, name:name, phone:phone, address:address, items:items, total:total, createdAt:new Date()};
+      var order = {orderNo: orderNo, name:name, phone:phone, address:address, city:city, state:state, items:items, total:total, createdAt:new Date()};
       saveOrderToFirestore(order, "site");
       return sendOrderEmail(order, {fallbackToMailto:false}).then(function(){
         showOrderConfirmation(order);
@@ -1626,6 +1728,8 @@
       name: order.name,
       phone: order.phone,
       address: order.address,
+      city: order.city || "",
+      state: order.state || "",
       items: order.items,
       total: order.total,
       via: via,
@@ -1771,6 +1875,9 @@
           orderNo: d.orderNo || doc.id,
           name: d.name || "",
           phone: d.phone || "",
+          address: d.address || "",
+          city: d.city || "",
+          state: d.state || "",
           items: d.items || [],
           total: Number(d.total) || 0,
           via: d.via || "",
@@ -1844,12 +1951,11 @@
     return '<select class="status-select status-'+o.status+'" data-order-id="'+o.id+'">'+opts+'</select>';
   }
 
-  function renderOrdersTable(){
-    var body = document.getElementById("ordersTableBody");
-    var empty = document.getElementById("ordersEmptyState");
-    if(!body) return;
+  // The same range + status + search filter chain the orders table applies —
+  // shared with Export so the downloaded file always matches what's on screen.
+  function getFilteredOrders(){
     var q = ordersSearchVal.trim().toLowerCase();
-    var rows = ordersCache.filter(ordersWithinRange).filter(function(o){
+    return ordersCache.filter(ordersWithinRange).filter(function(o){
       return ordersStatusFilterVal === "all" || o.status === ordersStatusFilterVal;
     }).filter(function(o){
       if(!q) return true;
@@ -1857,6 +1963,13 @@
              (o.phone||"").toLowerCase().indexOf(q) !== -1 ||
              (o.name||"").toLowerCase().indexOf(q) !== -1;
     });
+  }
+
+  function renderOrdersTable(){
+    var body = document.getElementById("ordersTableBody");
+    var empty = document.getElementById("ordersEmptyState");
+    if(!body) return;
+    var rows = getFilteredOrders();
     // Drop any selected id that's no longer in view (deleted elsewhere, or filtered out).
     var visibleIds = {};
     rows.forEach(function(o){ visibleIds[o.id] = true; });
@@ -1875,7 +1988,9 @@
         '<tr>' +
           '<td><input type="checkbox" class="ord-select-checkbox" data-order-id="'+o.id+'"'+checked+' aria-label="Select this order"></td>' +
           '<td class="tabular ord-order-no">'+esc(o.orderNo||"—")+'</td>' +
-          '<td><div class="ord-cust-name">'+esc(o.name)+'</div><div class="ord-cust-phone">'+esc(o.phone)+'</div></td>' +
+          '<td><div class="ord-cust-name">'+esc(o.name)+'</div><div class="ord-cust-phone">'+esc(o.phone)+'</div>' +
+            ((o.city||o.state) ? '<div class="ord-cust-location">'+esc([o.city,o.state].filter(Boolean).join(", "))+'</div>' : '') +
+          '</td>' +
           '<td class="ord-items">'+itemsSummary+'</td>' +
           '<td>'+esc(o.date.toLocaleDateString("en-IN",{day:"numeric",month:"short"}))+'</td>' +
           '<td class="tabular ord-amount">'+money(o.total)+'</td>' +
@@ -1900,6 +2015,57 @@
       selectAll.checked = visibleCount > 0 && count === visibleCount;
       selectAll.indeterminate = count > 0 && count < visibleCount;
     }
+  }
+
+  function csvCell(v){
+    var s = String(v===undefined || v===null ? "" : v);
+    // Quote any cell that could otherwise break the CSV grid (comma/quote/newline),
+    // and escape embedded quotes by doubling them per the CSV spec.
+    if(/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g,'""') + '"';
+    return s;
+  }
+
+  function orderItemsSummary(items){
+    return (items||[]).map(function(it){
+      return it.name + " x" + it.qty + " @" + it.price;
+    }).join("; ");
+  }
+
+  // Downloads every order currently matching the orders table's range/status/search
+  // filters as a CSV — full customer, location, item and status detail per row, one
+  // row per order so it opens cleanly in Excel/Sheets.
+  function exportOrdersCsv(){
+    var rows = getFilteredOrders().slice().sort(function(a,b){ return b.date - a.date; });
+    if(rows.length === 0){
+      alert("No orders match the current filters to export.");
+      return;
+    }
+    var header = ["Order No","Customer Name","Phone","State","City","Address",
+      "Items","Quantity","Total Amount (₹)","Payment/Order Status","Order Via","Date","Time"];
+    var lines = [header.map(csvCell).join(",")];
+    rows.forEach(function(o){
+      var qty = (o.items||[]).reduce(function(s,it){ return s + (Number(it.qty)||0); }, 0);
+      var row = [
+        o.orderNo, o.name, o.phone, o.state||"", o.city||"", o.address||"",
+        orderItemsSummary(o.items), qty, o.total,
+        o.status ? (o.status.charAt(0).toUpperCase()+o.status.slice(1)) : "",
+        o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website",
+        o.date.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"}),
+        o.date.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})
+      ];
+      lines.push(row.map(csvCell).join(","));
+    });
+    // Prefix a UTF-8 BOM so Excel renders the ₹ symbol and any non-ASCII names correctly.
+    var csv = "﻿" + lines.join("\r\n");
+    var blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var stamp = new Date().toISOString().slice(0,10);
+    a.href = url; a.download = "crackle-cart-orders-" + stamp + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
   }
 
   function updateOrderStatus(orderId, newStatus, selectEl){
@@ -2442,6 +2608,8 @@
       ordersSearchVal = e.target.value;
       renderOrdersTable();
     });
+    var ordersExportBtn = document.getElementById("ordersExportBtn");
+    if(ordersExportBtn) ordersExportBtn.addEventListener("click", exportOrdersCsv);
     var ordersSelectAll = document.getElementById("ordersSelectAll");
     if(ordersSelectAll) ordersSelectAll.addEventListener("change", function(e){
       var q = ordersSearchVal.trim().toLowerCase();
@@ -2509,6 +2677,10 @@
         readFormBasics(); readCategoriesFromDOM();
         var ci4 = Number(editRow2.getAttribute("data-cat")), ii4 = Number(editRow2.getAttribute("data-item"));
         draft.categories[ci4].items[ii4].image = "";
+        // Also drop any photo that was picked for this item earlier in the same
+        // admin session but not saved yet — otherwise Save would re-upload it
+        // and silently undo the removal.
+        delete pendingImageFiles[ci4+"_"+ii4];
         renderCatEditors();
       }
     });
@@ -2618,11 +2790,34 @@
     vp.addEventListener("touchend", function(){ touchState = null; });
   }
 
-  function openPhotoLightbox(src, name){
+  var lightboxCard = null; // the underlying .item-card, kept in sync with the popup's qty stepper
+  function openPhotoLightbox(src, name, card){
     document.getElementById("photoLightboxImg").src = src;
     document.getElementById("photoLightboxImg").alt = name || "";
     document.getElementById("photoLightboxCaption").textContent = name || "";
     resetPhotoZoom();
+    lightboxCard = card || null;
+    var priceEl = document.getElementById("photoLightboxPrice");
+    var qtyInput = document.getElementById("photoLightboxQty");
+    if(lightboxCard){
+      var ci = lightboxCard.getAttribute("data-cat"), ii = lightboxCard.getAttribute("data-item");
+      var it = window.__DATA__.categories[ci] && window.__DATA__.categories[ci].items[ii];
+      if(it){
+        var off = pctOff(it.mrp, it.price);
+        priceEl.innerHTML =
+          (off>0 ? '<div class="price-mrp tabular">'+money(it.mrp)+'</div>' : '') +
+          '<div class="price-net tabular">'+money(it.price)+'</div>';
+      }
+      qtyInput.value = lightboxCard.querySelector(".qty-input").value || "0";
+      qtyInput.hidden = false;
+      document.getElementById("photoLightboxMinus").hidden = false;
+      document.getElementById("photoLightboxPlus").hidden = false;
+    } else {
+      priceEl.innerHTML = "";
+      qtyInput.hidden = true;
+      document.getElementById("photoLightboxMinus").hidden = true;
+      document.getElementById("photoLightboxPlus").hidden = true;
+    }
     document.getElementById("photoLightboxBackdrop").hidden = false;
     document.getElementById("photoLightbox").hidden = false;
   }
@@ -2630,6 +2825,15 @@
     document.getElementById("photoLightboxBackdrop").hidden = true;
     document.getElementById("photoLightbox").hidden = true;
     document.getElementById("photoLightboxImg").src = "";
+    lightboxCard = null;
+  }
+  function syncLightboxQty(val){
+    if(!lightboxCard) return;
+    val = Math.max(0, parseInt(val,10)||0);
+    var cardInput = lightboxCard.querySelector(".qty-input");
+    cardInput.value = val;
+    applyQty(lightboxCard, val);
+    document.getElementById("photoLightboxQty").value = val;
   }
 
   /* ---------- admin login ---------- */
@@ -2841,6 +3045,7 @@
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
           '<div class="field" style="margin-bottom:12px;"><input type="text" id="ordersSearchInput" placeholder="Search by order no, phone or name"></div>' +
+          '<button type="button" class="btn-download" id="ordersExportBtn" style="margin-bottom:12px;width:100%;">⬇ Export orders (CSV)</button>' +
           '<div class="ord-bulk-bar" id="ordersBulkBar" hidden>' +
             '<span id="ordersBulkCount">0 selected</span>' +
             '<button type="button" class="ord-delete-btn ord-bulk-delete" id="ordersBulkDeleteBtn" title="Delete selected orders permanently">🗑 Delete selected</button>' +
@@ -2900,10 +3105,13 @@
           '<button class="btn-save" id="adminUnlockBtn" type="button">Unlock</button>' +
         '</div>' +
       '</div>' +
-      /* photo lightbox */
+      /* product popup (photo + quantity controls), full-screen on mobile */
       '<div class="backdrop" id="photoLightboxBackdrop" hidden></div>' +
-      '<div class="modal photo-lightbox" id="photoLightbox" hidden role="dialog" aria-label="Product photo">' +
-        '<button type="button" class="icon-btn photo-lightbox-close" id="closePhotoLightbox" aria-label="Close">✕</button>' +
+      '<div class="modal photo-lightbox" id="photoLightbox" hidden role="dialog" aria-label="Product details">' +
+        '<div class="photo-lightbox-header">' +
+          '<div class="photo-lightbox-title" id="photoLightboxCaption"></div>' +
+          '<button type="button" class="photo-lightbox-close" id="closePhotoLightbox" aria-label="Close">✕</button>' +
+        '</div>' +
         '<div class="photo-lightbox-viewport" id="photoLightboxViewport">' +
           '<img id="photoLightboxImg" src="" alt="">' +
         '</div>' +
@@ -2912,7 +3120,14 @@
           '<span class="photo-lightbox-zoom-label" id="photoZoomLabel">1.0×</span>' +
           '<button type="button" id="photoZoomIn" aria-label="Zoom in">+</button>' +
         '</div>' +
-        '<div class="photo-lightbox-caption" id="photoLightboxCaption"></div>' +
+        '<div class="photo-lightbox-footer">' +
+          '<div class="photo-lightbox-price" id="photoLightboxPrice"></div>' +
+          '<div class="qty-row">' +
+            '<button type="button" class="qty-btn qty-minus" id="photoLightboxMinus" aria-label="Decrease quantity">−</button>' +
+            '<input type="number" min="0" inputmode="numeric" class="qty-input" id="photoLightboxQty" aria-label="Quantity">' +
+            '<button type="button" class="qty-btn qty-plus" id="photoLightboxPlus" aria-label="Increase quantity">+</button>' +
+          '</div>' +
+        '</div>' +
       '</div>';
     while(host.firstChild) document.body.appendChild(host.firstChild);
   }
@@ -2931,6 +3146,15 @@
     document.getElementById("closePhotoLightbox").addEventListener("click", closePhotoLightbox);
     document.getElementById("photoLightboxBackdrop").addEventListener("click", closePhotoLightbox);
     wirePhotoZoomEvents();
+    document.getElementById("photoLightboxMinus").addEventListener("click", function(){
+      syncLightboxQty((parseInt(document.getElementById("photoLightboxQty").value,10)||0) - 1);
+    });
+    document.getElementById("photoLightboxPlus").addEventListener("click", function(){
+      syncLightboxQty((parseInt(document.getElementById("photoLightboxQty").value,10)||0) + 1);
+    });
+    document.getElementById("photoLightboxQty").addEventListener("change", function(e){
+      syncLightboxQty(e.target.value);
+    });
 
     document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
     document.getElementById("cancelCheckoutBtn").addEventListener("click", closeCheckout);
@@ -2959,10 +3183,14 @@
   function updateStickyOffset(){
     var topbar = document.querySelector(".topbar");
     var bar = document.querySelector(".quicknav-bar");
-    var total = (topbar ? topbar.getBoundingClientRect().height : 0) +
-                (bar ? bar.getBoundingClientRect().height : 0);
+    var topbarH = topbar ? topbar.getBoundingClientRect().height : 0;
+    var total = topbarH + (bar ? bar.getBoundingClientRect().height : 0);
     STICKY_OFFSET = Math.round(total) || 76;
     document.documentElement.style.setProperty("--sticky-offset", STICKY_OFFSET + "px");
+    // The category bar sticks right below the topbar — pin it at the topbar's
+    // real height (not a guessed constant) so the two never overlap or leave a
+    // gap while both are pinned during scroll.
+    document.documentElement.style.setProperty("--topbar-h", Math.round(topbarH) + "px");
   }
   window.addEventListener("resize", updateStickyOffset);
 
@@ -3033,7 +3261,14 @@
     if(!data || !Array.isArray(data.categories)) return data;
     data.categories.forEach(function(cat){
       (cat.items || []).forEach(function(item){
-        if(!item.image || /^data:image\//i.test(item.image)) {
+        // Only guess a path for items that genuinely never had an image field
+        // (old data saved before images were tracked explicitly) or that still
+        // carry a raw data: URL that should never have been persisted. An item
+        // whose image was deliberately cleared via "Remove photo" in the admin
+        // has image === "" — that is a real, intentional value, not a gap to
+        // fill in, so it must be left alone or the storefront keeps showing a
+        // stale image that still happens to exist in the repo under that name.
+        if(item.image === undefined || item.image === null || /^data:image\//i.test(item.image||"")) {
           item.image = "images/" + encodeURIComponent((item.name || "") + ".webp");
         }
       });
