@@ -594,6 +594,7 @@
     background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
   }
   .field textarea{resize:vertical;min-height:52px;}
+  .field-hint{margin:5px 0 0;font-size:.74rem;color:var(--text-dim);line-height:1.4;}
   .field select{
     width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--border);
     background:var(--bg);color:var(--text);font:inherit;font-size:.9rem;
@@ -3068,9 +3069,9 @@
           '<div class="field"><label for="f-hours">Hours</label><input id="f-hours" type="text"></div>' +
           '<div class="field"><label for="f-license">License / compliance line</label><input id="f-license" type="text"></div>' +
 
-          '<div class="section-label">Offer banner</div>' +
-          '<div class="field"><label for="f-offerText">Offer badge text</label><input id="f-offerText" type="text"></div>' +
-          '<div class="field"><label for="f-offerSubtext">Offer description</label><textarea id="f-offerSubtext"></textarea></div>' +
+          '<div class="section-label">Running banners</div>' +
+          '<div class="field"><label for="f-offerText">Top running banner (short)</label><input id="f-offerText" type="text" placeholder="e.g. Diwali Mega Sale"><p class="field-hint">Scrolls continuously next to the Call button. Keep it short — a few words.</p></div>' +
+          '<div class="field"><label for="f-offerSubtext">Second running banner (longer)</label><textarea id="f-offerSubtext" placeholder="e.g. Flat 80% off, free delivery above ₹5,000"></textarea><p class="field-hint">Scrolls below the logo on the home page. Can be a full sentence.</p></div>' +
           '<div class="field"><label for="f-legalNote">Safety / legal note</label><textarea id="f-legalNote"></textarea></div>' +
 
           '<div class="section-label">Orders &amp; payment</div>' +
