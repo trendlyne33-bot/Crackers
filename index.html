@@ -164,35 +164,68 @@
   .call-chip:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(243,177,58,0.3), 0 14px 34px -12px rgba(243,177,58,0.45);}
   .call-chip:active{transform:translateY(0);}
 
+  /* topbar running offer banner — a continuously scrolling marquee strip that
+     fills the space next to the Call button. Built from the offer text
+     repeated back-to-back as two identical halves, animated by exactly
+     -50%, so the loop is seamless regardless of how long the text is. */
+  .topbar-marquee{
+    flex:1 1 auto;min-width:0;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 16px), transparent);
+    mask-image:linear-gradient(90deg, transparent, #000 24px, #000 calc(100% - 16px), transparent);
+  }
+  .topbar-marquee-track{display:flex;width:max-content;animation:topbarMarquee 18s linear infinite;}
+  .topbar-marquee-item{
+    display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+    padding-inline-end:40px;font-size:.76rem;font-weight:700;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--accent-2);
+  }
+  .topbar-marquee-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--accent-2);flex-shrink:0;
+    box-shadow:0 0 10px 2px rgba(255,111,145,0.6);
+  }
+  @keyframes topbarMarquee{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  @media (prefers-reduced-motion: reduce){ .topbar-marquee-track{animation:none;} }
+
   /* hero */
+  .hero-logo{
+    width:clamp(86px, 24vw, 128px);height:clamp(86px, 24vw, 128px);
+    margin:0 auto 16px;border-radius:50%;flex-shrink:0;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(160deg, rgba(243,177,58,0.28), rgba(255,111,145,0.14));
+    border:1px solid rgba(243,177,58,0.4);
+    box-shadow:0 0 34px -4px rgba(243,177,58,0.55);
+  }
+  .hero-logo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .hero-brand-name{
+    font-family:"Baloo 2",sans-serif;font-weight:800;
+    font-size:clamp(1.9rem, 8vw, 2.7rem);line-height:1.08;
+    background:linear-gradient(135deg, #ffe3a3, var(--accent) 55%, var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    margin-bottom:6px;text-shadow:0 2px 24px rgba(243,177,58,0.18);
+  }
+  .hero-tagline{color:var(--text-dim);font-size:1rem;margin-bottom:16px;}
+  @media (min-width:561px){
+    .hero-logo{width:64px;height:64px;margin-bottom:10px;}
+    .hero-brand-name{font-size:1.5rem;margin-bottom:3px;}
+    .hero-tagline{font-size:.85rem;margin-bottom:8px;}
+  }
   .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
   .hero-canvas{position:absolute;inset:0;width:100%;height:100%;}
   .hero-fade{
     position:absolute;inset:0;
     background:linear-gradient(180deg, transparent 0%, var(--bg) 96%);
   }
-  .hero-content{position:relative;padding-block:44px 34px;text-align:left;}
+  .hero-content{position:relative;padding-block:40px 34px;text-align:center;display:flex;flex-direction:column;align-items:center;}
   @media (min-width:561px){
-    .hero-content{padding-block:14px 14px;}
+    .hero-content{padding-block:16px 14px;}
   }
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--accent-2);margin-bottom:14px;
-  }
-  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-2);
-    box-shadow:0 0 12px 2px rgba(255,111,145,0.6);}
-  .hero h1{font-size:clamp(1.9rem,5.5vw,3rem);font-weight:800;line-height:1.05;max-width:16ch;
-    text-shadow:0 2px 24px rgba(243,177,58,0.18);}
-  .hero-offer-sub{margin-top:12px;color:var(--text-dim);font-size:1.02rem;max-width:44ch;}
+  .hero-offer-sub{margin-top:0;color:var(--text-dim);font-size:1.02rem;max-width:44ch;margin-inline:auto;}
   /* On desktop/tablet the hero was disproportionately tall relative to how little
      it says — cut its heading size, line-wrap and spacing way down so it reads as
      a slim banner, not a full section. Placed after the base rules above so it
      wins the cascade at this breakpoint. */
   @media (min-width:561px){
-    .eyebrow{margin-bottom:6px;}
-    .hero h1{font-size:1.6rem;line-height:1.2;max-width:38ch;}
-    .hero-offer-sub{margin-top:5px;font-size:.9rem;}
+    .hero-offer-sub{font-size:.9rem;}
   }
   .hero-ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
   .cta{
@@ -287,7 +320,7 @@
   }
   .chip{
     flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
-    padding:8px 16px 8px 8px;border-radius:999px;scroll-snap-align:start;
+    padding:10px 18px;border-radius:999px;scroll-snap-align:start;
     background:rgba(255,255,255,0.05);border:1px solid var(--border);
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
     color:var(--text-dim);font-size:.82rem;font-weight:700;text-decoration:none;
@@ -1010,7 +1043,7 @@
   }
   function renderQuickNav(data){
     return data.categories.map(function(c,i){
-      return '<a class="chip" href="#'+slug(c.name,i)+'"><span class="chip-icon" aria-hidden="true">'+catIcon(c.name)+'</span> '+esc(c.name)+'</a>';
+      return '<a class="chip" href="#'+slug(c.name,i)+'">'+esc(c.name)+'</a>';
     }).join("");
   }
 
@@ -1056,17 +1089,21 @@
       '</section>';
   }
 
+  function renderTopbarMarquee(text){
+    var item = '<span class="topbar-marquee-item"><span class="topbar-marquee-dot" aria-hidden="true"></span>'+esc(text||"Special Offer")+'</span>';
+    // Two identical halves back-to-back: the animation slides by exactly -50%,
+    // so it loops seamlessly no matter how long the offer text is.
+    var half = new Array(6).fill(item).join("");
+    return '<div class="topbar-marquee" role="marquee" aria-label="'+esc(text||"")+'">' +
+      '<div class="topbar-marquee-track">'+half+half+'</div>' +
+    '</div>';
+  }
+
   function render(data){
     var root = document.getElementById("root");
     var html = '' +
     '<div class="topbar"><div class="wrap topbar-inner">' +
-      '<div class="brand">' +
-        '<span class="brand-row">' +
-          '<span class="brand-logo"><img src="images/logo.png" alt="Crackle Cart logo" width="38" height="38"></span>' +
-          '<span class="brand-name">'+esc(data.shopName)+'</span>' +
-        '</span>' +
-        '<span class="brand-tag">'+esc(data.tagline)+'</span>' +
-      '</div>' +
+      renderTopbarMarquee(data.offerText) +
       '<div class="top-actions">' +
         '<a class="call-chip" href="'+telLink(data)+'" aria-label="Call the shop">☎️ Call</a>' +
       '</div>' +
@@ -1076,8 +1113,9 @@
       '<canvas class="hero-canvas" id="fxCanvas" aria-hidden="true"></canvas>' +
       '<div class="hero-fade" aria-hidden="true"></div>' +
       '<div class="wrap hero-content">' +
-        '<div class="eyebrow">'+esc(data.offerText||"Special Offer")+'</div>' +
-        '<h1>Diwali crackers, straight from the Sivakasi factories.</h1>' +
+        '<div class="hero-logo"><img src="images/logo.png" alt="'+esc(data.shopName)+' logo"></div>' +
+        '<h1 class="hero-brand-name">'+esc(data.shopName)+'</h1>' +
+        '<p class="hero-tagline">'+esc(data.tagline)+'</p>' +
         '<p class="hero-offer-sub">'+esc(data.offerSubtext||"")+'</p>' +
       '</div>' +
     '</div>' +
