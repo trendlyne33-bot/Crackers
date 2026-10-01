@@ -2128,6 +2128,17 @@
       var sheet = XLSX.utils.aoa_to_sheet(aoa);
       // Reasonable column widths so the sheet is readable without manual resizing.
       sheet["!cols"] = [8,20,14,12,14,28,36,9,13,14,11,11,8].map(function(w){ return {wch:w}; });
+      // Phone numbers are stored like "+91-9840470285" — the leading "+" makes Excel
+      // mistake the cell for a formula (showing "=91-9840470285" and a negative number)
+      // unless the cell is explicitly forced to plain text. Order No can also start
+      // with digits only, but force it too for safety since admins may retype it.
+      [0, 2].forEach(function(col){
+        for(var r = 1; r < aoa.length; r++){
+          var addr = XLSX.utils.encode_cell({r:r, c:col});
+          var cell = sheet[addr];
+          if(cell){ cell.t = "s"; cell.z = "@"; delete cell.f; }
+        }
+      });
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, sheet, "Orders");
       var stamp = new Date().toISOString().slice(0,10);
