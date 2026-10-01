@@ -2079,55 +2079,65 @@
     }
   }
 
-  function csvCell(v){
-    var s = String(v===undefined || v===null ? "" : v);
-    // Quote any cell that could otherwise break the CSV grid (comma/quote/newline),
-    // and escape embedded quotes by doubling them per the CSV spec.
-    if(/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g,'""') + '"';
-    return s;
-  }
-
   function orderItemsSummary(items){
     return (items||[]).map(function(it){
       return it.name + " x" + it.qty + " @" + it.price;
     }).join("; ");
   }
 
+  // Loads the SheetJS library on demand (same lazy-CDN pattern as the PDF receipt
+  // builder) so the export works as a real .xlsx file, not a renamed CSV.
+  function ensureXlsxLibLoaded(){
+    return new Promise(function(resolve, reject){
+      if(window.XLSX){ resolve(); return; }
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+      s.onload = function(){ resolve(); };
+      s.onerror = function(){ reject(new Error("failed to load Excel export library")); };
+      document.head.appendChild(s);
+    });
+  }
+
   // Downloads every order currently matching the orders table's range/status/search
-  // filters as a CSV — full customer, location, item and status detail per row, one
-  // row per order so it opens cleanly in Excel/Sheets.
+  // filters as a real Excel (.xlsx) workbook — full customer, location, item and
+  // status detail per row, one row per order, opens directly in Excel/Sheets.
   function exportOrdersCsv(){
     var rows = getFilteredOrders().slice().sort(function(a,b){ return b.date - a.date; });
     if(rows.length === 0){
       alert("No orders match the current filters to export.");
       return;
     }
-    var header = ["Order No","Customer Name","Phone","State","City","Address",
-      "Items","Quantity","Total Amount (₹)","Payment/Order Status","Order Via","Date","Time"];
-    var lines = [header.map(csvCell).join(",")];
-    rows.forEach(function(o){
-      var qty = (o.items||[]).reduce(function(s,it){ return s + (Number(it.qty)||0); }, 0);
-      var row = [
-        o.orderNo, o.name, o.phone, o.state||"", o.city||"", o.address||"",
-        orderItemsSummary(o.items), qty, o.total,
-        o.status ? (o.status.charAt(0).toUpperCase()+o.status.slice(1)) : "",
-        o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website",
-        o.date.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"}),
-        o.date.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})
-      ];
-      lines.push(row.map(csvCell).join(","));
+    var btn = document.getElementById("ordersExportBtn");
+    var originalLabel = btn ? btn.textContent : "";
+    if(btn){ btn.disabled = true; btn.textContent = "Preparing…"; }
+    ensureXlsxLibLoaded().then(function(){
+      var header = ["Order No","Customer Name","Phone","State","City","Address",
+        "Items","Quantity","Total Amount (₹)","Payment/Order Status","Order Via","Date","Time"];
+      var aoa = [header];
+      rows.forEach(function(o){
+        var qty = (o.items||[]).reduce(function(s,it){ return s + (Number(it.qty)||0); }, 0);
+        aoa.push([
+          o.orderNo, o.name, o.phone, o.state||"", o.city||"", o.address||"",
+          orderItemsSummary(o.items), qty, Number(o.total)||0,
+          o.status ? (o.status.charAt(0).toUpperCase()+o.status.slice(1)) : "",
+          o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website",
+          o.date.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"}),
+          o.date.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})
+        ]);
+      });
+      var sheet = XLSX.utils.aoa_to_sheet(aoa);
+      // Reasonable column widths so the sheet is readable without manual resizing.
+      sheet["!cols"] = [8,20,14,12,14,28,36,9,13,14,11,11,8].map(function(w){ return {wch:w}; });
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, sheet, "Orders");
+      var stamp = new Date().toISOString().slice(0,10);
+      XLSX.writeFile(wb, "crackle-cart-orders-" + stamp + ".xlsx");
+    }).catch(function(err){
+      alert("Couldn't export orders — please check your internet connection and try again.");
+      console.warn("Excel export failed:", err && err.message ? err.message : err);
+    }).finally(function(){
+      if(btn){ btn.disabled = false; btn.textContent = originalLabel; }
     });
-    // Prefix a UTF-8 BOM so Excel renders the ₹ symbol and any non-ASCII names correctly.
-    var csv = "﻿" + lines.join("\r\n");
-    var blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    var stamp = new Date().toISOString().slice(0,10);
-    a.href = url; a.download = "crackle-cart-orders-" + stamp + ".csv";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
   }
 
   function updateOrderStatus(orderId, newStatus, selectEl){
@@ -3107,7 +3117,7 @@
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
           '<div class="field" style="margin-bottom:12px;"><input type="text" id="ordersSearchInput" placeholder="Search by order no, phone or name"></div>' +
-          '<button type="button" class="btn-download" id="ordersExportBtn" style="margin-bottom:12px;width:100%;">⬇ Export orders (CSV)</button>' +
+          '<button type="button" class="btn-download" id="ordersExportBtn" style="margin-bottom:12px;width:100%;">⬇ Export orders (Excel)</button>' +
           '<div class="ord-bulk-bar" id="ordersBulkBar" hidden>' +
             '<span id="ordersBulkCount">0 selected</span>' +
             '<button type="button" class="ord-delete-btn ord-bulk-delete" id="ordersBulkDeleteBtn" title="Delete selected orders permanently">🗑 Delete selected</button>' +
