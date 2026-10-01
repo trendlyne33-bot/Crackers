@@ -822,6 +822,13 @@
     font-size:.82rem;font-weight:700;color:var(--text);
   }
   .ord-bulk-bar .ord-bulk-delete{width:auto;height:auto;padding:7px 14px;gap:6px;font-size:.78rem;font-weight:700;}
+  .ord-bulk-export{
+    appearance:none;border:1px solid rgba(243,177,58,0.5);background:rgba(243,177,58,0.14);
+    color:var(--text);border-radius:999px;padding:7px 14px;font:inherit;font-size:.78rem;font-weight:700;
+    cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  }
+  .ord-bulk-export:hover{background:rgba(243,177,58,0.24);}
+  .ord-bulk-export:disabled{opacity:.6;cursor:default;}
   .ord-bulk-clear{
     background:none;border:none;color:var(--text-dim);font:inherit;font-size:.78rem;font-weight:700;
     text-decoration:underline;cursor:pointer;padding:0;margin-left:auto;
@@ -2098,18 +2105,9 @@
     });
   }
 
-  // Downloads every order currently matching the orders table's range/status/search
-  // filters as a real Excel (.xlsx) workbook — full customer, location, item and
-  // status detail per row, one row per order, opens directly in Excel/Sheets.
-  function exportOrdersCsv(){
-    var rows = getFilteredOrders().slice().sort(function(a,b){ return b.date - a.date; });
-    if(rows.length === 0){
-      alert("No orders match the current filters to export.");
-      return;
-    }
-    var btn = document.getElementById("ordersExportBtn");
-    var originalLabel = btn ? btn.textContent : "";
-    if(btn){ btn.disabled = true; btn.textContent = "Preparing…"; }
+  // Shared Excel builder — writes the given orders (already resolved + sorted) to an
+  // .xlsx workbook. Used both for "export all filtered" and "export selected".
+  function buildOrdersExcel(rows, btn, originalLabel){
     ensureXlsxLibLoaded().then(function(){
       var header = ["Order No","Customer Name","Phone","State","City","Address",
         "Items","Quantity","Total Amount (₹)","Payment/Order Status","Order Via","Date","Time"];
@@ -2149,6 +2147,37 @@
     }).finally(function(){
       if(btn){ btn.disabled = false; btn.textContent = originalLabel; }
     });
+  }
+
+  // Downloads every order currently matching the orders table's range/status/search
+  // filters as a real Excel (.xlsx) workbook — full customer, location, item and
+  // status detail per row, one row per order, opens directly in Excel/Sheets.
+  function exportOrdersCsv(){
+    var rows = getFilteredOrders().slice().sort(function(a,b){ return b.date - a.date; });
+    if(rows.length === 0){
+      alert("No orders match the current filters to export.");
+      return;
+    }
+    var btn = document.getElementById("ordersExportBtn");
+    var originalLabel = btn ? btn.textContent : "";
+    if(btn){ btn.disabled = true; btn.textContent = "Preparing…"; }
+    buildOrdersExcel(rows, btn, originalLabel);
+  }
+
+  // Downloads only the orders the admin has ticked in the table — lets them pick
+  // specific orders (e.g. just today's deliveries) instead of exporting everything.
+  function exportSelectedOrdersCsv(){
+    var ids = selectedOrderIds;
+    var rows = getFilteredOrders().filter(function(o){ return ids[o.id]; })
+      .slice().sort(function(a,b){ return b.date - a.date; });
+    if(rows.length === 0){
+      alert("Select at least one order to export.");
+      return;
+    }
+    var btn = document.getElementById("ordersBulkExportBtn");
+    var originalLabel = btn ? btn.textContent : "";
+    if(btn){ btn.disabled = true; btn.textContent = "Preparing…"; }
+    buildOrdersExcel(rows, btn, originalLabel);
   }
 
   function updateOrderStatus(orderId, newStatus, selectEl){
@@ -2708,6 +2737,8 @@
       else { visible.forEach(function(o){ delete selectedOrderIds[o.id]; }); }
       renderOrdersTable();
     });
+    var ordersBulkExportBtn = document.getElementById("ordersBulkExportBtn");
+    if(ordersBulkExportBtn) ordersBulkExportBtn.addEventListener("click", exportSelectedOrdersCsv);
     var ordersBulkDeleteBtn = document.getElementById("ordersBulkDeleteBtn");
     if(ordersBulkDeleteBtn) ordersBulkDeleteBtn.addEventListener("click", function(){
       var count = Object.keys(selectedOrderIds).length;
@@ -3131,6 +3162,7 @@
           '<button type="button" class="btn-download" id="ordersExportBtn" style="margin-bottom:12px;width:100%;">⬇ Export orders (Excel)</button>' +
           '<div class="ord-bulk-bar" id="ordersBulkBar" hidden>' +
             '<span id="ordersBulkCount">0 selected</span>' +
+            '<button type="button" class="ord-bulk-export" id="ordersBulkExportBtn" title="Export only the ticked orders">⬇ Export selected</button>' +
             '<button type="button" class="ord-delete-btn ord-bulk-delete" id="ordersBulkDeleteBtn" title="Delete selected orders permanently">🗑 Delete selected</button>' +
             '<button type="button" class="ord-bulk-clear" id="ordersBulkClearBtn">Clear</button>' +
           '</div>' +
