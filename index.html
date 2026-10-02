@@ -451,6 +451,41 @@
   }
   .line-total{margin-left:auto;font-weight:800;color:var(--accent-2);font-size:.92rem;}
 
+  /* Mobile-only: make the product photo the dominant element of the card so a
+     shopper can recognise the item without tapping into it. Two-column grid —
+     a large square image on the left spanning the name/unit/price block on the
+     right — instead of the small 56px thumbnail above. Scoped to the existing
+     mobile breakpoint used elsewhere in this file (max-width:560px); the
+     min-width:561px tablet/desktop block below is untouched. */
+  @media (max-width:560px){
+    .item-card{padding:12px;border-radius:20px;gap:10px;}
+    .item-top{
+      display:grid;grid-template-columns:44% 1fr;grid-template-rows:auto auto;
+      column-gap:14px;row-gap:0;align-items:start;
+    }
+    .item-photo-wrap{grid-column:1;grid-row:1 / span 2;width:100%;align-self:stretch;}
+    .item-card .item-photo,
+    .item-card .item-photo-empty{
+      width:100%;height:100%;min-height:118px;aspect-ratio:1 / 1;
+      border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,0.16);
+    }
+    .item-card .item-photo-empty{font-size:2.3rem;}
+    .item-card .item-photo-edit-badge{width:24px;height:24px;font-size:.78rem;}
+    .item-info{grid-column:2;grid-row:1;padding-top:2px;}
+    .item-card .item-name{font-size:1.05rem;line-height:1.32;}
+    .item-card .item-unit{font-size:.82rem;margin-top:3px;}
+    .item-price{
+      grid-column:2;grid-row:2;text-align:left;margin-top:8px;
+      display:flex;flex-wrap:wrap;align-items:baseline;gap:7px 9px;
+    }
+    .item-card .price-net{order:1;font-size:1.3rem;}
+    .item-card .price-off{order:2;margin-top:0;}
+    .item-card .price-mrp{order:3;flex-basis:100%;}
+    .item-card .qty-row{margin-top:2px;}
+    .item-card .qty-btn{width:40px;height:40px;border-radius:12px;}
+    .item-card .qty-input{width:54px;padding:9px 4px;font-size:.95rem;}
+  }
+
   /* On desktop/tablet the stacked mobile layout (small thumbnail + a thin row of
      content, qty controls on their own line below) left most of the card empty.
      Turn each card into one wide row instead — bigger photo, roomier type, price
