@@ -837,7 +837,10 @@
     border:1px solid var(--border);cursor:pointer;
   }
   .status-select.status-pending{background:var(--warning-wash);color:var(--warning);}
+  .status-select.status-paid{background:rgba(56,217,201,0.16);color:var(--accent-3);}
   .status-select.status-acknowledged{background:rgba(96,165,250,0.16);color:#60a5fa;}
+  .status-select.status-fulfillment{background:rgba(243,177,58,0.16);color:var(--accent);}
+  .status-select.status-intransit{background:rgba(255,111,145,0.16);color:var(--accent-2);}
   .status-select.status-delivered{background:var(--good-wash);color:var(--good);}
   .status-select.status-cancelled{background:var(--critical-wash);color:var(--critical);}
   .ord-delete-btn{
@@ -2048,9 +2051,22 @@
     });
   }
 
+  var ORDER_STATUSES = [
+    {value:"pending", label:"Pending"},
+    {value:"paid", label:"Paid"},
+    {value:"acknowledged", label:"Acknowledged"},
+    {value:"fulfillment", label:"Fulfillment"},
+    {value:"intransit", label:"In transit"},
+    {value:"delivered", label:"Delivered"},
+    {value:"cancelled", label:"Cancelled"}
+  ];
+  function orderStatusLabel(s){
+    for(var i=0;i<ORDER_STATUSES.length;i++){ if(ORDER_STATUSES[i].value===s) return ORDER_STATUSES[i].label; }
+    return s ? (s.charAt(0).toUpperCase()+s.slice(1)) : s;
+  }
   function statusSelectHtml(o){
-    var opts = ["pending","acknowledged","delivered","cancelled"].map(function(s){
-      return '<option value="'+s+'"'+(o.status===s?" selected":"")+'>'+s.charAt(0).toUpperCase()+s.slice(1)+'</option>';
+    var opts = ORDER_STATUSES.map(function(s){
+      return '<option value="'+s.value+'"'+(o.status===s.value?" selected":"")+'>'+s.label+'</option>';
     }).join("");
     return '<select class="status-select status-'+o.status+'" data-order-id="'+o.id+'">'+opts+'</select>';
   }
@@ -2152,7 +2168,7 @@
         aoa.push([
           o.orderNo, o.name, o.phone, o.state||"", o.city||"", o.address||"",
           orderItemsSummary(o.items), qty, Number(o.total)||0,
-          o.status ? (o.status.charAt(0).toUpperCase()+o.status.slice(1)) : "",
+          o.status ? orderStatusLabel(o.status) : "",
           o.via==="whatsapp"?"WhatsApp":o.via==="email"?"Email":"Website",
           o.date.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"}),
           o.date.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"})
@@ -3189,7 +3205,10 @@
           '<div class="filter-row" style="margin-bottom:12px;" id="ordersStatusFilter">' +
             '<button type="button" class="filter-pill active" data-status="all">All</button>' +
             '<button type="button" class="filter-pill" data-status="pending">Pending</button>' +
+            '<button type="button" class="filter-pill" data-status="paid">Paid</button>' +
             '<button type="button" class="filter-pill" data-status="acknowledged">Acknowledged</button>' +
+            '<button type="button" class="filter-pill" data-status="fulfillment">Fulfillment</button>' +
+            '<button type="button" class="filter-pill" data-status="intransit">In transit</button>' +
             '<button type="button" class="filter-pill" data-status="delivered">Delivered</button>' +
             '<button type="button" class="filter-pill" data-status="cancelled">Cancelled</button>' +
           '</div>' +
