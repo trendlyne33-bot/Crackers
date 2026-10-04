@@ -1716,6 +1716,7 @@
   var ORDER_COUNTER_DOC = "orderNo";
   var ADMIN_EMAIL = "trendlyne33@gmail.com";
   var VISIT_TRACK_KEY = "crackleCartLastCountedDay";
+  var ORDER_NO_PREFIX = "CCINV";
 
   function isoDayLocal(d){
     var m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
@@ -1820,7 +1821,7 @@
       return tx.get(ref).then(function(snap){
         var current = (snap.exists && typeof snap.data().next === "number") ? snap.data().next : 1;
         tx.set(ref, {next: current + 1}, {merge:true});
-        return current;
+        return ORDER_NO_PREFIX + current; 
       });
     }).catch(function(err){
       console.error("Couldn't get the next order number, using a fallback:", err);
