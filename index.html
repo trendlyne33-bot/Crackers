@@ -1474,12 +1474,14 @@
           customer_phone: order.phone,
           customer_address: order.address,
           order_summary: buildOrderSummaryText(order),
-          order_total: order.total
+          order_total: order.total,
+           order_id: order.orderNo
         });
       }).then(function(){
         return {ok:true, method:"email"};
       }).catch(function(err){
-        console.warn("Background order email failed:", err && err.message ? err.message : err);
+    
+console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS says:", err && (err.text || err.message) || err);
         if(options.fallbackToMailto){ openMailtoFallback(order, data); return {ok:true, method:"mailto"}; }
         return {ok:false, method:"none"};
       });
@@ -1819,7 +1821,7 @@
     var ref = db.collection(FIRESTORE_COUNTERS_COLLECTION).doc(ORDER_COUNTER_DOC);
     return db.runTransaction(function(tx){
       return tx.get(ref).then(function(snap){
-        var current = (snap.exists && typeof snap.data().next === "number") ? snap.data().next : 1;
+        var current = (snap.exists && typeof snap.data().next === "number") ? snap.data().next : 26000;
         tx.set(ref, {next: current + 1}, {merge:true});
         return ORDER_NO_PREFIX + current; 
       });
