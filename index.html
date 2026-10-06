@@ -170,6 +170,23 @@
   }
   .call-chip:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(243,177,58,0.3), 0 14px 34px -12px rgba(243,177,58,0.45);}
   .call-chip:active{transform:translateY(0);}
+  .tb-btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    min-width:38px;height:38px;padding:0 10px;border-radius:999px;
+    font-size:1rem;font-weight:700;white-space:nowrap;text-decoration:none;
+    color:var(--text);border:1px solid rgba(255,255,255,0.3);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .tb-btn:hover{transform:translateY(-1px);}
+  .tb-btn:active{transform:translateY(0);}
+  .tb-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  .tb-btn .tb-label{display:none;font-size:.82rem;}
+  .tb-call{background:linear-gradient(135deg, var(--accent), var(--accent-deep));color:var(--accent-ink);border-color:transparent;box-shadow:var(--glow-gold);}
+  .tb-wa{background:linear-gradient(135deg, #25d366, #16a34a);color:#04220f;border-color:transparent;}
+  @media (min-width:561px){
+    .tb-btn{padding:0 14px;}
+    .tb-btn .tb-label{display:inline;}
+  }
 
   /* topbar running offer banner — a continuously scrolling marquee strip that
      fills the space next to the Call button. Built from the offer text
@@ -1181,7 +1198,9 @@
     '<div class="topbar"><div class="wrap topbar-inner">' +
       renderTopbarMarquee(data.offerText) +
       '<div class="top-actions">' +
-        '<a class="call-chip" href="'+telLink(data)+'" aria-label="Call the shop">☎️ Call</a>' +
+        (data.phone ? '<a class="tb-btn tb-call" href="'+telLink(data)+'" aria-label="Call the shop"><span aria-hidden="true">📞</span><span class="tb-label">Call</span></a>' : '') +
+        (data.whatsapp ? '<a class="tb-btn tb-wa" href="'+waLink(data)+'" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><span aria-hidden="true">💬</span><span class="tb-label">WhatsApp</span></a>' : '') +
+        (data.ownerEmail ? '<a class="tb-btn" href="mailto:'+esc(data.ownerEmail)+'" aria-label="Email the shop"><span aria-hidden="true">✉️</span><span class="tb-label">Mail</span></a>' : '') +
       '</div>' +
     '</div></div>' +
 
@@ -1227,8 +1246,6 @@
       '</div>' +
       '<div class="foot-admin"><button type="button" class="admin-link" id="adminLoginBtn">Shop admin</button></div>' +
     '</div></footer>' +
-
-    '<a class="fab" href="'+waLink(data)+'" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬 WhatsApp</a>' +
 
     '<div class="cartbar" id="cartBar" hidden>' +
       '<div class="wrap cartbar-inner">' +
