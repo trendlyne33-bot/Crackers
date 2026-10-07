@@ -1232,17 +1232,9 @@
     '</div>' +
 
     '<footer><div class="wrap">' +
-      '<div class="foot-grid">' +
-        '<div>' +
-          '<div class="foot-title">Visit or write to us</div>' +
-          '<div class="foot-line">'+esc(data.address)+'</div>' +
-          '<div class="foot-line">'+esc(data.hours)+'</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="foot-title">Contact</div>' +
-          '<div class="foot-line"><a href="'+telLink(data)+'">'+esc(data.phone)+'</a></div>' +
-          '<div class="foot-line"><a href="'+waLink(data)+'" target="_blank" rel="noopener">WhatsApp us</a></div>' +
-        '</div>' +
+      '<div class="foot-support">' +
+        '<div class="foot-title">Need help with your order?</div>' +
+        (data.hours ? '<div class="foot-line">'+esc(data.hours)+'</div>' : '') +
       '</div>' +
       '<div class="foot-admin"><button type="button" class="admin-link" id="adminLoginBtn">Shop admin</button></div>' +
     '</div></footer>' +
