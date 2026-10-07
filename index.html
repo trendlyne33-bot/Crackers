@@ -2656,7 +2656,21 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
     var html = buildFullHtml(data);
     await githubPutFile("index.html", textToBase64(html), "Update Crackle Cart website", token);
   }
-
+  async function commitCatalogToGitHub(data, token){
+    var res = await fetch(githubApiUrl("index.html"), {headers:githubHeaders(token)});
+    if(!res.ok){ throw new Error("GitHub could not read index.html (HTTP " + res.status + ")"); }
+    var meta = await res.json();
+    if(!meta.content){ throw new Error("GitHub returned no file content for index.html."); }
+    var bytes = Uint8Array.from(atob(String(meta.content).replace(/\s/g, "")), function(c){ return c.charCodeAt(0); });
+    var oldHtml = new TextDecoder().decode(bytes);
+    var marker = /(<script id="data-script">window\.__DATA__ = )[\s\S]*?(;<\/script>)/;
+    if(!marker.test(oldHtml)){ throw new Error("Could not find the data block in index.html on GitHub, so nothing was committed."); }
+    var dataJson = escapeForScript(JSON.stringify(data));
+    var newHtml = oldHtml.replace(marker, function(m, before, after){ return before + dataJson + after; });
+    if(newHtml === oldHtml){ return false; }
+    await githubPutFile("index.html", textToBase64(newHtml), "Update Crackle Cart catalog", token);
+    return true;
+  }
   async function saveChanges(){
     readFormBasics();
     readCategoriesFromDOM();
@@ -2678,6 +2692,7 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
       if(!token){
         try{ token = localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || ""; }catch(e){}
       }
+      if(token){ try{ localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token); }catch(e){} }
       if(token && Object.keys(pendingImageFiles).length){
         await uploadPendingImages(dataToSave, token);
         draft.categories = dataToSave.categories; // keep local draft's image paths in sync
@@ -2723,12 +2738,26 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
         console.error("Firestore sync failed (will retry automatically when online):", err);
       });
 
+            var githubNote = "";
+      if(token){
+        if(saveBtn) saveBtn.textContent = "Committing to GitHub…";
+        try{
+          var committed = await commitCatalogToGitHub(dataToSave, token);
+          githubNote = committed ? " GitHub updated." : " GitHub already up to date.";
+        }catch(ghErr){
+          console.error("GitHub commit failed:", ghErr);
+          githubNote = "\n\nNote: the website was saved, but the GitHub commit failed: " + (ghErr && ghErr.message ? ghErr.message : ghErr);
+        }
+      }else{
+        githubNote = " (GitHub commit skipped: no token on this device.)";
+      }
+
       pendingImageFiles = {};
       githubToken = "";
       if(tokenInput) tokenInput.value = "";
       closeSettingsDrawer();
       setTimeout(function(){
-        alert("Saved! Your changes are stored" + (navigator.onLine ? " and syncing now." : " and will sync automatically once you're back online."));
+                alert("Saved! Your changes are stored" + (navigator.onLine ? " and syncing now." : " and will sync automatically once you're back online.") + githubNote);
       }, 200);
     }catch(err){
       console.error(err);
