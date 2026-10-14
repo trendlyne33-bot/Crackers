@@ -1,0 +1,1670 @@
+{
+  "offerText": "✨ Diwali Sale is LIVE! ✨",
+  "tagline": "Your Festival,Delivered Bright",
+  "email": {
+    "publicKey": "kYejwsJHAAcQLquDI",
+    "templateId": "template_9srfjdn",
+    "serviceId": "service_7btxjho"
+  },
+  "shopName": "Crackle Cart",
+  "address": "support.cracklecart@gmail.com",
+  "hours": "Our support team answers enquiries daily, 9:00 AM – 9:00 PM. Extended hours may apply during Diwali sale.",
+  "categories": [
+    {
+      "name": "GIFT BOXES",
+      "items": [
+        {
+          "price": 350,
+          "name": "15 items Giftbox",
+          "image": "images/15%20items%20Giftbox.webp",
+          "mrp": 1750,
+          "unit": "1Box"
+        },
+        {
+          "price": 600,
+          "name": "27 items Giftbox",
+          "unit": "1Box",
+          "mrp": 3000,
+          "image": "images/27%20items%20Giftbox.webp"
+        },
+        {
+          "image": "images/30%20items%20Giftbox.webp",
+          "name": "30 items Giftbox",
+          "price": 700,
+          "mrp": 3500,
+          "unit": "1Box"
+        },
+        {
+          "unit": "1Box",
+          "image": "images/40%20items%20Giftbox.webp",
+          "name": "40 items Giftbox",
+          "mrp": 4250,
+          "price": 850
+        },
+        {
+          "image": "images/50%20items%20Giftbox.webp",
+          "mrp": 5500,
+          "name": "50 items Giftbox",
+          "unit": "1Box",
+          "price": 1100
+        },
+        {
+          "name": "60 items Giftbox",
+          "unit": "1Box",
+          "image": "images/60%20items%20Giftbox.webp",
+          "mrp": 6500,
+          "price": 1300
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "unit": "40Items",
+          "mrp": 20000,
+          "name": "Celebration Pack",
+          "image": "images/Celebration%20Pack.webp",
+          "price": 4000
+        },
+        {
+          "price": 6000,
+          "mrp": 30000,
+          "image": "images/Grand%20Pack.webp",
+          "name": "Grand Pack",
+          "unit": "52Items"
+        },
+        {
+          "image": "images/Signature%20Pack.webp",
+          "name": "Signature Pack",
+          "price": 8000,
+          "mrp": 40000,
+          "unit": "60Items"
+        },
+        {
+          "mrp": 60000,
+          "price": 12000,
+          "image": "images/Ultimate%20Pack.webp",
+          "unit": "72Items",
+          "name": "Ultimate Pack"
+        },
+        {
+          "image": "images/Novelty%20Pack.webp",
+          "mrp": 55000,
+          "unit": "45Items",
+          "name": "Novelty Pack",
+          "price": 11000
+        }
+      ],
+      "name": "COMBO PACKS"
+    },
+    {
+      "items": [
+        {
+          "name": "2.75' Kuruvi",
+          "price": 10,
+          "unit": "5Pcs-Pkt",
+          "mrp": 50,
+          "image": "images/2.75'%20Kuruvi.webp"
+        },
+        {
+          "unit": "5Pcs-Pkt",
+          "image": "images/3.5'%20Lakshmi.webp",
+          "name": "3.5' Lakshmi",
+          "mrp": 100,
+          "price": 20
+        },
+        {
+          "name": "4' Lakshmi",
+          "price": 25,
+          "unit": "5Pcs-Pkt",
+          "image": "images/4'%20Lakshmi.webp",
+          "mrp": 125
+        },
+        {
+          "price": 35,
+          "name": "4' Deluxe Lakshmi",
+          "unit": "5Pcs-Pkt",
+          "mrp": 175,
+          "image": "images/4'%20Deluxe%20Lakshmi.webp"
+        },
+        {
+          "mrp": 250,
+          "price": 50,
+          "unit": "5Pcs-Pkt",
+          "image": "images/4'%20Gold%20Lakshmi.webp",
+          "name": "4' Gold Lakshmi"
+        },
+        {
+          "name": "5' Deluxe Jallikattu (Lakshmi)",
+          "price": 60,
+          "unit": "5Pcs-Pkt",
+          "mrp": 300,
+          "image": "images/5'%20Deluxe%20Jallikattu%20(Lakshmi).webp"
+        },
+        {
+          "image": "images/6'%20Lion%20King.webp",
+          "name": "6' Lion King",
+          "price": 70,
+          "mrp": 350,
+          "unit": "5Pcs-Pkt"
+        },
+        {
+          "price": 50,
+          "mrp": 250,
+          "name": "Two sound crackers",
+          "image": "images/Two%20sound%20crackers.webp",
+          "unit": "5Pcs-Pkt"
+        },
+        {
+          "unit": "1Box",
+          "name": "Paper Bomb 250g",
+          "mrp": 300,
+          "image": "images/Paper%20Bomb%20250g.webp",
+          "price": 60
+        },
+        {
+          "unit": "1Box",
+          "image": "images/Paper%20Bomb%20500g.webp",
+          "name": "Paper Bomb 500g",
+          "mrp": 600,
+          "price": 120
+        },
+        {
+          "price": 220,
+          "name": "Paper Bomb 1kg",
+          "image": "images/Paper%20Bomb%201kg.webp",
+          "unit": "1Box",
+          "mrp": 1100
+        },
+        {
+          "mrp": 350,
+          "unit": "1Pc",
+          "image": "images/Colour%20Paper%20Bomb.webp",
+          "name": "Colour Paper Bomb",
+          "price": 70
+        },
+        {
+          "price": 250,
+          "name": "Colour Magic Whip (Digital 1k wala)",
+          "unit": "1Box",
+          "mrp": 1250,
+          "image": "images/Colour%20Magic%20Whip%20(Digital%201k%20wala).webp"
+        },
+        {
+          "unit": "1Box",
+          "price": 250,
+          "mrp": 1250,
+          "name": "Magic Sound (Digital 1k wala)",
+          "image": "images/Magic%20Sound%20(Digital%201k%20wala).webp"
+        },
+        {
+          "price": 160,
+          "mrp": 800,
+          "image": "images/90%20Watts%20(Digital%20200%20wala).webp",
+          "name": "90 Watts (Digital 200 wala)",
+          "unit": "3Pcs-Box"
+        },
+        {
+          "image": "images/Old%20is%20Gold%20(Ola%20Vedi).webp",
+          "name": "Old is Gold (Ola Vedi)",
+          "price": 200,
+          "unit": "25Pcs-Box",
+          "mrp": 1000
+        }
+      ],
+      "name": "FLASH LIGHT CRACKERS"
+    },
+    {
+      "items": [
+        {
+          "name": "Rotating Sparklers (5 Rotating sticks)",
+          "image": "images/Rotating%20Sparklers%20(5%20Rotating%20sticks).webp",
+          "unit": "1Box",
+          "price": 250,
+          "mrp": 1250
+        },
+        {
+          "mrp": 250,
+          "image": "images/7%20Cm%20Electric%20sparklers%20(5%20Boxes).webp",
+          "unit": "10Pcs-Box",
+          "name": "7 Cm Electric sparklers (5 Boxes)",
+          "price": 50
+        },
+        {
+          "unit": "10Pcs-Box",
+          "mrp": 300,
+          "price": 60,
+          "name": "7 Cm Crackling sparklers (5 Boxes)",
+          "image": "images/7%20Cm%20Crackling%20sparklers%20(5%20Boxes).webp"
+        },
+        {
+          "price": 40,
+          "name": "10 Cm Electric sparklers (2 Boxes)",
+          "unit": "10Pcs-Box",
+          "mrp": 200,
+          "image": "images/10%20Cm%20Electric%20sparklers%20(2%20Boxes).webp"
+        },
+        {
+          "mrp": 225,
+          "image": "images/10%20Cm%20Crackling%20sparklers%20(2%20Boxes).webp",
+          "unit": "10Pcs-Box",
+          "name": "10 Cm Crackling sparklers (2 Boxes)",
+          "price": 45
+        },
+        {
+          "image": "images/10%20Cm%20Green%20sparklers%20(2%20Boxes).webp",
+          "name": "10 Cm Green sparklers (2 Boxes)",
+          "mrp": 250,
+          "unit": "10Pcs-Box",
+          "price": 50
+        },
+        {
+          "price": 55,
+          "mrp": 275,
+          "image": "images/10%20Cm%20Red%20sparklers%20(2%20Boxes).webp",
+          "unit": "10Pcs-Box",
+          "name": "10 Cm Red sparklers (2 Boxes)"
+        },
+        {
+          "price": 60,
+          "name": "12 Cm Electric sparklers (2 Boxes)",
+          "image": "images/12%20Cm%20Electric%20sparklers%20(2%20Boxes).webp",
+          "mrp": 300,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "image": "images/12%20Cm%20Crackling%20sparklers%20(2%20Boxes).webp",
+          "mrp": 325,
+          "unit": "10Pcs-Box",
+          "name": "12 Cm Crackling sparklers (2 Boxes)",
+          "price": 65
+        },
+        {
+          "price": 70,
+          "image": "images/12%20Cm%20Green%20sparklers%20(2%20Boxes).webp",
+          "name": "12 Cm Green sparklers (2 Boxes)",
+          "mrp": 350,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "image": "images/12%20Cm%20Red%20sparklers%20(2%20Boxes).webp",
+          "mrp": 400,
+          "name": "12 Cm Red sparklers (2 Boxes)",
+          "price": 80,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "mrp": 250,
+          "unit": "10Pcs-Box",
+          "image": "images/15%20Cm%20Electric%20sparklers.webp",
+          "name": "15 Cm Electric sparklers",
+          "price": 50
+        },
+        {
+          "image": "images/15%20Cm%20Crackling%20sparklers.webp",
+          "name": "15 Cm Crackling sparklers",
+          "price": 52,
+          "mrp": 260,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "name": "15 Cm Green sparklers",
+          "unit": "10Pcs-Box",
+          "image": "images/15%20Cm%20Green%20sparklers.webp",
+          "price": 55,
+          "mrp": 275
+        },
+        {
+          "image": "images/15%20Cm%20Red%20sparklers.webp",
+          "mrp": 300,
+          "name": "15 Cm Red sparklers",
+          "price": 60,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "price": 50,
+          "name": "30 Cm Electric sparklers",
+          "image": "images/30%20Cm%20Electric%20sparklers.webp",
+          "mrp": 250,
+          "unit": "5Pcs-Box"
+        },
+        {
+          "image": "images/30%20Cm%20Crackling%20sparklers.webp",
+          "mrp": 275,
+          "unit": "5Pcs-Box",
+          "name": "30 Cm Crackling sparklers",
+          "price": 55
+        },
+        {
+          "unit": "5Pcs-Box",
+          "mrp": 300,
+          "price": 60,
+          "name": "30 Cm Green sparklers",
+          "image": "images/30%20Cm%20Green%20sparklers.webp"
+        },
+        {
+          "unit": "5Pcs-Box",
+          "name": "30 Cm Red sparklers",
+          "image": "images/30%20Cm%20Red%20sparklers.webp",
+          "mrp": 300,
+          "price": 60
+        },
+        {
+          "image": "images/50%20cm%20Electric%20sparklers.webp",
+          "mrp": 900,
+          "name": "50 cm Electric sparklers",
+          "unit": "5Pcs-Box",
+          "price": 180
+        },
+        {
+          "unit": "5Pcs-Box",
+          "price": 200,
+          "mrp": 1000,
+          "name": "50 cm Crackling sparklers",
+          "image": "images/50%20cm%20Crackling%20sparklers.webp"
+        }
+      ],
+      "name": "SPARKLERS"
+    },
+    {
+      "items": [
+        {
+          "image": "images/Deluxe%20matches%20(Sachin).webp",
+          "mrp": 400,
+          "name": "Deluxe matches (Sachin)",
+          "unit": "10Boxes",
+          "price": 80
+        },
+        {
+          "mrp": 750,
+          "price": 150,
+          "unit": "10Boxes",
+          "image": "images/Laptop%20colour%20Matches%20Mini%20(Lion%20Prince).webp",
+          "name": "Laptop colour Matches Mini (Lion Prince)"
+        },
+        {
+          "price": 210,
+          "name": "Laptop colour matches (Royal)",
+          "image": "images/Laptop%20colour%20matches%20(Royal).webp",
+          "mrp": 1050,
+          "unit": "10Boxes"
+        }
+      ],
+      "name": "MATCHES"
+    },
+    {
+      "name": "GROUND CHAKKARS",
+      "items": [
+        {
+          "unit": "10Pcs-Box",
+          "image": "images/Ground%20chakkar%20Big%2010%20Pcs.webp",
+          "name": "Ground chakkar Big 10 Pcs",
+          "mrp": 250,
+          "price": 50
+        },
+        {
+          "name": "Ground chakkar Big 25 Pcs",
+          "unit": "25Pcs-Box",
+          "image": "images/Ground%20chakkar%20Big%2025%20Pcs.webp",
+          "price": 90,
+          "mrp": 450
+        },
+        {
+          "mrp": 350,
+          "price": 70,
+          "image": "images/Ground%20chakkar%20Asoka.webp",
+          "unit": "10Pcs-Box",
+          "name": "Ground chakkar Asoka"
+        },
+        {
+          "price": 100,
+          "name": "Ground chakkar Special",
+          "unit": "10Pcs-Box",
+          "mrp": 500,
+          "image": "images/Ground%20chakkar%20Special.webp"
+        },
+        {
+          "mrp": 900,
+          "unit": "10Pcs-Box",
+          "price": 180,
+          "name": "Ground chakkar Deluxe",
+          "image": "images/Ground%20chakkar%20Deluxe.webp"
+        },
+        {
+          "mrp": 900,
+          "price": 180,
+          "image": "",
+          "unit": "10Pcs-Box",
+          "name": "Wire chakkar"
+        }
+      ]
+    },
+    {
+      "name": "GROUND CHAKKAR WHEEL SERIES",
+      "items": [
+        {
+          "name": "Win Wheel Mini",
+          "unit": "10Pcs-Box",
+          "image": "images/Win%20Wheel%20Mini.webp",
+          "price": 180,
+          "mrp": 900
+        },
+        {
+          "name": "Win Wheel Max",
+          "image": "images/Win%20Wheel%20Max.webp",
+          "unit": "10Pcs-Box",
+          "price": 220,
+          "mrp": 1100
+        },
+        {
+          "price": 160,
+          "name": "Spinner Special",
+          "unit": "10Pcs-Box",
+          "image": "images/Spinner%20Special.webp",
+          "mrp": 800
+        },
+        {
+          "name": "Spinner Deluxe",
+          "unit": "10Pcs-Box",
+          "image": "images/Spinner%20Deluxe.webp",
+          "price": 200,
+          "mrp": 1000
+        },
+        {
+          "mrp": 750,
+          "price": 150,
+          "unit": "5Pcs-Box",
+          "image": "images/Whistling%20Wheel.webp",
+          "name": "Whistling Wheel"
+        },
+        {
+          "price": 160,
+          "name": "Whizz Chakkar",
+          "unit": "3Pcs-Box",
+          "mrp": 800,
+          "image": "images/Whizz%20Chakkar.webp"
+        }
+      ]
+    },
+    {
+      "name": "FLOWER POT",
+      "items": [
+        {
+          "mrp": 500,
+          "price": 100,
+          "image": "images/Flower%20pot%20Big.webp",
+          "unit": "10Pcs-Box",
+          "name": "Flower pot Big"
+        },
+        {
+          "image": "images/Flower%20pot%20Special.webp",
+          "mrp": 750,
+          "name": "Flower pot Special",
+          "price": 150,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "unit": "5Pcs-Box",
+          "price": 250,
+          "mrp": 1250,
+          "name": "Flower pot Deluxe (5 Pcs)",
+          "image": "images/Flower%20pot%20Deluxe%20(5%20Pcs).webp"
+        },
+        {
+          "name": "Flower Pot Giant",
+          "unit": "10Pcs-Box",
+          "image": "images/Flower%20Pot%20Giant.webp",
+          "price": 250,
+          "mrp": 1250
+        }
+      ]
+    },
+    {
+      "name": "FANCY FLOWER POT",
+      "items": [
+        {
+          "name": "Colour Koti (Pot Girl)",
+          "price": 270,
+          "unit": "10Pcs-Box",
+          "mrp": 1350,
+          "image": "images/Colour%20Koti%20(Pot%20Girl).webp"
+        },
+        {
+          "image": "images/Colour%20Koti%20(Arjun).webp",
+          "mrp": 1100,
+          "unit": "10Pcs-Box",
+          "name": "Colour Koti (Arjun)",
+          "price": 220
+        },
+        {
+          "mrp": 1850,
+          "price": 370,
+          "image": "images/Colour%20Koti%20Deluxe.webp",
+          "unit": "10Pcs-Box",
+          "name": "Colour Koti Deluxe"
+        },
+        {
+          "image": "images/Colour%20Koti%20Pink.webp",
+          "mrp": 2250,
+          "unit": "5Pcs-Box",
+          "name": "Colour Koti Pink",
+          "price": 450
+        },
+        {
+          "image": "images/Colour%20Koti%20Red.webp",
+          "mrp": 1850,
+          "unit": "5Pcs-Box",
+          "name": "Colour Koti Red",
+          "price": 370
+        },
+        {
+          "mrp": 1350,
+          "unit": "5Pcs-Box",
+          "image": "images/Tri%20Colour%20Fountain%20(Wowstar).webp",
+          "name": "Tri Colour Fountain (Wowstar)",
+          "price": 270
+        },
+        {
+          "image": "images/Scooby%20mini%20Tri%20colour.webp",
+          "name": "Scooby mini Tri colour",
+          "price": 210,
+          "mrp": 1050,
+          "unit": "5Pcs-Box"
+        },
+        {
+          "price": 180,
+          "name": "Popoye Tri colour",
+          "unit": "5Pcs-Box",
+          "mrp": 900,
+          "image": "images/Popoye%20Tri%20colour.webp"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "price": 55,
+          "name": "Chotta fancy(Any Colour)",
+          "unit": "Box",
+          "image": "images/Chotta%20fancy(Any%20Colour).webp",
+          "mrp": 275
+        }
+      ],
+      "name": "MAGIC FLOWERS"
+    },
+    {
+      "items": [
+        {
+          "price": 70,
+          "name": "10' pencil",
+          "unit": "10Pcs-Box",
+          "mrp": 350,
+          "image": "images/10'%20pencil.webp"
+        },
+        {
+          "price": 90,
+          "name": "12' pencil",
+          "unit": "10Pcs-Box",
+          "mrp": 450,
+          "image": "images/12'%20pencil.webp"
+        },
+        {
+          "price": 100,
+          "name": "15' pencil",
+          "image": "images/15'%20pencil.webp",
+          "mrp": 500,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "image": "images/Navarang%20pencil.webp",
+          "mrp": 800,
+          "unit": "3Pcs-Box",
+          "name": "Navarang pencil",
+          "price": 160
+        },
+        {
+          "image": "images/Pop%20Corn%20-%20Starvell.webp",
+          "name": "Pop Corn - Starvell",
+          "price": 220,
+          "mrp": 1100,
+          "unit": "5Pcs-Box"
+        },
+        {
+          "image": "images/Water%20falls%20Pencil%20-%20Starvell.webp",
+          "mrp": 1100,
+          "unit": "5Pcs-Box",
+          "name": "Water falls Pencil - Starvell",
+          "price": 220
+        }
+      ],
+      "name": "TORCHES"
+    },
+    {
+      "items": [
+        {
+          "price": 35,
+          "mrp": 175,
+          "image": "images/18'%20Twinkling%20star.webp",
+          "name": "18' Twinkling star",
+          "unit": "10Pcs-Box"
+        },
+        {
+          "image": "images/48'%20Twinkling%20star.webp",
+          "name": "48' Twinkling star",
+          "price": 70,
+          "unit": "10Pcs-Box",
+          "mrp": 350
+        },
+        {
+          "price": 200,
+          "name": "Jil Jil",
+          "unit": "100Pcs-Box",
+          "mrp": 1000,
+          "image": "images/Jil%20Jil.webp"
+        }
+      ],
+      "name": "TWINKLING STAR"
+    },
+    {
+      "items": [
+        {
+          "price": 45,
+          "name": "Electric stone",
+          "image": "images/Electric%20stone.webp",
+          "mrp": 225,
+          "unit": "10Pcs-Box"
+        },
+        {
+          "price": 55,
+          "mrp": 275,
+          "image": "images/Emarald.webp",
+          "name": "Emarald",
+          "unit": "10Pcs-Box"
+        },
+        {
+          "name": "Tim Tam",
+          "unit": "10Pcs-Box",
+          "image": "images/Tim%20Tam.webp",
+          "price": 90,
+          "mrp": 450
+        },
+        {
+          "price": 50,
+          "name": "Kit Kat",
+          "unit": "10Pcs-Box",
+          "mrp": 250,
+          "image": "images/Kit%20Kat.webp"
+        }
+      ],
+      "name": "SPRINKLINGS"
+    },
+    {
+      "items": [
+        {
+          "name": "Musical rocket",
+          "image": "images/Musical%20rocket.webp",
+          "unit": "5Pcs-Box",
+          "price": 150,
+          "mrp": 750
+        }
+      ],
+      "name": "MUSICAL ROCKET"
+    },
+    {
+      "items": [
+        {
+          "image": "images/Colour%20rocket.webp",
+          "mrp": 375,
+          "unit": "10Pcs-Box",
+          "price": 75,
+          "name": "Colour rocket"
+        },
+        {
+          "mrp": 425,
+          "unit": "10Pcs-Box",
+          "price": 85,
+          "name": "Rocket bomb",
+          "image": "images/Rocket%20bomb.webp"
+        },
+        {
+          "price": 160,
+          "name": "Lunik express rocket",
+          "unit": "10Pcs-Box",
+          "mrp": 800,
+          "image": "images/Lunik%20express%20rocket.webp"
+        }
+      ],
+      "name": "ROCKETS"
+    },
+    {
+      "items": [
+        {
+          "price": 50,
+          "name": "Bullet Atom bomb",
+          "unit": "10Pcs-Box",
+          "mrp": 250,
+          "image": "images/Bullet%20Atom%20bomb.webp"
+        },
+        {
+          "price": 70,
+          "unit": "10Pcs-Box",
+          "name": "Hydro Bomb",
+          "mrp": 350,
+          "image": "images/Hydro%20Bomb.webp"
+        },
+        {
+          "price": 150,
+          "unit": "10Pcs-Box",
+          "name": "King of king",
+          "mrp": 750,
+          "image": "images/King%20of%20king.webp"
+        },
+        {
+          "unit": "10Pcs-Box",
+          "price": 210,
+          "mrp": 1050,
+          "name": "Dinosaur bomb 7ply",
+          "image": "images/Dinosaur%20bomb%207ply.webp"
+        },
+        {
+          "mrp": 1300,
+          "image": "images/Digital%20Bomb.webp",
+          "unit": "10Pcs-Box",
+          "name": "Digital Bomb",
+          "price": 260
+        },
+        {
+          "price": 240,
+          "name": "Cylinder Bomb",
+          "unit": "1Pc",
+          "image": "images/Cylinder%20Bomb.webp",
+          "mrp": 1200
+        }
+      ],
+      "name": "ATOM BOMB"
+    },
+    {
+      "name": "BIJILI CRACKERS",
+      "items": [
+        {
+          "price": 30,
+          "name": "Red bijili 50 pcs",
+          "image": "images/Red%20bijili%2050%20pcs.webp",
+          "unit": "1Bag",
+          "mrp": 150
+        },
+        {
+          "name": "Red bijili 100 pcs",
+          "unit": "1Bag",
+          "image": "images/Red%20bijili%20100%20pcs.webp",
+          "price": 50,
+          "mrp": 250
+        },
+        {
+          "name": "Stripped Bijili 100 pcs",
+          "image": "images/Stripped%20Bijili%20100%20pcs.webp",
+          "unit": "1Bag",
+          "price": 60,
+          "mrp": 300
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "unit": "5Pcs-Box",
+          "name": "7 Shots 5 pcs",
+          "mrp": 800,
+          "image": "images/7%20Shots%205%20pcs.webp",
+          "price": 160
+        },
+        {
+          "price": 300,
+          "name": "7 Shots 10 pcs",
+          "unit": "10Pcs-Box",
+          "mrp": 1500,
+          "image": "images/7%20Shots%2010%20pcs.webp"
+        },
+        {
+          "unit": "5Pcs-Box",
+          "mrp": 1250,
+          "image": "images/Lolli%20Pop.webp",
+          "name": "Lolli Pop",
+          "price": 250
+        },
+        {
+          "image": "images/Top%20Gun.webp",
+          "name": "Top Gun",
+          "price": 260,
+          "unit": "5Pcs-Box",
+          "mrp": 1300
+        },
+        {
+          "mrp": 1350,
+          "price": 270,
+          "unit": "5Pcs-Box",
+          "image": "images/Black%20Money.webp",
+          "name": "Black Money"
+        },
+        {
+          "name": "Shinchan (Digital Wala)",
+          "unit": "5Pcs-Box",
+          "image": "images/Shinchan%20(Digital%20Wala).webp",
+          "mrp": 700,
+          "price": 140
+        },
+        {
+          "unit": "2Pcs-Box",
+          "mrp": 1300,
+          "image": "images/Motlu%20Batlu.webp",
+          "name": "Motlu Batlu",
+          "price": 260
+        },
+        {
+          "mrp": 850,
+          "price": 170,
+          "unit": "1Pc",
+          "image": "images/4'%20Water%20Queen.webp",
+          "name": "4' Water Queen"
+        },
+        {
+          "image": "images/6'%20Water%20queen.webp",
+          "name": "6' Water queen",
+          "price": 210,
+          "mrp": 1050,
+          "unit": "1Pc"
+        },
+        {
+          "name": "Pistol 5G",
+          "unit": "2Pcs-Box",
+          "image": "images/Pistol%205G.webp",
+          "price": 260,
+          "mrp": 1300
+        },
+        {
+          "price": 200,
+          "mrp": 1000,
+          "image": "images/Money%20in%20the%20bank%20(3pcs%20box).webp",
+          "name": "Money in the bank (3pcs box)",
+          "unit": "3Pcs-Box"
+        },
+        {
+          "mrp": 1000,
+          "price": 200,
+          "unit": "3Pcs-Box",
+          "image": "",
+          "name": "Sound Marriage (3pcs Box)"
+        },
+        {
+          "image": "images/Emu%20egg.webp",
+          "mrp": 1050,
+          "unit": "2Pcs-Box",
+          "name": "Emu egg",
+          "price": 210
+        },
+        {
+          "unit": "6Pcs-Box",
+          "mrp": 1150,
+          "image": "images/Kuala%20Lambur.webp",
+          "name": "Kuala Lambur",
+          "price": 230
+        },
+        {
+          "price": 130,
+          "mrp": 650,
+          "image": "images/Bambaram.webp",
+          "name": "Bambaram",
+          "unit": "10Pcs-Box"
+        },
+        {
+          "name": "Dancing Butterfly",
+          "price": 110,
+          "unit": "10Pcs-Box",
+          "mrp": 550,
+          "image": "images/Dancing%20Butterfly.webp"
+        },
+        {
+          "price": 90,
+          "name": "Photo Flash",
+          "unit": "5Pcs-Box",
+          "mrp": 450,
+          "image": "images/Photo%20Flash.webp"
+        },
+        {
+          "price": 110,
+          "name": "Helicopter",
+          "image": "images/Helicopter.webp",
+          "mrp": 550,
+          "unit": "5Pcs-Box"
+        },
+        {
+          "image": "images/Siren.webp",
+          "mrp": 900,
+          "unit": "3Pcs-Box",
+          "price": 180,
+          "name": "Siren"
+        },
+        {
+          "image": "images/Selfie%20Stick.webp",
+          "mrp": 400,
+          "name": "Selfie Stick",
+          "price": 80,
+          "unit": "3Pcs-Box"
+        },
+        {
+          "price": 130,
+          "mrp": 650,
+          "name": "Peacock Feather",
+          "image": "images/Peacock%20Feather.webp",
+          "unit": "5Pcs-Box"
+        },
+        {
+          "price": 100,
+          "name": "Tin Cracker",
+          "mrp": 500,
+          "image": "images/Tin%20Cracker.webp",
+          "unit": "1Pc"
+        },
+        {
+          "image": "images/Corona%20Extra%20(Wowstar%20-%20Tin).webp",
+          "mrp": 650,
+          "name": "Corona Extra (Wowstar - Tin)",
+          "price": 130,
+          "unit": "1Pc"
+        },
+        {
+          "price": 180,
+          "name": "Dora singer (5 Pcs)",
+          "image": "images/Dora%20singer%20(5%20Pcs).webp",
+          "unit": "5Pcs-Box",
+          "mrp": 900
+        },
+        {
+          "price": 150,
+          "name": "Magic smoke (3Pcs)",
+          "image": "images/Magic%20smoke%20(3Pcs).webp",
+          "unit": "3Pcs-Box",
+          "mrp": 750
+        },
+        {
+          "unit": "5Pcs-Box",
+          "image": "images/Moon%20Light%20Shower.webp",
+          "name": "Moon Light Shower",
+          "mrp": 700,
+          "price": 140
+        },
+        {
+          "mrp": 1250,
+          "price": 250,
+          "unit": "6Pcs-Box",
+          "image": "images/White%20House.webp",
+          "name": "White House"
+        },
+        {
+          "mrp": 1000,
+          "price": 200,
+          "image": "images/Wonder%20Mix.webp",
+          "unit": "5Pcs-Box",
+          "name": "Wonder Mix"
+        },
+        {
+          "image": "images/6'%20Pop%20corn%20Fountain.webp",
+          "mrp": 1050,
+          "unit": "1Pc",
+          "name": "6' Pop corn Fountain",
+          "price": 210
+        },
+        {
+          "price": 200,
+          "name": "6' Water game Fountain",
+          "image": "images/6'%20Water%20game%20Fountain.webp",
+          "mrp": 1000,
+          "unit": "1Pc"
+        },
+        {
+          "price": 200,
+          "name": "Lolli Pop Fountain",
+          "image": "images/Lolli%20Pop%20Fountain.webp",
+          "unit": "1Pc",
+          "mrp": 1000
+        },
+        {
+          "image": "images/8'%20Triple%20Monkey%203%20in%201.webp",
+          "mrp": 1150,
+          "name": "8' Triple Monkey 3 in 1",
+          "unit": "1Pc",
+          "price": 230
+        },
+        {
+          "mrp": 1150,
+          "price": 230,
+          "image": "images/8'%20Koli%20soda.webp",
+          "unit": "1Pc",
+          "name": "8' Koli soda"
+        },
+        {
+          "price": 200,
+          "name": "Gems Colour Mix (Kitkat - All Colour Mix)",
+          "unit": "5Pcs-Box",
+          "mrp": 1000,
+          "image": "images/Gems%20Colour%20Mix%20(Kitkat%20-%20All%20Colour%20Mix).webp"
+        },
+        {
+          "unit": "5Pcs-Box",
+          "mrp": 1500,
+          "price": 300,
+          "name": "Kurkur",
+          "image": "images/Kurkur.webp"
+        },
+        {
+          "price": 200,
+          "name": "Colour Fountain Mini",
+          "unit": "6Pcs-Box",
+          "mrp": 1000,
+          "image": "images/Colour%20Fountain%20Mini.webp"
+        },
+        {
+          "price": 150,
+          "image": "images/Bonsai%20(Mini%20Fountain).webp",
+          "mrp": 750,
+          "name": "Bonsai (Mini Fountain)",
+          "unit": "5Pcs-Box"
+        },
+        {
+          "price": 180,
+          "name": "Layz (Shower)",
+          "image": "images/Layz%20(Shower).webp",
+          "unit": "5Pcs-Box",
+          "mrp": 900
+        },
+        {
+          "mrp": 950,
+          "unit": "5Pcs-Box",
+          "image": "images/UP%20(Sky%20Shot).webp",
+          "name": "UP (Sky Shot)",
+          "price": 190
+        },
+        {
+          "image": "images/Mr.%20Bean.webp",
+          "mrp": 550,
+          "name": "Mr. Bean",
+          "price": 110,
+          "unit": "5Pcs-Box"
+        },
+        {
+          "name": "1' Shell Skyshot",
+          "unit": "2Pcs-Box",
+          "image": "images/1'%20Shell%20Skyshot.webp",
+          "price": 60,
+          "mrp": 300
+        },
+        {
+          "price": 190,
+          "mrp": 950,
+          "image": "images/Mumbai%20Beauty.webp",
+          "name": "Mumbai Beauty",
+          "unit": "1Pc"
+        },
+        {
+          "image": "images/Peacock%20Golden%20or%20Multi%20Colour%20(Amman).webp",
+          "name": "Peacock Golden or Multi Colour (Amman)",
+          "mrp": 900,
+          "price": 180,
+          "unit": "1Pc"
+        },
+        {
+          "image": "images/Bada%20Peacock%20(Wowstar).webp",
+          "mrp": 2100,
+          "unit": "1Pc",
+          "name": "Bada Peacock (Wowstar)",
+          "price": 420
+        },
+        {
+          "price": 450,
+          "name": "Bada Peacock 2 in 1 (Wowstar)",
+          "unit": "1Pc",
+          "mrp": 2250,
+          "image": "images/Bada%20Peacock%202%20in%201%20(Wowstar).webp"
+        },
+        {
+          "unit": "1Pc",
+          "image": "images/Bada%20Peacock%20(Suryakala).webp",
+          "name": "Bada Peacock (Suryakala)",
+          "mrp": 2100,
+          "price": 420
+        },
+        {
+          "name": "Bada Peacock (Amman)",
+          "image": "images/Bada%20Peacock%20(Amman).webp",
+          "unit": "1Pc",
+          "price": 400,
+          "mrp": 2000
+        },
+        {
+          "mrp": 325,
+          "price": 65,
+          "image": "images/Sound%20Marriage%20(1Pc).webp",
+          "unit": "1Pc",
+          "name": "Sound Marriage (1Pc)"
+        },
+        {
+          "price": 120,
+          "mrp": 600,
+          "image": "images/Water%20Melon.webp",
+          "unit": "1Pc",
+          "name": "Water Melon"
+        },
+        {
+          "image": "images/Money%20in%20the%20bank%20(1%20Pc).webp",
+          "mrp": 325,
+          "unit": "1Pc",
+          "name": "Money in the bank (1 Pc)",
+          "price": 65
+        },
+        {
+          "price": 250,
+          "name": "Car Race",
+          "image": "images/Car%20Race.webp",
+          "mrp": 1250,
+          "unit": "2Pcs-Box"
+        },
+        {
+          "image": "images/Sound%20Marriage%20(3Pcs).webp",
+          "mrp": 1000,
+          "unit": "3 Pcs-Box",
+          "name": "Sound Marriage (3Pcs)",
+          "price": 200
+        },
+        {
+          "name": "Penta Collections",
+          "unit": "5Pcs-Box",
+          "image": "images/Penta%20Collections.webp",
+          "price": 200,
+          "mrp": 1000
+        },
+        {
+          "unit": "5Pcs-Box",
+          "price": 140,
+          "mrp": 700,
+          "name": "Sun Light Shower",
+          "image": "images/Sun%20Light%20Shower.webp"
+        },
+        {
+          "price": 270,
+          "name": "Bat & ball (Crackling bat & Smoke ball)",
+          "image": "images/Bat%20%26%20ball%20(Crackling%20bat%20%26%20Smoke%20ball).webp",
+          "unit": "Crack Psc",
+          "mrp": 1350
+        },
+        {
+          "price": 250,
+          "name": "Vel Crackers",
+          "image": "images/Vel%20Crackers.webp",
+          "mrp": 1250,
+          "unit": "2 Pcs-Box"
+        },
+        {
+          "mrp": 1250,
+          "unit": "2Pcs-Box",
+          "price": 250,
+          "name": "i-Cone (Shower)",
+          "image": "images/i-Cone%20(Shower).webp"
+        },
+        {
+          "price": 300,
+          "name": "Kulfi (Hand Shower)",
+          "image": "images/Kulfi%20(Hand%20Shower).webp",
+          "mrp": 1500,
+          "unit": "3Pcs-Box"
+        }
+      ],
+      "name": "FANCY NOVELTIES"
+    },
+    {
+      "items": [
+        {
+          "image": "images/2'%20Fancy%20Out%20Single%20(LCU%20Series).webp",
+          "mrp": 700,
+          "name": "2' Fancy Out Single (LCU Series)",
+          "unit": "1Pc-Box",
+          "price": 140
+        },
+        {
+          "name": "2' Fancy 3 step pipe",
+          "unit": "1Pc-Box",
+          "image": "images/2'%20Fancy%203%20step%20pipe.webp",
+          "price": 240,
+          "mrp": 1200
+        },
+        {
+          "image": "images/3'%20Fancy%203%20step%20pipe.webp",
+          "name": "3' Fancy 3 step pipe",
+          "price": 260,
+          "mrp": 1300,
+          "unit": "1Pc-Box"
+        },
+        {
+          "mrp": 1500,
+          "unit": "3Pcs-Box",
+          "image": "images/2'%20Fancy%20Out%203%20pcs.webp",
+          "name": "2' Fancy Out 3 pcs",
+          "price": 300
+        },
+        {
+          "name": "2' Fancy Out 3 pcs (Premium-Vinayak)",
+          "image": "images/2'%20Fancy%20Out%203%20pcs%20(Premium-Vinayak).webp",
+          "unit": "3Pcs-Box",
+          "price": 320,
+          "mrp": 1600
+        },
+        {
+          "image": "images/2.5'%20Fancy%20Out.webp",
+          "mrp": 1000,
+          "unit": "1Pc-Box",
+          "price": 200,
+          "name": "2.5' Fancy Out"
+        },
+        {
+          "unit": "1Pc-Box",
+          "mrp": 1300,
+          "image": "images/3'%20Fancy%20Out.webp",
+          "name": "3' Fancy Out",
+          "price": 260
+        },
+        {
+          "price": 300,
+          "name": "3.5' Fancy out",
+          "image": "images/3.5'%20Fancy%20out.webp",
+          "mrp": 1500,
+          "unit": "1Pc-Box"
+        },
+        {
+          "image": "images/3.5'%20Nayagara%20falls.webp",
+          "mrp": 1800,
+          "name": "3.5' Nayagara falls",
+          "price": 360,
+          "unit": "1Pc-Box"
+        },
+        {
+          "price": 680,
+          "mrp": 3400,
+          "name": "3.5' Nayagara falls (Double pieces)",
+          "image": "images/3.5'%20Nayagara%20falls%20(Double%20pieces).webp",
+          "unit": "2Pcs-Box"
+        },
+        {
+          "image": "images/4'%20Nayagara%20falls.webp",
+          "mrp": 2150,
+          "unit": "1Pc-Box",
+          "name": "4' Nayagara falls",
+          "price": 430
+        },
+        {
+          "image": "images/3.5'%20Seven%20Step%20Wedding%20Celebration.webp",
+          "name": "3.5' Seven Step Wedding Celebration",
+          "price": 380,
+          "unit": "1Pc-Box",
+          "mrp": 1900
+        },
+        {
+          "image": "images/4'%20Fancy%20Out.webp",
+          "name": "4' Fancy Out",
+          "price": 420,
+          "mrp": 2100,
+          "unit": "1Pc"
+        },
+        {
+          "unit": "2Pcs-Box",
+          "mrp": 4000,
+          "image": "images/4'%20Fancy%20Out%20-%20Double%20(Maruti).webp",
+          "name": "4' Fancy Out - Double (Maruti)",
+          "price": 800
+        },
+        {
+          "price": 800,
+          "mrp": 4000,
+          "name": "4' Fancy Out - Double (Suryakala)",
+          "image": "images/4'%20Fancy%20Out%20-%20Double%20(Suryakala).webp",
+          "unit": "2Pcs-Box"
+        },
+        {
+          "unit": "2Pcs-Box",
+          "name": "6' Fancy Out (Sri Vijay)",
+          "image": "images/6'%20Fancy%20Out%20(Sri%20Vijay).webp",
+          "mrp": 7000,
+          "price": 1400
+        }
+      ],
+      "name": "AERIAL FANCY"
+    },
+    {
+      "name": "AERIAL FANCY - Premium",
+      "items": [
+        {
+          "unit": "1Pc",
+          "mrp": 2950,
+          "image": "images/WOW%20PINK.webp",
+          "name": "WOW PINK",
+          "price": 590
+        },
+        {
+          "price": 590,
+          "name": "WOW PURPLE",
+          "image": "images/WOW%20PURPLE.webp",
+          "mrp": 2950,
+          "unit": "1Pc"
+        },
+        {
+          "price": 570,
+          "mrp": 2850,
+          "image": "images/WOW%20BLUE.webp",
+          "unit": "1Pc",
+          "name": "WOW BLUE"
+        },
+        {
+          "image": "images/WOW%20ORANGE.webp",
+          "mrp": 2850,
+          "unit": "1Pc",
+          "price": 570,
+          "name": "WOW ORANGE"
+        },
+        {
+          "mrp": 2850,
+          "price": 570,
+          "image": "images/WOW%20COLOUR.webp",
+          "unit": "1Pc",
+          "name": "WOW COLOUR"
+        },
+        {
+          "price": 520,
+          "mrp": 2600,
+          "image": "images/TEXAS%20DELIGHT.webp",
+          "unit": "1Pc",
+          "name": "TEXAS DELIGHT"
+        },
+        {
+          "mrp": 2600,
+          "image": "images/GOLDEN%20EYE.webp",
+          "unit": "1Pc",
+          "name": "GOLDEN EYE",
+          "price": 520
+        },
+        {
+          "name": "TOWER SERIES - Double",
+          "unit": "2Pcs-Box",
+          "image": "images/TOWER%20SERIES%20-%20Double.webp",
+          "price": 1000,
+          "mrp": 5000
+        }
+      ]
+    },
+    {
+      "name": "MULTI COLOUR SHOTS (Premium Quality)",
+      "items": [
+        {
+          "mrp": 1250,
+          "price": 250,
+          "unit": "1Box",
+          "image": "images/12%20Shots%20Multi%20colour%20or%2012%20Shots%20R%20%26%20G.webp",
+          "name": "12 Shots Multi colour or 12 Shots R & G"
+        },
+        {
+          "price": 250,
+          "unit": "1Box",
+          "mrp": 1250,
+          "name": "12 Shots Glittering",
+          "image": "images/12%20Shots%20Glittering.webp"
+        },
+        {
+          "price": 300,
+          "name": "15 Shots Multi Colour (Suryakala)",
+          "unit": "1Box",
+          "mrp": 1500,
+          "image": "images/15%20Shots%20Multi%20Colour%20(Suryakala).webp"
+        },
+        {
+          "price": 500,
+          "name": "30 shots Multi Colour (Suryakala)",
+          "image": "images/30%20shots%20Multi%20Colour%20(Suryakala).webp",
+          "mrp": 2500,
+          "unit": "1Box"
+        },
+        {
+          "image": "images/60%20Shots%20Multi%20colour%20(Suryakala).webp",
+          "mrp": 4500,
+          "unit": "1Box",
+          "name": "60 Shots Multi colour (Suryakala)",
+          "price": 900
+        },
+        {
+          "mrp": 2250,
+          "unit": "1Box",
+          "image": "images/25%20Shots%20Multi%20Colour%20(Maruti).webp",
+          "name": "25 Shots Multi Colour (Maruti)",
+          "price": 450
+        },
+        {
+          "price": 525,
+          "name": "30 Shots Multi colour (Maruti)",
+          "unit": "1Box",
+          "mrp": 2625,
+          "image": "images/30%20Shots%20Multi%20colour%20(Maruti).webp"
+        },
+        {
+          "unit": "1Box",
+          "mrp": 4250,
+          "image": "images/50%20Shots%20Multi%20Colour%20(Maruti).webp",
+          "name": "50 Shots Multi Colour (Maruti)",
+          "price": 850
+        },
+        {
+          "price": 1000,
+          "name": "60 Shots Multi colour (Maruti)",
+          "image": "images/60%20Shots%20Multi%20colour%20(Maruti).webp",
+          "mrp": 5000,
+          "unit": "1Box"
+        },
+        {
+          "price": 2000,
+          "mrp": 10000,
+          "image": "images/100%20Shots%20Multi%20Colour%20(Maruti).webp",
+          "name": "100 Shots Multi Colour (Maruti)",
+          "unit": "1Box"
+        },
+        {
+          "mrp": 11000,
+          "price": 2200,
+          "image": "images/120%20Shots%20Multi%20colour%20(Maruti).webp",
+          "unit": "1Box",
+          "name": "120 Shots Multi colour (Maruti)"
+        },
+        {
+          "unit": "1Box",
+          "price": 4000,
+          "name": "240 Shots Multi Colour (Maruti)",
+          "mrp": 20000,
+          "image": "images/240%20Shots%20Multi%20Colour%20(Maruti).webp"
+        },
+        {
+          "name": "30 Shots Multi colour (Vinayak)",
+          "image": "images/30%20Shots%20Multi%20colour%20(Vinayak).webp",
+          "unit": "1Box",
+          "price": 500,
+          "mrp": 2500
+        },
+        {
+          "mrp": 4500,
+          "price": 900,
+          "unit": "1Box",
+          "image": "images/60%20Shots%20Multi%20Colour%20(Vinayak).webp",
+          "name": "60 Shots Multi Colour (Vinayak)"
+        },
+        {
+          "name": "30 Shots Multi colour (Wowstar)",
+          "unit": "1Box",
+          "image": "images/30%20Shots%20Multi%20colour%20(Wowstar).webp",
+          "mrp": 2750,
+          "price": 550
+        },
+        {
+          "image": "images/Peacock%20Dance%2030%20Shots.webp",
+          "name": "Peacock Dance 30 Shots",
+          "mrp": 3500,
+          "price": 700,
+          "unit": "1Box"
+        },
+        {
+          "image": "images/60%20Shots%20Multi%20colour%20(Wowstar).webp",
+          "mrp": 5500,
+          "unit": "1Box",
+          "name": "60 Shots Multi colour (Wowstar)",
+          "price": 1100
+        },
+        {
+          "image": "images/120%20Shots%20Multi%20colour%20(Wowstar).webp",
+          "mrp": 12000,
+          "unit": "1Box",
+          "price": 2400,
+          "name": "120 Shots Multi colour (Wowstar)"
+        },
+        {
+          "image": "images/Gujarat%20Festival%20150%20Shots%20Rider%20(Multi%20Colour).webp",
+          "mrp": 15000,
+          "name": "Gujarat Festival 150 Shots Rider (Multi Colour)",
+          "price": 3000,
+          "unit": "PC"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "mrp": 2250,
+          "price": 450,
+          "unit": "1Box",
+          "image": "images/30%20Shots%20Multi%20colour%20(Kathirvelan).webp",
+          "name": "30 Shots Multi colour (Kathirvelan)"
+        }
+      ],
+      "name": "MULTI COLOUR SHOTS (Economical)"
+    },
+    {
+      "items": [
+        {
+          "name": "Roll Cap",
+          "unit": "1Box",
+          "image": "images/Roll%20Cap.webp",
+          "mrp": 0,
+          "price": 100
+        },
+        {
+          "image": "images/Ring%20Gun%20Black%20JAX.webp",
+          "mrp": 0,
+          "unit": "1Pc",
+          "price": 100,
+          "name": "Ring Gun Black JAX"
+        },
+        {
+          "price": 120,
+          "name": "Ring Cap Ayyan",
+          "unit": "10Boxes",
+          "mrp": 0,
+          "image": "images/Ring%20Cap%20Ayyan.webp"
+        },
+        {
+          "image": "images/Anaconda%20Black%20Serpent.webp",
+          "name": "Anaconda Black Serpent",
+          "price": 100,
+          "mrp": 0,
+          "unit": "1Box"
+        },
+        {
+          "image": "images/Snake%20Tablet.webp",
+          "name": "Snake Tablet",
+          "mrp": 0,
+          "price": 40,
+          "unit": "1Box"
+        },
+        {
+          "price": 70,
+          "unit": "1Pc",
+          "name": "Roll Gun Black JICK",
+          "mrp": 0,
+          "image": "images/Ring%20Gun%20Black%20JICK.webp"
+        },
+        {
+          "price": 100,
+          "mrp": 0,
+          "name": "Roll Cap Brindavan",
+          "image": "images/Roll%20Cap%20Brindavan.webp",
+          "unit": "1Box"
+        }
+      ],
+      "name": "KIDS GUN"
+    },
+    {
+      "items": [
+        {
+          "unit": "1Pc",
+          "price": 60,
+          "name": "100 Garland",
+          "mrp": 300,
+          "image": ""
+        },
+        {
+          "name": "1000 Garland",
+          "unit": "1Pc",
+          "image": "",
+          "price": 300,
+          "mrp": 1500
+        },
+        {
+          "image": "",
+          "name": "2000 Garland",
+          "mrp": 3000,
+          "price": 600,
+          "unit": "1Pc"
+        },
+        {
+          "name": "5000 Garland",
+          "price": 1500,
+          "unit": "1Pc",
+          "mrp": 7500,
+          "image": ""
+        },
+        {
+          "name": "10000 Garland",
+          "unit": "1Pc",
+          "image": "",
+          "mrp": 15000,
+          "price": 3000
+        },
+        {
+          "unit": "1Pc",
+          "mrp": 750,
+          "price": 150,
+          "name": "50 Deluxe Garland",
+          "image": ""
+        },
+        {
+          "name": "100 Deluxe Garland",
+          "image": "",
+          "unit": "1Pc",
+          "price": 300,
+          "mrp": 1500
+        }
+      ],
+      "name": "FireCracker Chain"
+    }
+  ],
+  "phone": "+91-9585666718",
+  "legalNote": "Disclaimer : Fireworks are regulated products and their sale, possession, transportation and use are subject to applicable laws and regulations. Crackle Cart is an enquiry-based catalogue and does not conduct online sales through this website. Your submission is an enquiry and does not constitute a confirmed sale or order. Our team will contact you within 24 hours after your enquiry is submitted to confirm the order, payment and collection/transport arrangements. No COD is available. Doorstep delivery is not provided by Crackle Cart. Applicable courier/transport charges must be paid upon receiving the parcel.",
+  "upi": {
+    "id": "",
+    "payeeName": ""
+  },
+  "whatsapp": "+91-9585666718",
+  "ownerEmail": "support.cracklecart@gmail.com",
+  "offerSubtext": "Flat 80% Off the Printed MRP + Extra 5% Off on Orders Above ₹10,000  🛒 Minimum Cart Value: ₹3,000❌No Handling Charges",
+  "license": ""
+}
