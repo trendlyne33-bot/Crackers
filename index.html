@@ -243,6 +243,22 @@
   @media (min-width:561px){
     .hero-content{padding-block:16px 14px;}
   }
+    /* sale countdown tiles flanking the logo */
+  .hero-main{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;}
+  .hero-center{display:flex;flex-direction:column;align-items:center;min-width:0;}
+  .sale-tile{flex:0 0 68px;text-align:center;line-height:1.1;}
+  .sale-tile b{display:block;font-family:"Baloo 2",sans-serif;font-weight:800;font-size:1.45rem;color:var(--accent);text-shadow:0 0 18px rgba(243,177,58,0.35);white-space:nowrap;}
+  .sale-tile span{display:block;margin-top:3px;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
+  .sale-tile-right b{font-size:1rem;color:var(--text);text-shadow:none;}
+  .sale-tile.is-closed b{font-size:.95rem;line-height:1.05;color:var(--accent-2);text-shadow:none;}
+  @media (min-width:561px){
+    .hero-main{gap:30px;}
+    .sale-tile{flex-basis:100px;}
+    .sale-tile b{font-size:1.9rem;}
+    .sale-tile-right b{font-size:1.25rem;}
+    .sale-tile.is-closed b{font-size:1.15rem;}
+    .sale-tile span{font-size:.68rem;}
+  }
   /* The offer line also runs as a scrolling banner, same seamless two-halves
      technique as the topbar marquee: the track holds the phrase twice back to
      back and slides by exactly -50%, so there's no jump at the loop point. */
@@ -1228,9 +1244,34 @@
       '<div class="hero-offer-marquee-track">'+half+half+'</div>' +
     '</div>';
   }
+    // Sale countdown tiles beside the logo. Dates are compared in Indian time, so every
+  // visitor sees the same count whatever their phone's clock says. The closing day
+  // itself still counts as a sale day; the day after, the tiles say "Sale Closed".
+  function renderSaleTiles(data){
+    var none = {left:"", right:""};
+    var iso = String(data.saleCloseDate || "").trim();
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return none;
+    var todayIso = new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date());
+    var days = Math.round((Date.parse(iso+"T00:00:00Z") - Date.parse(todayIso+"T00:00:00Z")) / 86400000);
+    if(isNaN(days)) return none;
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var parts = iso.split("-");
+    var dateLabel = Number(parts[2]) + " " + (months[Number(parts[1]) - 1] || "");
+    var left;
+    if(days < 0){
+      left = '<div class="sale-tile sale-tile-left is-closed"><b>Sale<br>Closed</b></div>';
+    }else if(days === 0){
+      left = '<div class="sale-tile sale-tile-left"><b>Today</b><span>last day</span></div>';
+    }else{
+      left = '<div class="sale-tile sale-tile-left"><b>'+days+'</b><span>'+(days === 1 ? 'day to go' : 'days to go')+'</span></div>';
+    }
+    var right = '<div class="sale-tile sale-tile-right"><b>'+esc(dateLabel)+'</b><span>'+(days < 0 ? 'closed on' : 'sale closes')+'</span></div>';
+    return {left:left, right:right};
+  }
 
   function render(data){
     var root = document.getElementById("root");
+        var sale = renderSaleTiles(data);
     var html = '' +
     '<div class="topbar"><div class="wrap topbar-inner">' +
       renderTopbarMarquee(data.offerText) +
@@ -1245,9 +1286,15 @@
       '<canvas class="hero-canvas" id="fxCanvas" aria-hidden="true"></canvas>' +
       '<div class="hero-fade" aria-hidden="true"></div>' +
       '<div class="wrap hero-content">' +
-        '<div class="hero-logo"><img src="images/logo.png" alt="'+esc(data.shopName)+' logo"></div>' +
-        '<h1 class="hero-brand-name">'+esc(data.shopName)+'</h1>' +
-        '<p class="hero-tagline">'+esc(data.tagline)+'</p>' +
+                '<div class="hero-main">' +
+          sale.left +
+          '<div class="hero-center">' +
+            '<div class="hero-logo"><img src="images/logo.png" alt="'+esc(data.shopName)+' logo"></div>' +
+            '<h1 class="hero-brand-name">'+esc(data.shopName)+'</h1>' +
+            '<p class="hero-tagline">'+esc(data.tagline)+'</p>' +
+          '</div>' +
+          sale.right +
+        '</div>' +
         renderHeroOfferMarquee(data.offerSubtext) +
       '</div>' +
     '</div>' +
@@ -2475,6 +2522,7 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
     document.getElementById("f-license").value = draft.license||"";
     document.getElementById("f-offerText").value = draft.offerText||"";
     document.getElementById("f-offerSubtext").value = draft.offerSubtext||"";
+    document.getElementById("f-saleCloseDate").value = draft.saleCloseDate||"";
     document.getElementById("f-legalNote").value = draft.legalNote||"";
     document.getElementById("f-ownerEmail").value = draft.ownerEmail||"";
     document.getElementById("f-emailService").value = (draft.email&&draft.email.serviceId)||"";
@@ -2497,6 +2545,7 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
     draft.license = document.getElementById("f-license").value.trim();
     draft.offerText = document.getElementById("f-offerText").value.trim();
     draft.offerSubtext = document.getElementById("f-offerSubtext").value.trim();
+    draft.saleCloseDate = document.getElementById("f-saleCloseDate").value.trim();
     draft.legalNote = document.getElementById("f-legalNote").value.trim();
     draft.ownerEmail = document.getElementById("f-ownerEmail").value.trim();
     draft.email = {
@@ -3281,7 +3330,8 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
           '<div class="section-label">Running banners</div>' +
           '<div class="field"><label for="f-offerText">Top running banner (short)</label><input id="f-offerText" type="text" placeholder="e.g. Diwali Mega Sale"><p class="field-hint">Scrolls continuously next to the Call button. Keep it short — a few words.</p></div>' +
           '<div class="field"><label for="f-offerSubtext">Second running banner (longer)</label><textarea id="f-offerSubtext" placeholder="e.g. Flat 80% off, free delivery above ₹5,000"></textarea><p class="field-hint">Scrolls below the logo on the home page. Can be a full sentence.</p></div>' +
-          '<div class="field"><label for="f-legalNote">Safety / legal note</label><textarea id="f-legalNote"></textarea></div>' +
+                    '<div class="field"><label for="f-saleCloseDate">Sale closing date</label><input id="f-saleCloseDate" type="date"><p class="field-hint">Shows "days to go" beside the logo. The closing day still counts as a sale day; from the next day the page shows "Sale Closed". Leave empty to hide the countdown.</p></div>' +
+      '<div class="field"><label for="f-legalNote">Safety / legal note</label><textarea id="f-legalNote"></textarea></div>' +
 
           '<div class="section-label">Orders &amp; payment</div>' +
           '<div class="field"><label for="f-ownerEmail">Order email address</label><input id="f-ownerEmail" type="email" placeholder="you@example.com"></div>' +
