@@ -474,7 +474,23 @@
     border:1px solid var(--border);background:rgba(0,0,0,0.22);color:var(--text);font:inherit;font-size:.9rem;
   }
   .line-total{margin-left:auto;font-weight:800;color:var(--accent-2);font-size:.92rem;}
-
+  /* out-of-stock card */
+  .item-card.is-soldout{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08);}
+  .item-card.is-soldout:hover{transform:none;border-color:rgba(255,111,145,0.35);box-shadow:none;}
+  .item-card.is-soldout .item-photo-wrap{overflow:hidden;border-radius:14px;}
+  .item-card.is-soldout .item-photo{filter:grayscale(1);opacity:.55;}
+  .item-card.is-soldout .item-info,
+  .item-card.is-soldout .item-price{opacity:.55;}
+  .item-card.is-soldout .price-off{display:none;}
+  .item-card.is-soldout .qty-minus,
+  .item-card.is-soldout .qty-input,
+  .item-card.is-soldout .qty-plus,
+  .item-card.is-soldout .line-total{display:none;}
+  .soldout-banner{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(135deg, var(--accent-2), var(--accent-2-deep));color:#fff;font-size:.62rem;font-weight:800;letter-spacing:.06em;text-align:center;padding:5px 0;pointer-events:none;}
+  .soldout-btn{display:none;}
+  .item-card.is-soldout .soldout-btn{display:flex;flex:1;align-items:center;justify-content:center;gap:8px;height:38px;border-radius:12px;background:rgba(255,255,255,0.07);border:1px solid var(--border);color:var(--text-dim);font-weight:700;font-size:.88rem;}
+  .f-stock-wrap{display:inline-flex;align-items:center;gap:7px;font-size:.82rem;margin-top:6px;cursor:pointer;}
+  .f-stock-wrap input{width:auto;padding:0;accent-color:var(--accent-2-deep);}
   /* Mobile-only: make the product photo the dominant element of the card so a
      shopper can recognise the item without tapping into it. Two-column grid —
      a large square image on the left spanning the name/unit/price block on the
@@ -1153,8 +1169,9 @@
   function renderCategory(c,i){
     var items = (c.items||[]).map(function(it,ii){
       var off = pctOff(it.mrp, it.price);
+            var sold = it.soldOut === true;
       return '' +
-        '<div class="item-card'+(ii>=CATEGORY_COLLAPSE_LIMIT?' item-extra':'')+'" data-cat="'+i+'" data-item="'+ii+'">' +
+               '<div class="item-card'+(ii>=CATEGORY_COLLAPSE_LIMIT?' item-extra':'')+(sold?' is-soldout':'')+'" data-cat="'+i+'" data-item="'+ii+'">' +
           '<div class="item-top">' +
             '<label class="item-photo-wrap">' +
               '<input type="file" accept="image/*" class="item-photo-input" hidden data-cat="'+i+'" data-item="'+ii+'">' +
@@ -1162,6 +1179,7 @@
                 '<img class="item-photo" src="'+it.image+'" alt="'+esc(it.name)+'" onerror="itemPhotoError(this)">' :
                 '<div class="item-photo item-photo-empty" aria-hidden="true">🎇</div>') +
               '<span class="item-photo-edit-badge" aria-hidden="true">✎</span>' +
+                          (sold ? '<span class="soldout-banner" aria-hidden="true">OUT OF STOCK</span>' : '') +
             '</label>' +
             '<div class="item-info"><div class="item-name">'+esc(it.name)+'</div><div class="item-unit">'+esc(it.unit||"")+'</div></div>' +
             '<div class="item-price">' +
@@ -1171,6 +1189,7 @@
             '</div>' +
           '</div>' +
           '<div class="qty-row">' +
+                    '<span class="soldout-btn"><span aria-hidden="true">🚫</span> Out of stock</span>' +
             '<button type="button" class="qty-btn qty-minus" aria-label="Decrease quantity">−</button>' +
             '<input type="number" min="0" inputmode="numeric" class="qty-input" value="0" aria-label="Quantity for '+esc(it.name)+'">' +
             '<button type="button" class="qty-btn qty-plus" aria-label="Increase quantity">+</button>' +
@@ -1273,11 +1292,13 @@
     updateCartBar();
     startFireworks(document.getElementById("fxCanvas"));
     wirePriceListEvents();
+       var removedSoldOut = [];
     Object.keys(preservedCart).forEach(function(key){
       var parts = key.split("_"), ci = parts[0], ii = parts[1];
       var cat = data.categories && data.categories[ci];
       var item = cat && cat.items && cat.items[ii];
       if(!item) return; // that item no longer exists at this index — safely drop it
+      if(item.soldOut === true){ removedSoldOut.push(item.name); return; }
       var card = document.querySelector('.item-card[data-cat="'+ci+'"][data-item="'+ii+'"]');
       if(!card) return;
       var input = card.querySelector(".qty-input");
@@ -1285,6 +1306,9 @@
       input.value = preservedCart[key];
       applyQty(card, preservedCart[key]);
     });
+    if(removedSoldOut.length){
+      alert("Sorry, these items just went out of stock and were removed from your cart:\n" + removedSoldOut.join("\n"));
+    }
   }
 
   /* ---------- ambient fireworks canvas ---------- */
@@ -1415,11 +1439,16 @@
     });
   }
 
-  function applyQty(card, val){
+    function applyQty(card, val){
     var ci = card.getAttribute("data-cat"), ii = card.getAttribute("data-item");
     var key = ci+"_"+ii;
-    if(val>0) cart[key]=val; else delete cart[key];
     var item = window.__DATA__.categories[ci].items[ii];
+    if(item && item.soldOut === true){          // out-of-stock items can never enter the cart
+      val = 0;
+      var stockInput = card.querySelector(".qty-input");
+      if(stockInput) stockInput.value = 0;
+    }
+    if(val>0) cart[key]=val; else delete cart[key];
     var lineEl = card.querySelector(".line-total");
     if(val>0){ lineEl.hidden=false; lineEl.textContent = money(val*item.price); }
     else { lineEl.hidden=true; }
@@ -1434,6 +1463,7 @@
       if(!cat) return;
       var it = cat.items[ii];
       if(!it) return;
+            if(it.soldOut === true) return;
       var qty = cart[k];
       items.push({name:it.name, unit:it.unit, price:it.price, qty:qty, lineTotal:qty*it.price});
     });
@@ -2414,6 +2444,7 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
             '<input type="number" min="0" class="f-item-price" value="'+(item.price||0)+'" placeholder="Price">' +
             '<button type="button" class="row-btn remove-item" title="Remove item">✕</button>' +
           '</div>' +
+                '<label class="f-stock-wrap"><input type="checkbox" class="f-item-soldout"'+(item.soldOut === true ? ' checked' : '')+'> Out of stock</label>' +
           (item.image ? '<button type="button" class="remove-item-photo" title="Remove photo">Remove photo</button>' : '') +
         '</div>' +
       '</div>';
@@ -2484,13 +2515,16 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
       ed.querySelectorAll(".item-edit").forEach(function(wrap){
         var row = wrap.querySelector(".item-row");
         var imgEl = wrap.querySelector(".item-photo-upload img");
-        items.push({
+                var itemObj = {
           name: row.querySelector(".f-item-name").value.trim() || "Item",
           unit: row.querySelector(".f-item-unit").value.trim(),
           mrp: Number(row.querySelector(".f-item-mrp").value)||0,
           price: Number(row.querySelector(".f-item-price").value)||0,
           image: imgEl ? (imgEl.getAttribute("src")||"") : ""
-        });
+        };
+        var stockBox = wrap.querySelector(".f-item-soldout");
+        if(stockBox && stockBox.checked){ itemObj.soldOut = true; }
+        items.push(itemObj);
       });
       cats.push({name:name, items:items});
     });
@@ -3043,6 +3077,12 @@ console.error("Order email failed. HTTP status:", err && err.status, "| EmailJS 
       qtyInput.hidden = false;
       document.getElementById("photoLightboxMinus").hidden = false;
       document.getElementById("photoLightboxPlus").hidden = false;
+            if(it && it.soldOut === true){
+        priceEl.innerHTML = '<div class="price-net tabular">Out of stock</div>';
+        qtyInput.hidden = true;
+        document.getElementById("photoLightboxMinus").hidden = true;
+        document.getElementById("photoLightboxPlus").hidden = true;
+      }
     } else {
       priceEl.innerHTML = "";
       qtyInput.hidden = true;
