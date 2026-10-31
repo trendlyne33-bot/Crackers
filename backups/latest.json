@@ -1,12 +1,11 @@
 {
-  "license": "",
-  "email": {
-    "publicKey": "kYejwsJHAAcQLquDI",
-    "templateId": "template_9srfjdn",
-    "serviceId": "service_7btxjho"
+  "saleCloseDate": "2026-10-30",
+  "upi": {
+    "payeeName": "",
+    "id": ""
   },
-  "shopName": "Crackle Cart",
-  "ownerEmail": "support.cracklecart@gmail.com",
+  "whatsapp": "+91-9585666718",
+  "legalNote": "Disclaimer : Fireworks are regulated products and their sale, possession, transportation and use are subject to applicable laws and regulations. Crackle Cart is an enquiry-based catalogue and does not conduct online sales through this website. Your submission is an enquiry and does not constitute a confirmed sale or order. Our team will contact you within 24 hours after your enquiry is submitted to confirm the order, payment and collection/transport arrangements. No COD is available. Doorstep delivery is not provided by Crackle Cart. Applicable courier/transport charges must be paid upon receiving the parcel.",
   "categories": [
     {
       "name": "GIFT BOXES",
@@ -1771,17 +1770,18 @@
       ]
     }
   ],
-  "legalNote": "Disclaimer : Fireworks are regulated products and their sale, possession, transportation and use are subject to applicable laws and regulations. Crackle Cart is an enquiry-based catalogue and does not conduct online sales through this website. Your submission is an enquiry and does not constitute a confirmed sale or order. Our team will contact you within 24 hours after your enquiry is submitted to confirm the order, payment and collection/transport arrangements. No COD is available. Doorstep delivery is not provided by Crackle Cart. Applicable courier/transport charges must be paid upon receiving the parcel.",
   "tagline": "Your Festival,Delivered Bright",
-  "phone": "+91-9585666718",
-  "upi": {
-    "payeeName": "",
-    "id": ""
-  },
   "offerSubtext": "Flat 80% Off the Printed MRP + Extra 5% Off on Orders Above ₹10,000    🛒 Minimum Cart Value: ₹3,000    ❌No Handling Charges",
+  "email": {
+    "serviceId": "service_7btxjho",
+    "templateId": "template_9srfjdn",
+    "publicKey": "kYejwsJHAAcQLquDI"
+  },
   "address": "support.cracklecart@gmail.com",
+  "license": "",
   "offerText": "✨ Diwali Sale is LIVE! ✨",
-  "whatsapp": "+91-9585666718",
-  "saleCloseDate": "2026-10-30",
-  "hours": "Our support team answers enquiries daily, 9:00 AM – 9:00 PM. Extended hours may apply during Diwali sale."
+  "hours": "Our support team answers enquiries daily, 9:00 AM – 9:00 PM. Extended hours may apply during Diwali sale.",
+  "phone": "+91-9585666718",
+  "shopName": "Crackle Cart",
+  "ownerEmail": "support.cracklecart@gmail.com"
 }
